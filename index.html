@@ -2,886 +2,1225 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ECHO-7: The Awakening</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Alchemy | Pro Learning Platform</title>
     <style>
-        /* =========================================================
-           GLOBAL STYLING & THRILLER THEME
-           ========================================================= */
         :root {
-            --bg-color: #050508;
-            --text-main: #e2e8f0;
-            --text-muted: #64748b;
-            --text-accent: #38bdf8;
-            --text-danger: #ef4444;
-            --border-color: #1e293b;
-            --font-serif: 'Georgia', serif;
-            --font-mono: 'Courier New', Courier, monospace;
-            --font-sans: 'Arial', sans-serif;
+            /* Dark Theme (Default) */
+            --bg-base: #0f172a;
+            --bg-panel: rgba(30, 41, 59, 0.7);
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        [data-theme="light"] {
+            --bg-base: #f1f5f9;
+            --bg-panel: rgba(255, 255, 255, 0.7);
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border: rgba(0, 0, 0, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            user-select: none;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-base);
             color: var(--text-main);
-            font-family: var(--font-serif);
-            overflow: hidden;
             display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
-            width: 100vw;
+            overflow: hidden;
         }
 
-        /* Ambient FX Layer (Visual only, no audio) */
-        #fx-layer {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none;
-            z-index: 10;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.05));
-            background-size: 100% 4px, 3px 100%;
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
-            opacity: 0.8;
+        /* Glassmorphism utility */
+        .glass {
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            box-shadow: var(--glass-shadow);
         }
 
-        .vignette {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 40%, #000 130%);
-            z-index: 9;
-            pointer-events: none;
-        }
-
-        /* Thriller Flash Effects */
-        #threat-flash {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(239, 68, 68, 0.4);
-            z-index: 999;
-            pointer-events: none;
-            opacity: 0;
-        }
-
-        .flash-anim {
-            animation: flashOut 1s ease-out;
-        }
-
-        @keyframes flashOut {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-
-        /* Screen Shake */
-        .shake-active {
-            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-        }
-
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-2px, 1px, 0); }
-            20%, 80% { transform: translate3d(4px, -2px, 0); }
-            30%, 50%, 70% { transform: translate3d(-6px, 3px, 0); }
-            40%, 60% { transform: translate3d(6px, -3px, 0); }
-        }
-
-        /* Glitch Text Effect */
-        .glitch-text {
-            animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
-            color: var(--text-danger);
-            text-shadow: 2px 0 blue, -2px 0 red;
-            font-weight: bold;
-        }
-
-        @keyframes glitch-skew {
-            0% { transform: skew(0deg); }
-            20% { transform: skew(-10deg); }
-            40% { transform: skew(10deg); }
-            60% { transform: skew(-5deg); }
-            80% { transform: skew(5deg); }
-            100% { transform: skew(0deg); }
-        }
-
-        /* =========================================================
-           SCREENS & UI
-           ========================================================= */
-        .screen {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 20;
-            background-color: var(--bg-color);
-            transition: opacity 1s ease;
-        }
-
-        .hidden { display: none !important; opacity: 0; pointer-events: none; }
-
-        /* Main Menu */
-        #main-menu h1 {
-            font-family: var(--font-sans);
-            font-size: 3rem;
-            letter-spacing: 10px;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            color: #fff;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
-        }
-        #main-menu h3 {
-            font-size: 1rem;
-            letter-spacing: 5px;
-            color: var(--text-muted);
-            margin-bottom: 50px;
-        }
-
-        .btn {
-            background: transparent;
-            color: var(--text-muted);
-            border: 1px solid transparent;
-            padding: 12px 24px;
-            font-family: var(--font-sans);
-            font-size: 1rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 250px;
-            margin: 5px 0;
-            border-radius: 4px;
-        }
-        .btn:hover, .btn:focus {
-            color: #fff;
-            border-color: var(--text-danger);
-            background: rgba(239, 68, 68, 0.05);
-            letter-spacing: 4px;
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
-        }
-        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
-
-        /* Game UI */
-        #game-ui {
-            z-index: 15;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            max-width: 800px;
+        /* Sidebar */
+        #sidebar {
+            width: 280px;
             height: 100%;
+            display: flex;
+            flex-direction: column;
             padding: 20px;
-            background: transparent;
+            z-index: 100;
         }
 
-        header {
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            gap: 10px;
         }
 
-        .threat-high { color: var(--text-danger); font-weight: bold; }
-
-        #story-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #story-text {
-            font-size: 1.25rem;
-            line-height: 1.8;
-            margin-bottom: 40px;
-            white-space: pre-wrap;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-        }
-
-        #choices-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: auto;
-        }
-
-        .choice-btn {
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 18px 20px;
-            font-family: var(--font-sans);
-            font-size: 1rem;
-            text-align: left;
+        .nav-link {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
             cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.2s;
+            font-weight: 600;
             display: flex;
             align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+            transition: all 0.2s;
         }
-        .choice-btn::before {
-            content: "▸";
-            margin-right: 12px;
-            color: var(--text-danger);
-            font-size: 1.2rem;
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        #main-content {
+            flex: 1;
+            height: 100%;
+            overflow-y: auto;
+            padding: 40px;
+            position: relative;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography & Components */
+        h1, h2, h3 { margin-bottom: 1rem; }
+        p { margin-bottom: 1rem; line-height: 1.6; color: var(--text-muted); }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            background: var(--primary);
+            color: white;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: rgba(59, 130, 246, 0.1); }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        /* Dashboard Grid */
+        .dash-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+        }
+        .stat-value { font-size: 2.5rem; font-weight: bold; color: var(--primary); }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background: var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 1s ease-out;
+        }
+
+        /* Roadmap Layout */
+        .roadmap-container {
+            position: relative;
+            padding-left: 30px;
+            border-left: 3px solid var(--border);
+        }
+        .roadmap-item {
+            position: relative;
+            margin-bottom: 30px;
+            cursor: pointer;
             transition: transform 0.2s;
         }
-        .choice-btn:hover {
-            background: #fff;
-            color: #000;
-            border-color: #fff;
-            box-shadow: 0 0 15px rgba(255,255,255,0.3);
-        }
-        .choice-btn:hover::before {
-            transform: translateX(5px);
-        }
-
-        footer {
-            display: flex;
-            justify-content: space-around;
-            padding-top: 15px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .nav-btn {
-            background: none; border: none; 
-            color: var(--text-muted);
-            cursor: pointer; 
-            font-family: var(--font-mono);
-            letter-spacing: 1px; 
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            transition: color 0.3s;
-        }
-        .nav-btn:hover { color: #fff; }
-        .nav-btn.alert { color: var(--text-danger); font-weight: bold; }
-
-        /* Modals */
-        .modal {
+        .roadmap-item:hover { transform: translateX(5px); }
+        .roadmap-item::before {
+            content: '';
             position: absolute;
-            top: 5%; left: 50%;
-            transform: translateX(-50%);
-            width: 90%; max-width: 450px;
-            height: 85%;
-            background: #0a0a0f;
-            border: 1px solid #333;
-            border-radius: 8px;
-            z-index: 50;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.9);
-            overflow: hidden;
+            left: -40px;
+            top: 20px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 3px solid var(--border);
+            z-index: 2;
+        }
+        .roadmap-item.completed::before {
+            background: var(--success);
+            border-color: var(--success);
+            box-shadow: 0 0 10px var(--success);
         }
 
-        .modal-header {
-            background: #151515;
+        /* Module / Lesson View */
+        .lesson-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        .citation {
+            font-size: 0.8em;
+            color: var(--secondary);
+            vertical-align: super;
+        }
+        .alert-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--warning);
             padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid #333;
-            font-family: var(--font-mono);
-            font-weight: bold;
-            color: var(--text-danger);
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        /* Code Playground */
+        .playground {
+            background: #1e1e1e; /* always dark for code */
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+            border: 1px solid #333;
+        }
+        .playground-header {
+            background: #2d2d2d;
+            padding: 10px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            color: #ccc;
+            font-family: monospace;
+        }
+        .playground-body {
+            display: flex;
+            flex-direction: column;
+        }
+        textarea.code-editor {
+            width: 100%;
+            min-height: 150px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            padding: 15px;
+            border: none;
+            resize: vertical;
+            outline: none;
+        }
+        .code-output {
+            background: #000;
+            color: #10b981;
+            padding: 15px;
+            font-family: monospace;
+            min-height: 80px;
+            white-space: pre-wrap;
         }
 
-        .close-btn { background: none; border: none; color: #fff; cursor: pointer; font-size: 1.5rem; }
-        .modal-content { flex-grow: 1; overflow-y: auto; padding: 20px; font-family: var(--font-sans); }
+        /* Quiz System */
+        .quiz-option {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 15px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quiz-option:hover { background: rgba(59, 130, 246, 0.1); }
+        .quiz-option.correct { background: rgba(16, 185, 129, 0.2); border-color: var(--success); }
+        .quiz-option.wrong { background: rgba(239, 68, 68, 0.2); border-color: var(--danger); }
 
-        .sms-bubble { max-width: 85%; padding: 12px 16px; border-radius: 12px; margin-bottom: 15px; line-height: 1.4; clear: both; }
-        .sms-received { background: #1e293b; color: #fff; float: left; border-bottom-left-radius: 2px; border-left: 2px solid var(--text-danger); }
-        .sms-sent { background: #0284c7; color: #fff; float: right; border-bottom-right-radius: 2px; }
-        .sms-sender { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; clear: both; font-family: var(--font-mono); text-transform: uppercase;}
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .toast {
+            background: var(--bg-panel);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease forwards;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
 
-        .evidence-card { background: #111; border: 1px solid #333; padding: 15px; margin-bottom: 10px; border-left: 3px solid #fff; }
-        .evidence-title { font-weight: bold; color: #fff; margin-bottom: 5px; font-family: var(--font-mono); }
-        .evidence-desc { color: #999; font-size: 0.9rem; line-height: 1.5; }
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid var(--border);
+        }
+        
+        textarea#notes-area {
+            width: 100%;
+            height: 200px;
+            background: var(--bg-base);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            resize: vertical;
+        }
 
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background: #333; }
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            #sidebar { width: 100%; height: auto; flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 10px 20px; }
+            .nav-link { margin-bottom: 0; padding: 8px; font-size: 0.9rem; }
+            .nav-text { display: none; }
+            #main-content { padding: 20px; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="fx-layer"></div>
-    <div class="vignette"></div>
-    <div id="threat-flash"></div>
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar" class="glass">
+        <div class="brand">🐍 Alchemy</div>
+        <div class="nav-link active" onclick="navigate('dashboard')"><span class="nav-icon">📊</span> <span class="nav-text">Dashboard</span></div>
+        <div class="nav-link" onclick="navigate('roadmap')"><span class="nav-icon">🗺️</span> <span class="nav-text">Roadmap</span></div>
+        <div class="nav-link" onclick="navigate('projects')"><span class="nav-icon">🚀</span> <span class="nav-text">Projects</span></div>
+        <div class="nav-link" onclick="navigate('interview')"><span class="nav-icon">💼</span> <span class="nav-text">Interview Prep</span></div>
+        <div style="flex-grow: 1;"></div>
+        <div class="nav-link" onclick="openNotes()"><span class="nav-icon">📝</span> <span class="nav-text">My Notes</span></div>
+        <div class="nav-link" onclick="navigate('settings')"><span class="nav-icon">⚙️</span> <span class="nav-text">Settings</span></div>
+    </nav>
 
-    <div id="main-menu" class="screen">
-        <h1>THE TRUTH</h1>
-        <h3>BEHIND THE FALL</h3>
-        <button class="btn" onclick="UI.startGame()">New Investigation</button>
-        <button class="btn" id="btn-continue" onclick="UI.loadGame()">Continue</button>
-        <div style="margin-top: 40px; font-family: monospace; font-size: 0.7rem; color: #444;">SYSTEM v2.0 | NO BACKGROUND LOOP</div>
-    </div>
+    <!-- Main Content Area -->
+    <main id="main-content">
+        
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <h1>Welcome back, Alchemist!</h1>
+            <p>Ready to transform from Zero to Full Stack Hero?[cite: 3]</p>
 
-    <div id="game-ui" class="screen hidden">
-        <header>
-            <div id="hud-chapter">Prologue</div>
-            <div id="hud-threat">Threat: LOW</div>
-            <div id="hud-time">03:47 AM</div>
-        </header>
+            <div class="card glass">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>Level <span id="dash-level">1</span>: <span id="dash-title" style="color: var(--primary);">Python Beginner</span></h2>
+                    <h2 style="color: var(--secondary);"><span id="dash-xp">0</span> XP</h2>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-fill" id="xp-progress"></div>
+                </div>
+                <p style="text-align: right; font-size: 0.9rem;">Next level at <span id="dash-next-xp">100</span> XP</p>
+            </div>
 
-        <div id="story-container">
-            <div id="story-text"></div>
-            <div id="choices-container"></div>
+            <div class="dash-grid">
+                <div class="card glass stat-card">
+                    <h3>Modules</h3>
+                    <div class="stat-value" id="stat-modules">0/15</div>
+                </div>
+                <div class="card glass stat-card">
+                    <h3>Quizzes</h3>
+                    <div class="stat-value" id="stat-quizzes">0</div>
+                </div>
+                <div class="card glass stat-card">
+                    <h3>Challenges</h3>
+                    <div class="stat-value" id="stat-challenges">0</div>
+                </div>
+                <div class="card glass stat-card">
+                    <h3>Projects</h3>
+                    <div class="stat-value" id="stat-projects">0/9</div>
+                </div>
+            </div>
+
+            <div class="card glass">
+                <h2>Your Achievements</h2>
+                <div id="achievements-container" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <!-- Badges injected here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Roadmap Section -->
+        <section id="roadmap" class="section">
+            <h1>Learning Roadmap</h1>
+            <p>Follow this structural step-by-step master plan to evolve from absolute zero into a professional Python Full Stack Developer.[cite: 3]</p>
+            <div class="card glass">
+                <div class="roadmap-container" id="roadmap-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Module View Section (Dynamic) -->
+        <section id="module-view" class="section">
+            <button class="btn btn-outline" onclick="navigate('roadmap')" style="margin-bottom: 20px;">← Back to Roadmap</button>
+            <div id="module-content"></div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section">
+            <h1>Capstone Projects</h1>
+            <p>Unlock practical applications as you progress.[cite: 3]</p>
+            <div id="projects-list" class="dash-grid">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- Interview Prep Section -->
+        <section id="interview" class="section">
+            <h1>Interview & Career Preparation</h1>
+            <p>Avoid staying quiet during technical interviews. Interviewers want to understand how you think.[cite: 3]</p>
+            <div class="card glass">
+                <div id="interview-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings" class="section">
+            <h1>Platform Settings</h1>
+            <div class="card glass">
+                <h3>Appearance</h3>
+                <button class="btn" id="theme-toggle" onclick="toggleTheme()">Switch to Light Mode</button>
+            </div>
+            <div class="card glass">
+                <h3>Data Management</h3>
+                <p>Your progress is stored securely in your browser's local storage.</p>
+                <button class="btn" style="background: var(--danger);" onclick="resetProgress()">Reset All Progress</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Notes Modal -->
+    <div class="modal-overlay" id="notes-modal">
+        <div class="modal-content glass">
+            <h2>My Engineering Notes</h2>
+            <p>Store your structural plans and logic here.</p>
+            <textarea id="notes-area" placeholder="Write your notes here..."></textarea>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn btn-outline" onclick="closeNotes()">Cancel</button>
+                <button class="btn" onclick="saveNotes()">Save Notes</button>
+            </div>
         </div>
-
-        <footer>
-            <button class="nav-btn" id="btn-phone" onclick="Modals.open('phone')">📱 Phone</button>
-            <button class="nav-btn" id="btn-evidence" onclick="Modals.open('evidence')">🗂 Evidence</button>
-            <button class="nav-btn" id="btn-journal" onclick="Modals.open('journal')">📓 Journal</button>
-            <button class="nav-btn" onclick="Engine.saveGame()">💾 Save</button>
-        </footer>
     </div>
 
-    <div id="modal-phone" class="modal hidden">
-        <div class="modal-header">
-            <span>SECURE INBOX</span>
-            <button class="close-btn" onclick="Modals.close()">×</button>
-        </div>
-        <div class="modal-content" id="phone-content"></div>
-    </div>
-
-    <div id="modal-evidence" class="modal hidden">
-        <div class="modal-header">
-            <span>EVIDENCE BOARD</span>
-            <button class="close-btn" onclick="Modals.close()">×</button>
-        </div>
-        <div class="modal-content" id="evidence-content"></div>
-    </div>
-
-    <div id="modal-journal" class="modal hidden">
-        <div class="modal-header">
-            <span>INVESTIGATION NOTES</span>
-            <button class="close-btn" onclick="Modals.close()">×</button>
-        </div>
-        <div class="modal-content" id="journal-content"></div>
-    </div>
-
-<script>
-/**
- * =========================================================
- * AUDIO ENGINE (Event-Based Thriller Sounds Only)
- * NO CONTINUOUS DRONES
- * =========================================================
- */
-const AudioEngine = {
-    ctx: null,
-    masterGain: null,
-
-    init() {
-        if (this.ctx) return;
-        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        this.masterGain = this.ctx.createGain();
-        this.masterGain.gain.value = 0.6;
-        this.masterGain.connect(this.ctx.destination);
-    },
-
-    playType() {
-        if (!this.ctx) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.connect(gain).connect(this.masterGain);
-        
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(300 + Math.random() * 100, this.ctx.currentTime);
-        gain.gain.setValueAtTime(0.01, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
-        osc.start(); osc.stop(this.ctx.currentTime + 0.04);
-    },
-
-    playNotification() {
-        if (!this.ctx) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.connect(gain).connect(this.masterGain);
-        
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(900, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(300, this.ctx.currentTime + 0.2);
-        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.4);
-        osc.start(); osc.stop(this.ctx.currentTime + 0.4);
-    },
-
-    // A sharp, startling sound for jumpscares / bad news
-    playSting() {
-        if (!this.ctx) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.connect(gain).connect(this.masterGain);
-        
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(150, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.6);
-        
-        gain.gain.setValueAtTime(0.6, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.6);
-        
-        osc.start(); osc.stop(this.ctx.currentTime + 0.6);
-    },
-
-    // A deep double-thump used during tense choices
-    playHeartbeat() {
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        
-        // Thump 1
-        const osc1 = this.ctx.createOscillator();
-        const gain1 = this.ctx.createGain();
-        osc1.connect(gain1).connect(this.masterGain);
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(50, now);
-        osc1.frequency.exponentialRampToValueAtTime(20, now + 0.2);
-        gain1.gain.setValueAtTime(0, now);
-        gain1.gain.linearRampToValueAtTime(1, now + 0.05);
-        gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-        osc1.start(now); osc1.stop(now + 0.3);
-
-        // Thump 2
-        const osc2 = this.ctx.createOscillator();
-        const gain2 = this.ctx.createGain();
-        osc2.connect(gain2).connect(this.masterGain);
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(55, now + 0.3);
-        osc2.frequency.exponentialRampToValueAtTime(25, now + 0.5);
-        gain2.gain.setValueAtTime(0, now + 0.3);
-        gain2.gain.linearRampToValueAtTime(1, now + 0.35);
-        gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
-        osc2.start(now + 0.3); osc2.stop(now + 0.6);
-    }
-};
-
-/**
- * =========================================================
- * GAME STATE MANAGEMENT
- * =========================================================
- */
-let gameState = {
-    currentNode: 'prologue_start',
-    chapter: 'Prologue',
-    time: '03:47 AM',
-    threatLevel: 0,
-    evidence: [],
-    messages: [],
-    journal: []
-};
-
-const Engine = {
-    saveGame() {
-        localStorage.setItem('echo7_save2', JSON.stringify(gameState));
-        UI.flashNav('💾 Saved');
-    },
-    loadGame() {
-        const saved = localStorage.getItem('echo7_save2');
-        if (saved) {
-            gameState = JSON.parse(saved);
-            return true;
-        }
-        return false;
-    },
-    hasSave() { return localStorage.getItem('echo7_save2') !== null; },
-    
-    addEvidence(id, title, desc) {
-        if (!gameState.evidence.find(e => e.id === id)) {
-            gameState.evidence.push({id, title, desc});
-            document.getElementById('btn-evidence').classList.add('alert');
-            AudioEngine.playNotification();
-        }
-    },
-    addMessage(sender, text, isReceived = true) {
-        gameState.messages.push({sender, text, isReceived});
-        document.getElementById('btn-phone').classList.add('alert');
-        if(isReceived) AudioEngine.playNotification();
-    },
-    addJournal(entry) {
-        if(!gameState.journal.includes(entry)){
-            gameState.journal.push(entry);
-            document.getElementById('btn-journal').classList.add('alert');
-        }
-    }
-};
-
-/**
- * =========================================================
- * USER INTERFACE & MODALS
- * =========================================================
- */
-const Modals = {
-    active: null,
-    open(type) {
-        AudioEngine.playType();
-        this.close();
-        document.getElementById(`modal-${type}`).classList.remove('hidden');
-        document.getElementById(`btn-${type}`).classList.remove('alert');
-        this.active = type;
-        this.populate(type);
-    },
-    close() {
-        if (this.active) {
-            document.getElementById(`modal-${this.active}`).classList.add('hidden');
-            this.active = null;
-        }
-    },
-    populate(type) {
-        const container = document.getElementById(`${type}-content`);
-        container.innerHTML = '';
-
-        if (type === 'phone') {
-            if(gameState.messages.length === 0) container.innerHTML = '<p style="color:#555;text-align:center;margin-top:20px;">Inbox empty.</p>';
-            gameState.messages.forEach(msg => {
-                const alignClass = msg.isReceived ? 'sms-received' : 'sms-sent';
-                const senderDiv = msg.isReceived ? `<div class="sms-sender">${msg.sender}</div>` : '';
-                container.innerHTML += `${senderDiv}<div class="sms-bubble ${alignClass}">${msg.text}</div>`;
-            });
-        } 
-        else if (type === 'evidence') {
-            if(gameState.evidence.length === 0) container.innerHTML = '<p style="color:#555;text-align:center;margin-top:20px;">Board empty.</p>';
-            gameState.evidence.forEach(ev => {
-                container.innerHTML += `<div class="evidence-card"><div class="evidence-title">${ev.title}</div><div class="evidence-desc">${ev.desc}</div></div>`;
-            });
-        }
-        else if (type === 'journal') {
-            if(gameState.journal.length === 0) container.innerHTML = '<p style="color:#555;text-align:center;margin-top:20px;">No entries.</p>';
-            gameState.journal.forEach(entry => {
-                container.innerHTML += `<p style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid #1e293b; line-height:1.5;">- ${entry}</p>`;
-            });
-        }
-    }
-};
-
-const UI = {
-    typingTimer: null,
-
-    init() {
-        if(Engine.hasSave()) document.getElementById('btn-continue').disabled = false;
-        else document.getElementById('btn-continue').disabled = true;
-    },
-    startGame() {
-        AudioEngine.init();
-        document.getElementById('main-menu').classList.add('hidden');
-        document.getElementById('game-ui').classList.remove('hidden');
-        gameState = {
-            currentNode: 'prologue_start', chapter: 'Prologue', time: '03:47 AM', threatLevel: 0,
-            evidence: [], messages: [], journal: []
-        };
-        StoryEngine.renderNode(gameState.currentNode);
-    },
-    loadGame() {
-        AudioEngine.init();
-        if(Engine.loadGame()) {
-            document.getElementById('main-menu').classList.add('hidden');
-            document.getElementById('game-ui').classList.remove('hidden');
-            StoryEngine.renderNode(gameState.currentNode, true);
-        }
-    },
-    flashNav(text) {
-        const saveBtn = document.querySelectorAll('.nav-btn')[3];
-        saveBtn.innerText = text;
-        setTimeout(() => saveBtn.innerText = "💾 Save", 2000);
-    },
-    triggerScare() {
-        // Physical visual and audio scare
-        AudioEngine.playSting();
-        
-        // Shake screen
-        const gameBody = document.getElementById('game-ui');
-        gameBody.classList.remove('shake-active');
-        void gameBody.offsetWidth; // trigger reflow
-        gameBody.classList.add('shake-active');
-
-        // Red flash
-        const flash = document.getElementById('threat-flash');
-        flash.classList.remove('flash-anim');
-        void flash.offsetWidth;
-        flash.classList.add('flash-anim');
-    },
-    updateHUD() {
-        document.getElementById('hud-chapter').innerText = gameState.chapter;
-        document.getElementById('hud-time').innerText = gameState.time;
-        
-        const threatEl = document.getElementById('hud-threat');
-        if (gameState.threatLevel >= 50) {
-            threatEl.innerText = "THREAT: CRITICAL";
-            threatEl.className = "threat-high";
-            AudioEngine.playHeartbeat(); // Adds a heartbeat thump when UI updates at high threat
-        } else if (gameState.threatLevel >= 25) {
-            threatEl.innerText = "THREAT: ELEVATED";
-            threatEl.className = "";
-        } else {
-            threatEl.innerText = "THREAT: LOW";
-            threatEl.className = "";
-        }
-    },
-    typeText(text, isGlitch, callback) {
-        const container = document.getElementById('story-text');
-        container.innerHTML = '';
-        let i = 0;
-        clearTimeout(this.typingTimer);
-
-        // Apply glitch styling if flagged
-        if (isGlitch) {
-            container.classList.add('glitch-text');
-            this.triggerScare();
-        } else {
-            container.classList.remove('glitch-text');
-        }
-
-        function type() {
-            if (i < text.length) {
-                if(text.charAt(i) === '<' && text.substring(i, i+4) === '<br>') {
-                    container.innerHTML += '<br>';
-                    i += 4;
-                } else {
-                    container.innerHTML += text.charAt(i);
-                    i++;
+    <!-- Source Data and Logic (JavaScript) -->
+    <script>
+        /* --- CORE DATA ENGINE (Referencing Source 3) --- */
+        const sourceMaterial = {
+            modules: [
+                {
+                    id: 1, title: "Introduction to Programming",
+                    lessons: [
+                        {
+                            title: "What is Programming?",
+                            content: `Imagine you have a loyal robot assistant named Bolt.[cite: 3]<br>Bolt can execute any task perfectly, but it doesn't speak human languages.[cite: 3]<br>It only understands specific, literal step-by-step blueprints.[cite: 3]<br>Programming is simply writing that blueprint.[cite: 3]<br>It is the act of giving clear, structured commands to a computer to solve a specific problem.[cite: 3]`
+                        },
+                        {
+                            title: "What is Python?",
+                            content: `Python is a high-level, interpreted programming language invented by Guido van Rossum in 1991.[cite: 3]<br>"High-level" means it is written in human-readable plain English, removing the nightmarish complexity of management details like memory addressing or compiler architectures.[cite: 3]`
+                        },
+                        {
+                            title: "Why Python is Powerful",
+                            content: `Python balances simplicity and raw engineering power.[cite: 3]<br>It emphasizes the readability of code, which dramatically lowers the cost of program maintenance and speeds up deployment cycles.[cite: 3]<br>
+                            <ul>
+                                <li>Simple Syntax: Code looks like structural English sentences.[cite: 3]</li>
+                                <li>Batteries Included: Massive built-in standard library for web scraping, mathematical modeling, and system automation.[cite: 3]</li>
+                            </ul>`
+                        },
+                        {
+                            title: "Understanding How Code Works",
+                            content: `When you run python app.py, the Python Interpreter reads your file line-by-line from top to bottom.[cite: 3]<br>It instantly translates your human-readable text into binary machine code (Os and 1s) that your computer processor executes seamlessly.[cite: 3]
+                            <div class="alert-box"><strong>BEGINNER MISTAKE:</strong> Writing Print("Hello") with a capital 'P' will trigger a NameError - Python is completely case-sensitive; print and Print are viewed as entirely separate entities![cite: 3]</div>`
+                        }
+                    ],
+                    quiz: {
+                        question: "Is Python an interpreted or a compiled language?[cite: 3]",
+                        options: ["Compiled", "Interpreted", "Both", "Neither"],
+                        answer: 1,
+                        explanation: "Python is a high-level, interpreted programming language.[cite: 3]"
+                    },
+                    challenge: {
+                        title: "First Line of Code",
+                        desc: "Modify your app.py file to print your own name and your dream career goals on two separate lines.[cite: 3]",
+                        initialCode: 'print("Hello, Future Full Stack Developer!")\n# Write your code below\n',
+                        expectedRegex: /print\(.+\)\s*print\(.+\)/,
+                        successMsg: "Great job executing your first structural command![cite: 3]"
+                    }
+                },
+                {
+                    id: 2, title: "Python Basics",
+                    lessons: [
+                        {
+                            title: "Variables",
+                            content: `Think of a variable as a labeled storage box inside your computer's RAM.[cite: 3]<br>You put a value inside the box, put a unique sticker label on it, and look it up whenever you need it.[cite: 3]<br>
+                            <pre style="background:#000;color:#fff;padding:10px;margin-top:10px;border-radius:5px;">username = "alex_dev"\nlogin_attempts = 3</pre>`
+                        },
+                        {
+                            title: "Data Types",
+                            content: `Python recognizes several primary data types built directly into the core language engine:[cite: 3]
+                            <ul>
+                                <li>int: Whole numbers (e.g., 45, -10)[cite: 3]</li>
+                                <li>float: Floating-point decimal numbers (e.g., 99.95, 0.004)[cite: 3]</li>
+                                <li>str: String text data wrapped in quotes (e.g., "Cyber Security")[cite: 3]</li>
+                                <li>bool: Boolean states representing true binary logical values (True or False)[cite: 3]</li>
+                            </ul>`
+                        },
+                        {
+                            title: "User Input & Type Conversion",
+                            content: `To make your software interactive, use the built-in input() function.[cite: 3]<br>It captures characters typed by the user directly from the keyboard.[cite: 3]<br>The input() function captures everything as a string text data type by default.[cite: 3]<br>If you need to perform mathematical equations on user input, you must convert the type explicitly using functions like int() or float().[cite: 3]`
+                        }
+                    ],
+                    quiz: {
+                        question: "What function explicitly converts string text data to an integer?[cite: 3]",
+                        options: ["string()", "convert()", "float()", "int()"],
+                        answer: 3,
+                        explanation: "You must convert the type explicitly using functions like int() or float().[cite: 3]"
+                    },
+                    challenge: {
+                        title: "E-Commerce Discount",
+                        desc: "Write an interactive script that requests an item cost from an e-commerce affiliate buyer, applies a 10% cash reward discount, and prints a final descriptive summary using an F-String.[cite: 3]",
+                        initialCode: 'cost_str = "100" # Simulating input\ncost_int = int(cost_str)\n# Calculate a 10% discount and print it using an f-string\n',
+                        expectedRegex: /print\(f.+/i,
+                        successMsg: "Perfect use of explicit conversion and f-strings!"
+                    }
+                },
+                {
+                    id: 3, title: "Control Flow",
+                    lessons: [
+                        {
+                            title: "if, elif, else",
+                            content: `Control flow structures act like track switches in a train station, directing execution down specific pathways based on logic gates.[cite: 3]`
+                        },
+                        {
+                            title: "Loops",
+                            content: `Loops eliminate tedious repetitive code tasks, driving automated infrastructure scripts perfectly.[cite: 3]<br>
+                            <ul>
+                                <li>A for loop iterates over a finite sequence (like lists, strings, or a numerical range block).[cite: 3]</li>
+                                <li>A while loop runs indefinitely until its condition evaluates to False.[cite: 3]</li>
+                            </ul>`
+                        },
+                        {
+                            title: "Loop Controls",
+                            content: `<ul>
+                                <li>break: Instantly exits the entire active loop block completely.[cite: 3]</li>
+                                <li>continue: Skips the remainder of the current iteration loop step and jumps immediately back to the top evaluation phase.[cite: 3]</li>
+                                <li>pass: A structural syntactic placeholder that does absolutely nothing. Avoids code parsing errors.[cite: 3]</li>
+                            </ul>`
+                        }
+                    ],
+                    quiz: {
+                        question: "Which keyword instantly exits the entire active loop block completely?[cite: 3]",
+                        options: ["stop", "break", "continue", "pass"],
+                        answer: 1,
+                        explanation: "break: Instantly exits the entire active loop block completely.[cite: 3]"
+                    },
+                    challenge: {
+                        title: "Logic Building: FizzBuzz",
+                        desc: "Write a program that prints figures from 1 to 20. But for multiples of three print 'Fizz' instead of the number, and for the multiples of five print 'Buzz'. For numbers which are multiples of both three and five print 'FizzBuzz'.[cite: 3]",
+                        initialCode: 'for i in range(1, 21):\n    # Write logic here\n    pass',
+                        expectedRegex: /if.+% 3.+% 5.+elif.+else/is,
+                        successMsg: "Excellent logic building!"
+                    }
+                },
+                {
+                    id: 4, title: "Functions",
+                    lessons: [
+                        {
+                            title: "What are Functions?",
+                            content: `A function is a reusable block of isolated code designed to perform a distinct action.[cite: 3]<br>Functions prevent repetitive code patterns, making systems maintainable.[cite: 3]`
+                        },
+                        {
+                            title: "Parameters vs Arguments",
+                            content: `Think of parameters as dynamic input slots built into a function definition.[cite: 3]<br>Arguments are the concrete data values passed into those slots when invoking the block.[cite: 3]`
+                        },
+                        {
+                            title: "Lambda & Recursion",
+                            content: `Lambda functions are anonymous, concise single-line expressions ideal for rapid inline calculations.[cite: 3]<br>Recursion is a logic pattern where a function calls itself to solve smaller pieces of a larger problem. It must always include a defined base case to prevent infinite loops.[cite: 3]`
+                        }
+                    ],
+                    quiz: {
+                        question: "What must a recursive function always include to prevent infinite loops?[cite: 3]",
+                        options: ["A lambda expression", "A defined base case", "A global variable", "A loop control break"],
+                        answer: 1,
+                        explanation: "It must always include a defined base case to prevent infinite loops.[cite: 3]"
+                    },
+                    challenge: {
+                        title: "Secure URL Checker",
+                        desc: "Write a custom Python function that accepts a string input and checks if it contains insecure website markers like 'http://' versus secure markers like 'https://', returning an explicit boolean indicator status.[cite: 3]",
+                        initialCode: 'def check_secure(url):\n    # return True if https, False if http\n    pass\n\nprint(check_secure("https://example.com"))',
+                        expectedRegex: /return.+https/is,
+                        successMsg: "Secure function created successfully!"
+                    }
+                },
+                {
+                    id: 5, title: "Data Structures",
+                    lessons: [
+                        {
+                            title: "Collections Overview",
+                            content: `<ul>
+                                <li>Lists: Ordered, changeable collection arrays wrapped in square brackets ([]). They can store mix-matched data types.[cite: 3]</li>
+                                <li>Tuples: Immutable, ordered collections wrapped in parentheses (()). Once configured, their elements cannot be changed or scaled.[cite: 3]</li>
+                                <li>Sets: Unordered collections of strictly unique values enclosed in curly braces ({}). They eliminate duplicate values instantly.[cite: 3]</li>
+                                <li>Dictionaries: Store information in Key-Value pairs, making them look like real-world phone books.[cite: 3]</li>
+                            </ul>`
+                        }
+                    ],
+                    quiz: {
+                        question: "Which data structure eliminates duplicate values instantly?[cite: 3]",
+                        options: ["Lists", "Tuples", "Sets", "Dictionaries"],
+                        answer: 2,
+                        explanation: "Sets are unordered collections of strictly unique values enclosed in curly braces ({}). They eliminate duplicate values instantly.[cite: 3]"
+                    },
+                    challenge: {
+                        title: "Dictionary Filter",
+                        desc: "Create a short directory structure list containing three nested customer dictionaries. Iterate through them to output only the names of customers who have earned over 500 affiliate interaction points.[cite: 3]",
+                        initialCode: 'customers = [{"name":"Alice", "pts":600}, {"name":"Bob", "pts":400}]\n# Iterate and print names with pts > 500',
+                        expectedRegex: /for.+in.+if.+> 500/is,
+                        successMsg: "Data structure parsed successfully!"
+                    }
+                },
+                {
+                    id: 6, title: "File Handling",
+                    lessons: [
+                        {
+                            title: "Reading & Writing",
+                            content: `Python interacts with your computer's storage drive using the open() function wrapper.[cite: 3]<br>Always use the with context manager, which handles closing system hooks automatically.[cite: 3]<br>To overwrite data completely, pass the "w" parameter.[cite: 3]<br>To safely append lines to existing data records without losing current text, pass the "a" flag.[cite: 3]`
+                        },
+                        {
+                            title: "JSON Basics",
+                            content: `JSON (JavaScript Object Notation) is the foundational text structural exchange standard used across backend web APIs and frontend UI templates.[cite: 3]`
+                        }
+                    ],
+                    quiz: {
+                        question: "Which flag is used to safely append lines to existing data records without losing current text?[cite: 3]",
+                        options: ["r", "w", "a", "x"],
+                        answer: 2,
+                        explanation: "To safely append lines to existing data records without losing current text, pass the \"a\" flag.[cite: 3]"
+                    },
+                    challenge: {
+                        title: "JSON Export",
+                        desc: "Write a script that exports an affiliate catalog tracking array configuration cleanly into a local text storage file named output.json.[cite: 3]",
+                        initialCode: 'import json\ncatalog = [{"id": 1, "item": "Laptop"}]\n# write catalog to output.json using json.dumps',
+                        expectedRegex: /json\.dumps/is,
+                        successMsg: "JSON exported perfectly!"
+                    }
+                },
+                {
+                    id: 7, title: "Object Oriented Programming (OOP)",
+                    lessons: [
+                        {
+                            title: "Classes and Objects",
+                            content: `Object-Oriented Programming (OOP) is a software design pattern that structures code into modular components.[cite: 3]<br>Think of a Class as an architectural blueprint for a smart home, and an Object as the physical house built using that blueprint.[cite: 3]`
+                        },
+                        {
+                            title: "OOP Pillars",
+                            content: `<ul>
+                                <li>Inheritance lets a new class inherit attributes and methods from an existing one, making it easy to extend functionality without rewriting code.[cite: 3]</li>
+                                <li>Polymorphism allows different classes to share the same method names but implement their logic differently.[cite: 3]</li>
+                                <li>Encapsulation restricts direct access to an object's internal data.[cite: 3]</li>
+                                <li>Abstraction hides complex implementation details and only exposes the essential interface features needed to interact with an object.[cite: 3]</li>
+                            </ul>`
+                        }
+                    ],
+                    quiz: {
+                        question: "What concept restricts direct access to an object's internal data?[cite: 3]",
+                        options: ["Inheritance", "Polymorphism", "Encapsulation", "Abstraction"],
+                        answer: 2,
+                        explanation: "Encapsulation restricts direct access to an object's internal data.[cite: 3]"
+                    },
+                    challenge: {
+                        title: "BankAccount Class",
+                        desc: "Design a BankAccount class with encapsulated balances, exposing secure methods to handle deposit() and withdraw() operations.[cite: 3]",
+                        initialCode: 'class BankAccount:\n    def __init__(self):\n        self._balance = 0\n    # create deposit and withdraw methods\n',
+                        expectedRegex: /def deposit.+def withdraw/is,
+                        successMsg: "Excellent encapsulated object design!"
+                    }
+                },
+                {
+                    id: 8, title: "Advanced Python",
+                    lessons: [
+                        {
+                            title: "Decorators & Generators",
+                            content: `Decorators modify the behavior of a function without changing its underlying source code.[cite: 3]<br>They are highly effective for logging events or enforcing security permissions across backend web applications.[cite: 3]<br>Generators use the yield keyword to return values one at a time.[cite: 3]<br>This keeps memory usage low because values are generated on the fly, rather than loading large datasets into RAM all at once.[cite: 3]`
+                        }
+                    ],
+                    quiz: {
+                        question: "What keyword do Generators use to return values one at a time to keep memory usage low?[cite: 3]",
+                        options: ["return", "yield", "pass", "break"],
+                        answer: 1,
+                        explanation: "Generators use the yield keyword to return values one at a time.[cite: 3]"
+                    },
+                    challenge: {
+                        title: "Log Generator",
+                        desc: "Create a generator function stream_logs() that yields 3 lines of mock data sequentially.",
+                        initialCode: 'def stream_logs():\n    # yield rows\n    pass\n\nfor log in stream_logs():\n    print(log)',
+                        expectedRegex: /yield/is,
+                        successMsg: "Memory-efficient generator created!"
+                    }
+                },
+                {
+                    id: 9, title: "Databases",
+                    lessons: [
+                        {
+                            title: "SQL & MySQL",
+                            content: `Structured Query Language (SQL) is the global standard for interacting with relational database systems like MySQL and PostgreSQL.[cite: 3]<br>CRUD represents the four essential database actions: Create, Read, Update, and Delete.[cite: 3]`
+                        }
+                    ],
+                    quiz: {
+                        question: "What does the 'U' in CRUD stand for?[cite: 3]",
+                        options: ["Uniform", "Update", "Upload", "Under"],
+                        answer: 1,
+                        explanation: "CRUD represents the four essential database actions: Create, Read, Update, and Delete.[cite: 3]"
+                    },
+                    challenge: {
+                        title: "SQL Insert Query",
+                        desc: "Write an operational connection pipeline script that inserts a record for a new affiliate product item into an inventory tracking table using a clean, parametrized SQL query expression.[cite: 3]",
+                        initialCode: '# Write an INSERT SQL statement as a string\nsql_query = ""',
+                        expectedRegex: /INSERT INTO/i,
+                        successMsg: "Secure database query constructed!"
+                    }
+                },
+                {
+                    id: 10, title: "Python Automation",
+                    lessons: [
+                        {
+                            title: "Automation & Web Scraping",
+                            content: `Automation is about replacing repetitive digital tasks with fast, efficient scripts that run without manual intervention.[cite: 3]<br>Web scraping allows you to pull real-time data directly from target websites, which is useful for tasks like competitive price monitoring.[cite: 3]<br>Affiliate systems scrape e-commerce catalogs daily to verify tracking code validations and update dynamic product pricing tables across user dashboards.[cite: 3]`
+                        }
+                    ],
+                    quiz: {
+                        question: "What is web scraping useful for according to the text?[cite: 3]",
+                        options: ["Designing UI", "Competitive price monitoring", "Database indexing", "Memory management"],
+                        answer: 1,
+                        explanation: "Web scraping allows you to pull real-time data directly from target websites, which is useful for tasks like competitive price monitoring.[cite: 3]"
+                    },
+                    challenge: {
+                        title: "Scraper Logic",
+                        desc: "Import requests and BeautifulSoup, then fetch a URL to print its title.",
+                        initialCode: 'import requests\nfrom bs4 import BeautifulSoup\n# fetch and parse logic here',
+                        expectedRegex: /requests\.get.+BeautifulSoup/is,
+                        successMsg: "Automation pipeline simulated!"
+                    }
+                },
+                {
+                    id: 11, title: "Python Cybersecurity",
+                    lessons: [
+                        {
+                            title: "Hacking & Passwords",
+                            content: `Ethical hacking involves testing networks and systems for vulnerabilities to help fix security flaws before malicious hackers can exploit them.[cite: 3]<br>Never use the standard random module for security-sensitive tasks like generating tokens or passwords.[cite: 3]<br>It creates predictable patterns that attackers can crack.[cite: 3]<br>Always use secrets instead![cite: 3]`
+                        }
+                    ],
+                    quiz: {
+                        question: "Which module should you ALWAYS use for generating secure passwords?[cite: 3]",
+                        options: ["random", "math", "secrets", "os"],
+                        answer: 2,
+                        explanation: "Always use secrets instead![cite: 3]"
+                    },
+                    challenge: {
+                        title: "Secure Key Gen",
+                        desc: "Use the secrets module to generate a highly secure random token string.",
+                        initialCode: 'import secrets\n# generate and print a secure token',
+                        expectedRegex: /secrets\./is,
+                        successMsg: "Cryptographically secure key generated![cite: 3]"
+                    }
+                },
+                {
+                    id: 12, title: "Python Web Development",
+                    lessons: [
+                        {
+                            title: "Backend & Full Stack",
+                            content: `The backend is the hidden engine room of a web application.[cite: 3]<br>It handles data processing, manages database transactions, and enforces access control and security protocols.[cite: 3]<br>Full-stack development means building both layers of an application: the user-facing interface (Frontend UI) and the behind-the-scenes data systems (Backend engine architecture).[cite: 3]`
+                        },
+                        {
+                            title: "Frameworks & APIs",
+                            content: `Modern web applications rely on REST APIs to exchange data seamlessly between the user's browser and the backend servers using JSON formatting.[cite: 3]<br>Flask is a lightweight, easy-to-use micro-framework designed for building web applications quickly and with minimal setup.[cite: 3]<br>Django is a feature-rich, high-level framework that provides built-in tools for user authentication, database management, and security, making it perfect for complex enterprise applications.[cite: 3]`
+                        }
+                    ],
+                    quiz: {
+                        question: "Which framework is described as 'feature-rich, high-level' and perfect for complex enterprise applications?[cite: 3]",
+                        options: ["Flask", "React", "Django", "Spring"],
+                        answer: 2,
+                        explanation: "Django is a feature-rich, high-level framework... perfect for complex enterprise applications.[cite: 3]"
+                    },
+                    challenge: {
+                        title: "Flask API Endpoint",
+                        desc: "Write a simple Flask route using @app.route('/api') that returns a JSON response.",
+                        initialCode: 'from flask import Flask, jsonify\napp = Flask(__name__)\n\n# Create route here',
+                        expectedRegex: /@app\.route.+jsonify/is,
+                        successMsg: "API Endpoint configured securely!"
+                    }
+                },
+                {
+                    id: 13, title: "Full Stack Roadmap",
+                    lessons: [
+                        {
+                            title: "The 6 Steps",
+                            content: `
+                            1. Step 1: Core Fundamentals: Master HTML5 for page layouts, CSS3 for styling, and vanilla JavaScript (ES6+) to build responsive, interactive user experiences.[cite: 3]<br>
+                            2. Step 2: Version Control: Learn Git and GitHub to manage your code history, collaborate with teams, and deploy open-source repositories safely.[cite: 3]<br>
+                            3. Step 3: Advanced Python Mastery: Deep dive into Object-Oriented Programming (OOP), file operations, data manipulation, and working with external APIs.[cite: 3]<br>
+                            4. Step 4: Database Proficiency: Master relational database principles using SQL, and practice managing data tables in systems like MySQL or PostgreSQL.[cite: 3]<br>
+                            5. Step 5: Framework Specialization: Start with Flask to learn the basics of routing, then scale up to Django to build secure, production-ready enterprise systems.[cite: 3]<br>
+                            6. Step 6: Production Deployment: Learn to containerize applications with Docker, and practice hosting projects live on cloud platforms like AWS, Render, or Heroku.[cite: 3]
+                            `
+                        }
+                    ],
+                    quiz: {
+                        question: "In Step 6, what tool is used to containerize applications?[cite: 3]",
+                        options: ["Git", "Docker", "AWS", "MySQL"],
+                        answer: 1,
+                        explanation: "Learn to containerize applications with Docker...[cite: 3]"
+                    },
+                    challenge: null
+                },
+                {
+                    id: 14, title: "Capstone Projects",
+                    lessons: [
+                        {
+                            title: "Project Scope Overview",
+                            content: `Build an application that connects directly to a MySQL data store, providing a clean interface to register new students, update database records, and calculate grade metrics.[cite: 3]<br>Develop a program that combines web scraping tools to monitor affiliate products, runs basic data analysis on pricing trends, and sends automated email updates using smtplib.[cite: 3]`
+                        }
+                    ],
+                    quiz: {
+                        question: "Which module is used to send automated email updates?[cite: 3]",
+                        options: ["openpyxl", "requests", "smtplib", "bs4"],
+                        answer: 2,
+                        explanation: "...sends automated email updates using smtplib.[cite: 3]"
+                    },
+                    challenge: null
+                },
+                {
+                    id: 15, title: "Interview & Career Preparation",
+                    lessons: [
+                        {
+                            title: "Interview Tips",
+                            content: `Avoid staying quiet during technical interviews.[cite: 3]<br>Interviewers want to understand how you think.[cite: 3]<br>Talk through your problem-solving process out loud as you write your code on the whiteboard.[cite: 3]`
+                        },
+                        {
+                            title: "Resume & GitHub",
+                            content: `Highlight measurable engineering achievements rather than just listing responsibilities.[cite: 3]<br>Instead of writing "Built a web scraper," write "Engineered an automated data extraction script using Python that improved data gathering efficiency by 40%."[cite: 3]<br>Provide clear documentation in a README.md file for every project repository, outlining setup steps, dependencies, and architectural choices so other developers can follow your work.[cite: 3]`
+                        },
+                        {
+                            title: "Final Mentor Words",
+                            content: `Becoming an elite Full Stack Developer isn't about memorizing everything.[cite: 3]<br>It's about building your problem-solving skills, staying curious, and writing code every single day.[cite: 3]<br>Trust your progress, keep building, and enjoy the journey![cite: 3]`
+                        }
+                    ],
+                    quiz: {
+                        question: "What is better on a resume according to the text?[cite: 3]",
+                        options: ["Listing generic responsibilities", "Highlighting measurable engineering achievements", "Keeping it under 1 page", "Including a photo"],
+                        answer: 1,
+                        explanation: "Highlight measurable engineering achievements rather than just listing responsibilities.[cite: 3]"
+                    },
+                    challenge: null
                 }
-                if (i % 4 === 0) AudioEngine.playType();
-                UI.typingTimer = setTimeout(type, 15);
-            } else {
-                if(callback) callback();
+            ],
+            projects: [
+                { title: "Command Line Calculator", desc: "Build a basic mathematical tool that takes numbers from user prompts, executes mathematical logic using conditional statements, and displays formatted results to the terminal window.[cite: 3]" },
+                { title: "To-Do Management App", desc: "Create a task tracker script that stores user-submitted entries in a local text file, allowing users to view, update, and manage tasks across application restarts.[cite: 3]" },
+                { title: "Encrypted Password Manager", desc: "Develop a tool that encrypts user credentials securely using the cryptography module and saves them into a local JSON storage file.[cite: 3]" },
+                { title: "Relational Student Database", desc: "Build an application that connects directly to a MySQL data store, providing a clean interface to register new students, update database records, and calculate grade metrics.[cite: 3]" },
+                { title: "Live Weather Dashboard API", desc: "Create a script that requests current atmospheric data from an external platform like OpenWeatherMap using the requests module, parses the JSON payload, and highlights important alerts.[cite: 3]" },
+                { title: "Portfolio Website Backend API", desc: "Build a Flask application that serves your professional project directory and routes contact forms securely into an administrative database.[cite: 3]" },
+                { title: "Multi-User Blog System", desc: "Create a robust Django web platform complete with secure user login systems, relational data structures for posts, and a public dashboard interface for readers.[cite: 3]" },
+                { title: "Real-Time Chat Application", desc: "Build a chat room application that enables instant, two-way communication between users by combining Django with WebSockets via Django Channels.[cite: 3]" },
+                { title: "AI-Powered Price Tracker", desc: "Develop a program that combines web scraping tools to monitor affiliate products, runs basic data analysis on pricing trends, and sends automated email updates using smtplib.[cite: 3]" }
+            ],
+            interviewQs: [
+                { q: "What is the primary operational difference between Lists and Tuples?[cite: 3]", a: "Lists are mutable (can be changed and expanded), while Tuples are immutable (cannot be altered after creation), making them faster and more memory-efficient.[cite: 3]" },
+                { q: "How does memory management work in Python?[cite: 3]", a: "Python manages memory automatically through an internal engine components called a Garbage Collector, which tracks references and clears unused objects from RAM.[cite: 3]" }
+            ]
+        };
+
+        /* --- STATE MANAGEMENT --- */
+        let state = {
+            xp: 0,
+            level: 1,
+            completedModules: [],
+            completedQuizzes: [],
+            completedChallenges: [],
+            theme: 'dark',
+            notes: ''
+        };
+
+        const levels = ["Python Beginner", "Python Explorer", "Python Apprentice", "Python Developer", "Python Engineer", "Full Stack Hero"];
+
+        function loadState() {
+            const saved = localStorage.getItem('pythonAlchemyState');
+            if(saved) state = JSON.parse(saved);
+            applyTheme();
+            updateDashboardUI();
+        }
+
+        function saveState() {
+            localStorage.setItem('pythonAlchemyState', JSON.stringify(state));
+            updateDashboardUI();
+        }
+
+        function resetProgress() {
+            if(confirm("Are you sure you want to reset all progress? This cannot be undone.")) {
+                localStorage.removeItem('pythonAlchemyState');
+                location.reload();
             }
         }
-        type();
-    }
-};
 
-/**
- * =========================================================
- * STORY ENGINE & NARRATIVE DATA
- * =========================================================
- */
-const StoryNodes = {
-    "prologue_start": {
-        chapter: "Prologue", time: "03:47 AM",
-        text: "Your phone wakes you at 3:47 AM.<br><br>Not an alarm. Not a call. A text from a number you don't recognise — eleven digits, no country code, no name. The screen glows in the dark of your flat in Koramangala. Your ceiling fan hums. Somewhere outside, a dog barks twice and stops.",
-        onEnter: () => {
-            Engine.addMessage("Unknown Sender", "He told us you'd delete this. Don't. Your brother didn't fall.");
-            Engine.addJournal("Received a strange text at 3:47 AM claiming Arjun's death wasn't an accident.");
-        },
-        choices: [ { text: "Read the message on your Phone.", next: "prologue_read" } ]
-    },
-    "prologue_read": {
-        chapter: "Prologue", time: "03:49 AM",
-        text: "You sit up. Your mouth is dry.<br><br>Your brother Arjun died eight months ago. The police report said he fell from the terrace of his apartment building in Whitefield. Sixth floor. The investigation lasted eleven days and was closed with a single word: accidental.<br><br>You believed them. You had no reason not to.",
-        choices: [
-            { text: "Reply: 'Who is this?'", next: "prologue_reply" },
-            { text: "Put the phone away and try to sleep.", next: "prologue_ignore" }
-        ]
-    },
-    "prologue_reply": {
-        chapter: "Prologue", time: "03:51 AM",
-        text: "You stare at the message until the screen dims. Then you type back: 'Who is this?'<br><br>Three dots appear. Then they vanish. No reply comes.<br><br>You don't sleep again.",
-        onEnter: () => Engine.addMessage("You", "Who is this?", false),
-        choices: [ { text: "Wait until morning.", next: "ch1_start" } ]
-    },
-    "prologue_ignore": {
-        chapter: "Prologue", time: "05:00 AM",
-        text: "You try to close your eyes, but the words burn in your mind. 'Your brother didn't fall.'<br><br>You don't sleep again.",
-        choices: [ { text: "Wait until morning.", next: "ch1_start" } ]
-    },
-    "ch1_start": {
-        chapter: "Chapter 1", time: "09:12 AM",
-        text: "You go to the building. Arjun's building. You tell yourself it's just to look.<br><br>The security guard at the gate is new. He lets you sign in without asking why. The visitor log has your name in it already. You didn't write it.<br><br>You ask him about this. He says, quietly, 'Sir wrote your name last week. Said his sister would come.'<br><br>Sir. Arjun. Last week. Eight months after he died.",
-        onEnter: () => Engine.addEvidence("visitor_log", "Visitor Log", "Arjun wrote my name in the security log a week ago. 8 months after his death."),
-        choices: [ { text: "Take the lift to his floor.", next: "ch1_door" } ]
-    },
-    "ch1_door": {
-        chapter: "Chapter 1", time: "09:15 AM",
-        text: "You take the lift to the sixth floor. The door to his flat is sealed with police tape. Nobody has touched this place. And yet, slid under the door, there is an envelope.<br><br>Cream-coloured. No stamp. Your name written on the front in his handwriting.",
-        choices: [ { text: "Open the envelope.", next: "ch1_note" } ]
-    },
-    "ch1_note": {
-        chapter: "Chapter 1", time: "09:16 AM",
-        text: "'Priya. Don't go to the police. They are the problem. Go to the parking lot on level B2. White Honda City, KA-03-MF-4421. The man inside is the only one who knows everything. Tell him I sent you. He will be afraid. That's okay. So am I.'",
-        onEnter: () => Engine.addEvidence("arjun_note", "Arjun's Letter", "Instructs me to find a man in a white Honda City on level B2. Warns against police."),
-        choices: [
-            { text: "Go down to level B2.", next: "ch1_parking" },
-            { text: "Take the note straight to the police.", next: "police_bad_end" }
-        ]
-    },
-    "ch1_parking": {
-        chapter: "Chapter 1", time: "09:20 AM",
-        text: "Your hands are shaking when you reach B2. The car is there. The engine is off. The windows are fogged. You tap on the glass and a man inside flinches so hard he hits the steering wheel.<br><br>He rolls down the window two inches and stares at you with red, hollow eyes.",
-        choices: [ { text: "Tell him Arjun sent you.", next: "ch2_start" } ]
-    },
-    "ch2_start": {
-        chapter: "Chapter 2", time: "09:40 AM",
-        text: "His name is Vikram Nair. He speaks in a low, careful voice.<br><br>He tells you that six weeks before Arjun died, they discovered something inside their company's internal data pipeline. State land records were being maliciously modified for shell companies owned by 'untouchable' politicians.",
-        onEnter: () => Engine.addJournal("Met Vikram. Discovered Arjun found massive land record corruption involving powerful politicians."),
-        choices: [ { text: "Ask what happened next.", next: "ch2_drive" } ]
-    },
-    "ch2_drive": {
-        chapter: "Chapter 2", time: "09:45 AM",
-        text: "'Arjun made copies,' Vikram says. 'Three weeks later, he was dead.'<br><br>Vikram reaches under the seat and pulls out a small hard drive in a ziplock bag. 'Arjun made me promise to give this only to you.'",
-        choices: [
-            { text: "Take the hard drive.", next: "ch2_surveillance" },
-            { text: "Refuse. 'It's too dangerous.'", next: "vikram_bad_end" }
-        ]
-    },
-    "ch2_surveillance": {
-        chapter: "Chapter 2", time: "09:47 AM",
-        text: "You take the drive.<br><br>'They're watching me,' Vikram says. 'I think they're watching you now too.'<br><br>You look in the side mirror. At the far end of the parking level, a man in a grey shirt is leaning against a pillar, looking directly at you.",
-        isScary: true,
-        onEnter: () => {
-            gameState.threatLevel = 25;
-            Engine.addEvidence("hard_drive", "Encrypted Hard Drive", "Given by Vikram. Contains the corruption files.");
-        },
-        choices: [ { text: "Leave quickly.", next: "ch3_start" } ]
-    },
-    "ch3_start": {
-        chapter: "Chapter 3", time: "11:00 PM",
-        text: "You buy a burner laptop with cash and take a different route home.<br><br>The drive is password-protected. You try his birthday, your mother's name. Nothing. Then you remember: Arjun used to hide things in plain sight. The old Wi-Fi password from 10 years ago.",
-        choices: [ { text: "Type: Priya1994koramangala", next: "ch3_inside" } ]
-    },
-    "ch3_inside": {
-        chapter: "Chapter 3", time: "11:30 PM",
-        text: "The drive opens. Inside: 847 files. Spreadsheets, PDFs. And a video file, dated the night before he died, titled simply: 'for you.'<br><br>You press play. Arjun is sitting at his desk. He looks thin, but his voice is steady.",
-        choices: [ { text: "Watch the video.", next: "ch3_video" } ]
-    },
-    "ch3_video": {
-        chapter: "Chapter 3", time: "11:35 PM",
-        text: "'Priya. What happened to me was not an accident. I need you to survive. Find the journalist — her name is Sana Mirza in the CONTACTS folder. Give her the drive. Then disappear for a while. Go to Amma's house. Don't trust anyone else.'<br><br>He leans close. 'The man who gave the order has his name in the last file. He is not untouchable.'",
-        onEnter: () => Engine.addJournal("Arjun's video told me to find a journalist named Sana Mirza and to trust no one else."),
-        choices: [ { text: "Close the laptop.", next: "ch3_threat" } ]
-    },
-    "ch3_threat": {
-        chapter: "Chapter 3", time: "11:45 PM",
-        text: "WE KNOW YOU HAVE THE DRIVE. YOU HAVE 24 HOURS TO RETURN IT AND FORGET EVERYTHING. AFTER THAT, WE STOP ASKING NICELY.",
-        isScary: true,
-        onEnter: () => {
-            gameState.threatLevel = 100; // Critical Threat
-            Engine.addMessage("Unknown Sender", "We know you have the drive. You have 24 hours to return it. After that, we stop asking nicely.");
-        },
-        choices: [
-            { text: "Follow Arjun's instruction: Contact Sana.", next: "ch4_start" },
-            { text: "Destroy the drive to protect your family.", next: "destroy_bad_end" }
-        ]
-    },
-    "ch4_start": {
-        chapter: "Chapter 4", time: "07:15 AM",
-        text: "You write to Sana Mirza. She replies naming a loud coffee shop. 'Come alone.'<br><br>She sits across from you. She looks at you the way a doctor looks at a patient. 'You look exactly like him.'",
-        onEnter: () => { gameState.threatLevel = 50; },
-        choices: [ { text: "Show her the drive.", next: "ch4_convo" } ]
-    },
-    "ch4_convo": {
-        chapter: "Chapter 4", time: "07:20 AM",
-        text: "'Before I take that,' Sana says, 'I need you to understand. Once this story is published, there is no undoing it. They will come after people around you. I need to know you have thought about that.'",
-        choices: [
-            { text: "'I've thought about it. Do it.' (Share Evidence)", next: "ch4_publish" },
-            { text: "'I can't risk my mother. I'm keeping the names hidden.'", next: "coward_end" }
-        ]
-    },
-    "ch4_publish": {
-        chapter: "Chapter 4", time: "07:30 AM",
-        text: "You think of Arjun on the video. You think of a man waiting in a parking lot because a dead man asked him to. <br><br>'He spent the last six weeks of his life trying to make sure this reached you,' you say. 'I'm not going to be the reason it didn't.'<br><br>She picks up the drive.",
-        onEnter: () => { gameState.threatLevel = 0; },
-        choices: [ { text: "Wait for publication.", next: "ch5_start" } ]
-    },
-    "ch5_start": {
-        chapter: "Epilogue", time: "Day 47",
-        text: "Sana's team works for eleven days. On the twelfth day, the story drops. Names, shell companies, the untouchables laid bare.<br><br>By noon, arrests are made. By evening, the man who ordered the hit is trending globally. Your mother calls, crying tears of relief. They know it wasn't an accident.",
-        choices: [ { text: "Visit Arjun's apartment one last time.", next: "ch5_end" } ]
-    },
-    "ch5_end": {
-        chapter: "Epilogue", time: "Day 47",
-        text: "You go back to the sixth floor. The flat is cleared out. On your way out, you notice something scratched into the doorframe in his neat handwriting:<br><br>'Truth is not brave. Silence is the coward. — A.M.'<br><br>You photograph it. Sana publishes it. That night, you sleep through until morning. The silence feels like yours.",
-        choices: [ { text: "END GAME", next: "credits" } ]
-    },
-    "police_bad_end": {
-        chapter: "Ending", time: "--:--",
-        text: "You take the note to the police. The inspector smiles, takes the note, and asks you to wait in an interrogation room. You wait for hours. When you try the door, it's locked. The men who took Arjun have found you.",
-        isScary: true,
-        choices: [ { text: "RESTART", next: "prologue_start" } ]
-    },
-    "vikram_bad_end": {
-        chapter: "Ending", time: "--:--",
-        text: "You refuse the drive. Two days later, Vikram is found dead in his car. The police rule it a suicide. The truth dies with him.",
-        isScary: true,
-        choices: [ { text: "RESTART", next: "prologue_start" } ]
-    },
-    "destroy_bad_end": {
-        chapter: "Ending", time: "--:--",
-        text: "Terrified by the threat, you smash the hard drive and throw the pieces into a river. Your family is safe, but the guilt of letting Arjun's murderers walk free haunts you forever.",
-        choices: [ { text: "RESTART", next: "prologue_start" } ]
-    },
-    "coward_end": {
-        chapter: "Ending", time: "--:--",
-        text: "You withhold the files containing the powerful names. Sana publishes a watered-down story. Prism Solutions faces a fine, but the politicians walk free. Arjun's death remains an 'accident'.",
-        choices: [ { text: "RESTART", next: "prologue_start" } ]
-    },
-    "credits": {
-        chapter: "Ending: Truth Wins", time: "--:--",
-        text: "Thank you for playing ECHO-7.<br><br>Truth is not brave. Silence is the coward.",
-        choices: [ { text: "MAIN MENU", next: "return_menu" } ]
-    },
-    "return_menu": {
-        onEnter: () => { window.location.reload(); }
-    }
-};
+        function addXP(amount, reason) {
+            state.xp += amount;
+            let newLevel = Math.floor(state.xp / 100) + 1;
+            if(newLevel > 6) newLevel = 6;
+            
+            if(newLevel > state.level) {
+                state.level = newLevel;
+                showToast(`Level Up! You are now a ${levels[state.level-1]}! (+${amount} XP) 🚀`);
+            } else {
+                showToast(`Earned ${amount} XP for ${reason}! ⭐`);
+            }
+            saveState();
+        }
 
-const StoryEngine = {
-    renderNode(nodeId, skipType = false) {
-        gameState.currentNode = nodeId;
-        const node = StoryNodes[nodeId];
-        
-        if (node.onEnter) node.onEnter();
+        /* --- UI NAVIGATION & RENDERING --- */
+        function navigate(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            event.currentTarget.classList.add('active');
 
-        gameState.chapter = node.chapter || gameState.chapter;
-        gameState.time = node.time || gameState.time;
-        UI.updateHUD();
+            if(sectionId === 'roadmap') renderRoadmap();
+            if(sectionId === 'projects') renderProjects();
+            if(sectionId === 'interview') renderInterview();
+            
+            // Mobile auto-close sidebar logic could go here
+        }
 
-        const choicesContainer = document.getElementById('choices-container');
-        choicesContainer.innerHTML = ''; 
+        function updateDashboardUI() {
+            document.getElementById('dash-xp').innerText = state.xp;
+            document.getElementById('dash-level').innerText = state.level;
+            document.getElementById('dash-title').innerText = levels[state.level-1] || "Full Stack Hero";
+            
+            const nextLevelXp = state.level * 100;
+            document.getElementById('dash-next-xp').innerText = state.level >= 6 ? "MAX" : nextLevelXp;
+            
+            let progressPct = state.level >= 6 ? 100 : ((state.xp % 100) / 100) * 100;
+            document.getElementById('xp-progress').style.width = progressPct + '%';
 
-        if (skipType) {
-            const container = document.getElementById('story-text');
-            container.innerHTML = node.text.replace(/<br>/g, '<br>');
-            if(node.isScary) container.classList.add('glitch-text');
-            else container.classList.remove('glitch-text');
-            this.renderChoices(node.choices);
-        } else {
-            UI.typeText(node.text, node.isScary, () => {
-                this.renderChoices(node.choices);
+            document.getElementById('stat-modules').innerText = `${state.completedModules.length}/15`;
+            document.getElementById('stat-quizzes').innerText = state.completedQuizzes.length;
+            document.getElementById('stat-challenges').innerText = state.completedChallenges.length;
+            
+            const pCount = Math.min(Math.floor(state.xp / 150), 9); // mock project unlock
+            document.getElementById('stat-projects').innerText = `${pCount}/9`;
+
+            renderAchievements();
+        }
+
+        function renderAchievements() {
+            const container = document.getElementById('achievements-container');
+            container.innerHTML = '';
+            const badges = [
+                { req: state.completedModules.length > 0, icon: '📘', title: 'First Lesson' },
+                { req: state.completedQuizzes.length >= 3, icon: '🎯', title: 'Quiz Master' },
+                { req: state.completedChallenges.length >= 2, icon: '💻', title: 'Challenge Solver' },
+                { req: state.level >= 6, icon: '🦸', title: 'Full Stack Hero' }
+            ];
+            
+            badges.forEach(b => {
+                if(b.req) {
+                    container.innerHTML += `<div style="background:var(--bg-panel); border:1px solid var(--border); padding:10px 15px; border-radius:20px; display:flex; align-items:center; gap:8px;"><span>${b.icon}</span> <span style="font-size:0.9rem; font-weight:bold;">${b.title}</span></div>`;
+                }
+            });
+            if(container.innerHTML === '') container.innerHTML = '<p>Complete lessons and quizzes to earn badges!</p>';
+        }
+
+        function renderRoadmap() {
+            const container = document.getElementById('roadmap-list');
+            container.innerHTML = '';
+            sourceMaterial.modules.forEach(mod => {
+                const isCompleted = state.completedModules.includes(mod.id);
+                container.innerHTML += `
+                    <div class="roadmap-item ${isCompleted ? 'completed' : ''}" onclick="openModule(${mod.id})">
+                        <h3 style="color: ${isCompleted ? 'var(--success)' : 'var(--text-main)'}">Module ${mod.id}: ${mod.title}</h3>
+                        <p>${mod.lessons.length} lessons ${mod.quiz ? '• 1 Quiz' : ''} ${mod.challenge ? '• 1 Challenge' : ''}</p>
+                    </div>
+                `;
             });
         }
-    },
-    renderChoices(choices) {
-        const container = document.getElementById('choices-container');
-        container.innerHTML = '';
-        if(!choices) return;
-        
-        choices.forEach(c => {
-            const btn = document.createElement('button');
-            btn.className = 'choice-btn';
-            btn.innerText = c.text;
-            btn.onclick = () => {
-                AudioEngine.playType();
-                // Play heartbeat on choice selection if tension is high
-                if(gameState.threatLevel >= 50) AudioEngine.playHeartbeat();
-                this.renderNode(c.next);
-            };
-            container.appendChild(btn);
-        });
-    }
-};
 
-// Start UI Initialization
-window.onload = () => { UI.init(); };
+        function openModule(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            const view = document.getElementById('module-view');
+            view.classList.add('active');
+            
+            const mod = sourceMaterial.modules.find(m => m.id === id);
+            let html = `<h1>Module ${id}: ${mod.title}</h1>`;
+            
+            // Render Lessons
+            mod.lessons.forEach((les, idx) => {
+                html += `
+                <div class="card glass">
+                    <h2>Lesson ${idx+1}: ${les.title}</h2>
+                    <div class="lesson-content">${les.content}</div>
+                </div>`;
+            });
 
-</script>
+            // Render Quiz
+            if(mod.quiz) {
+                const isQuizDone = state.completedQuizzes.includes(id);
+                html += `
+                <div class="card glass" id="quiz-container-${id}">
+                    <h2>🧠 Knowledge Check</h2>
+                    <p>${mod.quiz.question}</p>
+                    <div style="margin-top: 15px;">
+                        ${mod.quiz.options.map((opt, i) => `
+                            <button class="quiz-option" onclick="checkQuiz(${id}, ${i})" ${isQuizDone ? 'disabled style="opacity:0.6"' : ''}>
+                                ${String.fromCharCode(65+i)}. ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="quiz-feedback-${id}" style="margin-top:15px; font-weight:bold; color:var(--success); display:${isQuizDone?'block':'none'};">
+                        ${isQuizDone ? 'Completed! ' + mod.quiz.explanation : ''}
+                    </div>
+                </div>`;
+            }
+
+            // Render Challenge
+            if(mod.challenge) {
+                const isChDone = state.completedChallenges.includes(id);
+                html += `
+                <div class="card glass">
+                    <h2>💻 Coding Challenge: ${mod.challenge.title}</h2>
+                    <p>${mod.challenge.desc}</p>
+                    <div class="playground">
+                        <div class="playground-header">
+                            <span>app.py</span>
+                            <button class="btn" style="padding: 5px 15px; font-size:0.9rem;" onclick="runCode(${id})" ${isChDone?'disabled':''}>Run Code</button>
+                        </div>
+                        <div class="playground-body">
+                            <textarea id="editor-${id}" class="code-editor">${mod.challenge.initialCode}</textarea>
+                            <div id="output-${id}" class="code-output">> Ready for execution...</div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            if(!state.completedModules.includes(id)) {
+                html += `<button class="btn" style="width:100%; margin-top:20px; font-size:1.2rem;" onclick="completeModule(${id})">Mark Module Complete (+50 XP)</button>`;
+            } else {
+                html += `<div style="text-align:center; padding:20px; color:var(--success); font-weight:bold;">Module Completed! 🎉</div>`;
+            }
+
+            document.getElementById('module-content').innerHTML = html;
+        }
+
+        /* --- INTERACTION LOGIC --- */
+        function checkQuiz(modId, selectedIdx) {
+            const mod = sourceMaterial.modules.find(m => m.id === modId);
+            const feedback = document.getElementById(`quiz-feedback-${modId}`);
+            
+            if(selectedIdx === mod.quiz.answer) {
+                feedback.innerHTML = `Correct! ${mod.quiz.explanation}`;
+                feedback.style.color = 'var(--success)';
+                feedback.style.display = 'block';
+                
+                if(!state.completedQuizzes.includes(modId)) {
+                    state.completedQuizzes.push(modId);
+                    addXP(20, "Quiz Completed");
+                }
+                // visual update options
+                const container = document.getElementById(`quiz-container-${modId}`);
+                const btns = container.querySelectorAll('.quiz-option');
+                btns[selectedIdx].classList.add('correct');
+                btns.forEach(b => b.disabled = true);
+            } else {
+                feedback.innerText = "Incorrect. Try again!";
+                feedback.style.color = 'var(--danger)';
+                feedback.style.display = 'block';
+                const container = document.getElementById(`quiz-container-${modId}`);
+                container.querySelectorAll('.quiz-option')[selectedIdx].classList.add('wrong');
+            }
+        }
+
+        function runCode(modId) {
+            const mod = sourceMaterial.modules.find(m => m.id === modId);
+            const code = document.getElementById(`editor-${modId}`).value;
+            const output = document.getElementById(`output-${modId}`);
+            
+            output.innerText = "> Executing...\n";
+            
+            setTimeout(() => {
+                if(mod.challenge.expectedRegex.test(code)) {
+                    output.innerText += "> Success!\n" + mod.challenge.successMsg;
+                    output.style.color = "var(--success)";
+                    if(!state.completedChallenges.includes(modId)) {
+                        state.completedChallenges.push(modId);
+                        addXP(50, "Challenge Completed");
+                    }
+                } else {
+                    output.innerText += "> SyntaxError or LogicError: Structural command mismatch.[cite: 3]\n> Try again or check the requirements.";
+                    output.style.color = "var(--danger)";
+                }
+            }, 600);
+        }
+
+        function completeModule(id) {
+            if(!state.completedModules.includes(id)) {
+                state.completedModules.push(id);
+                addXP(50, "Module Completed");
+                navigate('roadmap');
+            }
+        }
+
+        function renderProjects() {
+            const container = document.getElementById('projects-list');
+            container.innerHTML = '';
+            sourceMaterial.projects.forEach((proj, idx) => {
+                const unlocked = state.level >= Math.floor(idx/2) + 1;
+                container.innerHTML += `
+                    <div class="card glass stat-card" style="opacity: ${unlocked ? '1' : '0.5'}">
+                        <h3>${proj.title}</h3>
+                        <p style="font-size:0.9rem; margin-top:10px; text-align:left;">${proj.desc}</p>
+                        ${unlocked ? '<button class="btn btn-outline" style="margin-top:15px; width:100%;">View Blueprint</button>' : '<p style="color:var(--danger); font-size:0.8rem; margin-top:15px;">🔒 Level '+(Math.floor(idx/2)+1)+' Required</p>'}
+                    </div>
+                `;
+            });
+        }
+
+        function renderInterview() {
+            const container = document.getElementById('interview-list');
+            container.innerHTML = '';
+            sourceMaterial.interviewQs.forEach((iq, idx) => {
+                container.innerHTML += `
+                    <div style="border-bottom:1px solid var(--border); padding:15px 0;">
+                        <h3 style="cursor:pointer;" onclick="document.getElementById('ans-${idx}').style.display='block'">Q: ${iq.q}</h3>
+                        <div id="ans-${idx}" style="display:none; margin-top:10px; color:var(--success); padding:10px; background:rgba(16,185,129,0.1); border-radius:5px;">
+                            <strong>A:</strong> ${iq.a}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        /* --- THEME & UTILITIES --- */
+        function toggleTheme() {
+            state.theme = state.theme === 'dark' ? 'light' : 'dark';
+            applyTheme();
+            saveState();
+        }
+
+        function applyTheme() {
+            document.documentElement.setAttribute('data-theme', state.theme);
+            const btn = document.getElementById('theme-toggle');
+            if(btn) btn.innerText = state.theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<span>🌟</span> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        /* --- NOTES SYSTEM --- */
+        function openNotes() {
+            document.getElementById('notes-modal').style.display = 'flex';
+            document.getElementById('notes-area').value = state.notes || '';
+        }
+
+        function closeNotes() {
+            document.getElementById('notes-modal').style.display = 'none';
+        }
+
+        function saveNotes() {
+            state.notes = document.getElementById('notes-area').value;
+            saveState();
+            closeNotes();
+            showToast("Notes saved successfully! 📝");
+        }
+
+        // Init
+        window.onload = loadState;
+
+    </script>
 </body>
 </html>
