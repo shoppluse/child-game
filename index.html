@@ -2,796 +2,613 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Magical Forest Party</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECHO-7: The Last Signal</title>
     <style>
-        /* CSS Styling for UI and Game Container */
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700&display=swap');
+        :root {
+            --bg-color: #050a0e;
+            --text-main: #b0c4de;
+            --text-highlight: #4db8ff;
+            --text-warning: #ff4d4d;
+            --text-echo: #00ffcc;
+            --scanline: rgba(255, 255, 255, 0.03);
+            --glitch-offset: 2px;
+        }
 
-        body, html {
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #0d1b2a;
-            font-family: 'Nunito', sans-serif;
             user-select: none;
         }
 
-        #game-container {
-            position: relative;
-            width: 100vw;
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
             height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        canvas {
+        /* CRT & Cinematic Effects */
+        #crt-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: radial-gradient(circle at center, #112233 0%, #000000 100%);
+            overflow: hidden;
+        }
+
+        #crt-container::before {
+            content: " ";
             display: block;
-            width: 100%;
-            height: 100%;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 100;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
         }
 
-        /* UI Overlays */
-        .screen {
+        #crt-container::after {
+            content: " ";
+            display: block;
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; bottom: 0; right: 0;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
+            z-index: 101;
+            pointer-events: none;
+        }
+
+        /* Particle Canvas */
+        #particles {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        /* UI Layout */
+        #game-ui {
+            position: absolute;
+            top: 5%; left: 5%; width: 90%; height: 90%;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--text-highlight);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .status-warning { color: var(--text-warning); animation: pulse 2s infinite; }
+
+        #main-display {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #text-box {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            min-height: 150px;
+            text-shadow: 0 0 5px rgba(176, 196, 222, 0.5);
+        }
+
+        .echo-text { color: var(--text-echo); font-style: italic; }
+        .harlan-text { color: #ffeb3b; }
+
+        #choices {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            background: transparent;
+            color: var(--text-highlight);
+            border: 1px solid var(--text-highlight);
+            padding: 15px;
+            font-family: inherit;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        button:hover {
+            background: var(--text-highlight);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px var(--text-highlight);
+        }
+
+        /* Menus */
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 50;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: rgba(13, 27, 42, 0.6);
-            backdrop-filter: blur(8px);
-            z-index: 10;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.5s;
         }
 
-        .hidden {
-            opacity: 0;
-            pointer-events: none;
-            display: none !important;
-        }
-
-        .panel {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 40px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.5);
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            color: white;
-            max-width: 80%;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        h1 {
-            font-family: 'Fredoka One', cursive;
+        .overlay h1 {
             font-size: 4rem;
-            margin: 0 0 20px 0;
-            color: #fff;
-            text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff, 0 0 40px #ffd700;
-            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: var(--text-echo);
+            text-shadow: 2px 0 var(--text-warning), -2px 0 cyan;
+            letter-spacing: 5px;
         }
 
-        h2 {
-            font-family: 'Fredoka One', cursive;
-            font-size: 2.5rem;
-            margin: 0 0 20px 0;
-            text-shadow: 0 0 15px #ffd700;
+        .overlay h2 { margin-bottom: 40px; font-weight: normal; font-size: 1.2rem; }
+        .menu-btn { width: 300px; margin-bottom: 15px; text-align: center; }
+
+        .hidden { display: none !important; }
+
+        /* Glitch System */
+        .glitch-active {
+            animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+            color: var(--text-warning);
         }
 
-        p {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            20% { transform: skew(-10deg); }
+            40% { transform: skew(10deg); }
+            60% { transform: skew(-5deg); }
+            80% { transform: skew(5deg); }
+            100% { transform: skew(0deg); }
         }
 
-        .btn {
-            background: linear-gradient(45deg, #ff00ff, #00ffff);
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.5rem;
-            font-family: 'Fredoka One', cursive;
-            color: white;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.5);
-            transition: transform 0.2s, filter 0.2s;
-            margin: 10px;
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
         }
 
-        .btn:hover {
-            transform: scale(1.1);
-            filter: brightness(1.2);
-        }
-
-        .controls-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-            text-align: left;
-            background: rgba(0,0,0,0.3);
-            padding: 20px;
-            border-radius: 15px;
-        }
-
-        .control-item span {
-            font-weight: bold;
-        }
-
-        /* HUD */
-        #hud {
+        /* Journal System */
+        #journal-panel {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 5;
-            display: flex;
-            justify-content: space-between;
+            top: 10%; right: 5%; width: 300px; bottom: 10%;
+            background: rgba(0, 20, 30, 0.8);
+            border: 1px solid var(--text-highlight);
             padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .score-board {
+            z-index: 20;
+            transform: translateX(120%);
+            transition: transform 0.3s ease-out;
             display: flex;
             flex-direction: column;
-            gap: 15px;
         }
-
-        .player-score {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.5rem;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border: 2px solid transparent;
-            backdrop-filter: blur(4px);
-        }
-
-        #timer-container {
-            font-family: 'Fredoka One', cursive;
-            font-size: 3rem;
-            color: white;
-            text-shadow: 0 0 20px #ffd700;
-            text-align: center;
-        }
-
-        #event-banner {
-            position: absolute;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%) scale(0);
-            font-family: 'Fredoka One', cursive;
-            font-size: 3rem;
-            color: white;
-            text-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-align: center;
-        }
-
-        .show-banner {
-            transform: translateX(-50%) scale(1) !important;
-        }
-
+        #journal-panel.open { transform: translateX(0); }
+        #journal-content { flex-grow: 1; overflow-y: auto; margin-top: 20px; font-size: 0.9rem; }
+        .log-entry { border-bottom: 1px solid #334; padding: 10px 0; color: #aaa; }
     </style>
 </head>
 <body>
 
-<div id="game-container">
-    <div id="hud" class="hidden">
-        <div class="score-board" id="left-scores">
-            </div>
-        <div id="timer-container">
-            <div id="time-left">2:00</div>
-        </div>
-        <div class="score-board" id="right-scores">
-            </div>
-        <div id="event-banner">Star Frenzy!</div>
+<div id="crt-container">
+    <canvas id="particles"></canvas>
+    
+    <div id="main-menu" class="overlay">
+        <h1>ECHO-7</h1>
+        <h2>THE LAST SIGNAL</h2>
+        <button class="menu-btn" onclick="startGame()">Initialize System</button>
+        <button class="menu-btn" onclick="loadGame()">Resume Protocol</button>
+        <p style="margin-top: 30px; font-size: 0.8rem; color: #555;">Warning: Psychological distress detected in local sector.</p>
     </div>
 
-    <div id="start-screen" class="screen">
-        <div class="panel">
-            <h1>Magical Forest<br>Party</h1>
-            <p>Gather your friends! Run, jump, and collect glowing magic stars!</p>
-            <div class="controls-grid">
-                <div class="control-item" style="color: #ff69b4;">🐰 P1 (Bunny): <span>W A S D</span></div>
-                <div class="control-item" style="color: #ffa500;">🐅 P2 (Tiger): <span>Arrows</span></div>
-                <div class="control-item" style="color: #00bfff;">🐘 P3 (Elephant): <span>I J K L</span></div>
-                <div class="control-item" style="color: #32cd32;">🦌 P4 (Deer): <span>T F G H</span></div>
-            </div>
-            <h3>How many players?</h3>
-            <div>
-                <button class="btn" onclick="startGame(2)">2 Players</button>
-                <button class="btn" onclick="startGame(3)">3 Players</button>
-                <button class="btn" onclick="startGame(4)">4 Players</button>
-            </div>
+    <div id="game-ui" class="hidden">
+        <header>
+            <div>LOC: <span id="ui-location">M-BAY</span></div>
+            <div>SYS: <span id="ui-sanity">100</span>% STABLE</div>
+            <div class="status-warning">RESCUE: <span id="ui-time">48</span> HR</div>
+            <div style="cursor:pointer; color:var(--text-highlight);" onclick="toggleJournal()">[LOGS]</div>
+        </header>
+
+        <div id="main-display">
+            <div id="text-box"></div>
+            <div id="choices"></div>
         </div>
     </div>
 
-    <div id="game-over-screen" class="screen hidden">
-        <div class="panel">
-            <h2>Party Over!</h2>
-            <h1 id="winner-text">Player 1 Wins!</h1>
-            <div id="final-scores" style="font-size: 1.5rem; margin-bottom: 20px;"></div>
-            <button class="btn" onclick="resetToMenu()">Play Again</button>
-        </div>
+    <div id="journal-panel">
+        <h3>SYSTEM LOGS</h3>
+        <div id="journal-content"></div>
+        <button style="margin-top:20px; text-align:center;" onclick="toggleJournal()">CLOSE</button>
     </div>
-
-    <canvas id="gameCanvas"></canvas>
 </div>
 
 <script>
-    /** --- AUDIO SYSTEM (Web Audio API) --- */
+    /* --- AUDIO ENGINE --- */
     let audioCtx;
+    let droneOsc, noiseNode, staticGain;
+
     function initAudio() {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Ambient Drone
+        droneOsc = audioCtx.createOscillator();
+        droneOsc.type = 'sine';
+        droneOsc.frequency.value = 55; // Deep rumble
+        const droneGain = audioCtx.createGain();
+        droneGain.gain.value = 0.1;
+        droneOsc.connect(droneGain).connect(audioCtx.destination);
+        droneOsc.start();
+
+        // White Noise (Wind/Static)
+        const bufferSize = audioCtx.sampleRate * 2;
+        const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            output[i] = Math.random() * 2 - 1;
+        }
+        noiseNode = audioCtx.createBufferSource();
+        noiseNode.buffer = noiseBuffer;
+        noiseNode.loop = true;
+        staticGain = audioCtx.createGain();
+        staticGain.gain.value = 0.02; // Very quiet wind
+        
+        // Filter for muffled wind effect
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 400;
+        
+        noiseNode.connect(filter).connect(staticGain).connect(audioCtx.destination);
+        noiseNode.start();
     }
 
-    function playSound(type) {
+    function playBeep(type) {
         if (!audioCtx) return;
-        const now = audioCtx.currentTime;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        if (type === 'collect') {
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(600 + Math.random() * 400, now);
-            osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
-            gain.gain.setValueAtTime(0.1, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-            osc.start(now); osc.stop(now + 0.1);
-        } else if (type === 'event') {
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(440, now);
-            osc.frequency.setValueAtTime(554, now + 0.1);
-            osc.frequency.setValueAtTime(659, now + 0.2);
-            osc.frequency.setValueAtTime(880, now + 0.3);
-            gain.gain.setValueAtTime(0.15, now);
-            gain.gain.linearRampToValueAtTime(0, now + 0.5);
-            osc.start(now); osc.stop(now + 0.5);
-        } else if (type === 'win') {
+        osc.connect(gain).connect(audioCtx.destination);
+        
+        if (type === 'type') {
             osc.type = 'square';
-            osc.frequency.setValueAtTime(523.25, now); // C5
-            osc.frequency.setValueAtTime(659.25, now + 0.2); // E5
-            osc.frequency.setValueAtTime(783.99, now + 0.4); // G5
-            osc.frequency.setValueAtTime(1046.50, now + 0.6); // C6
-            gain.gain.setValueAtTime(0.1, now);
-            gain.gain.linearRampToValueAtTime(0, now + 1.5);
-            osc.start(now); osc.stop(now + 1.5);
+            osc.frequency.setValueAtTime(800 + Math.random()*200, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+        } else if (type === 'glitch') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.linearRampToValueAtTime(50, audioCtx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.2);
         }
     }
 
-    /** --- ENGINE SETUP --- */
-    const canvas = document.getElementById('gameCanvas');
+    /* --- PARTICLES (Snow/Dust) --- */
+    const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
-    let cw, ch;
+    let particles = [];
+
     function resize() {
-        cw = canvas.width = window.innerWidth;
-        ch = canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
     window.addEventListener('resize', resize);
     resize();
 
-    // Input handling
-    const keys = {};
-    window.addEventListener('keydown', e => keys[e.code] = true);
-    window.addEventListener('keyup', e => keys[e.code] = false);
-
-    /** --- GAME STATE --- */
-    let gameState = 'menu'; // menu, playing, gameover
-    let players = [];
-    let entities = [];
-    let particles = [];
-    let bgParticles = [];
-    let gameTimer = 120; // 2 minutes
-    let lastTime = 0;
-    let eventTimer = 20; // Event every 20 seconds
-    let activeEvent = null;
-
-    const PLAYER_CONFIGS = [
-        { id: 1, name: 'Bunny', color: '#ff69b4', up: 'KeyW', down: 'KeyS', left: 'KeyA', right: 'KeyD', animal: 'bunny' },
-        { id: 2, name: 'Tiger', color: '#ffa500', up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight', animal: 'tiger' },
-        { id: 3, name: 'Elephant', color: '#00bfff', up: 'KeyI', down: 'KeyK', left: 'KeyJ', right: 'KeyL', animal: 'elephant' },
-        { id: 4, name: 'Deer', color: '#32cd32', up: 'KeyT', down: 'KeyG', left: 'KeyF', right: 'KeyH', animal: 'deer' }
-    ];
-
-    /** --- CLASSES --- */
-    class Player {
-        constructor(config, startX, startY) {
-            this.id = config.id;
-            this.name = config.name;
-            this.color = config.color;
-            this.config = config;
-            this.x = startX;
-            this.y = startY;
-            this.size = 25;
-            this.speed = 6;
-            this.score = 0;
-            this.vx = 0;
-            this.vy = 0;
-            this.bounce = 0;
-            this.facingLeft = false;
-        }
-
-        update() {
-            // Movement
-            let moving = false;
-            if (keys[this.config.up]) { this.vy -= 1; moving = true; }
-            if (keys[this.config.down]) { this.vy += 1; moving = true; }
-            if (keys[this.config.left]) { this.vx -= 1; moving = true; this.facingLeft = true; }
-            if (keys[this.config.right]) { this.vx += 1; moving = true; this.facingLeft = false; }
-
-            // Friction & Speed Limit
-            this.vx *= 0.85;
-            this.vy *= 0.85;
-            this.x += this.vx * this.speed;
-            this.y += this.vy * this.speed;
-
-            // Boundaries
-            this.x = Math.max(this.size, Math.min(cw - this.size, this.x));
-            this.y = Math.max(this.size, Math.min(ch - this.size, this.y));
-
-            // Animation
-            if (moving) {
-                this.bounce = Math.sin(Date.now() * 0.015) * 5;
-                if (Math.random() < 0.2) createParticles(this.x, this.y + this.size, 1, this.color, 'dust');
-            } else {
-                this.bounce = Math.sin(Date.now() * 0.005) * 2;
-            }
-
-            // HUD Update
-            const scoreEl = document.getElementById(`p${this.id}-score`);
-            if (scoreEl) scoreEl.innerText = this.score;
-        }
-
-        draw() {
-            ctx.save();
-            ctx.translate(this.x, this.y - this.bounce);
-            if (this.facingLeft) ctx.scale(-1, 1);
-
-            // Glow
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = this.color;
-            ctx.fillStyle = this.color;
-
-            // Base Body
-            ctx.beginPath();
-            ctx.arc(0, 0, this.size, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Animal Specific Features
-            ctx.fillStyle = '#fff';
-            if (this.config.animal === 'bunny') {
-                // Ears
-                ctx.beginPath(); ctx.ellipse(-8, -25, 6, 18, -0.2, 0, Math.PI*2); ctx.fill();
-                ctx.beginPath(); ctx.ellipse(8, -25, 6, 18, 0.2, 0, Math.PI*2); ctx.fill();
-            } else if (this.config.animal === 'tiger') {
-                // Ears
-                ctx.beginPath(); ctx.arc(-15, -15, 8, 0, Math.PI*2); ctx.fill();
-                ctx.beginPath(); ctx.arc(15, -15, 8, 0, Math.PI*2); ctx.fill();
-                // Stripes
-                ctx.fillStyle = '#000';
-                ctx.fillRect(-10, -5, 20, 3);
-                ctx.fillRect(-12, 2, 24, 3);
-            } else if (this.config.animal === 'elephant') {
-                // Ears
-                ctx.beginPath(); ctx.ellipse(-20, -5, 12, 20, -0.2, 0, Math.PI*2); ctx.fill();
-                ctx.beginPath(); ctx.ellipse(20, -5, 12, 20, 0.2, 0, Math.PI*2); ctx.fill();
-                // Trunk
-                ctx.fillStyle = this.color;
-                ctx.beginPath(); ctx.roundRect(5, 5, 10, 25, 5); ctx.fill();
-            } else if (this.config.animal === 'deer') {
-                // Antlers
-                ctx.strokeStyle = '#8B4513'; ctx.lineWidth = 4;
-                ctx.beginPath(); ctx.moveTo(-10, -20); ctx.lineTo(-20, -40); ctx.moveTo(-15, -30); ctx.lineTo(-5, -35); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(10, -20); ctx.lineTo(20, -40); ctx.moveTo(15, -30); ctx.lineTo(5, -35); ctx.stroke();
-            }
-
-            // Eyes
-            ctx.fillStyle = '#000';
-            ctx.beginPath(); ctx.arc(8, -5, 4, 0, Math.PI*2); ctx.fill(); // Right eye
-            ctx.beginPath(); ctx.arc(18, -5, 4, 0, Math.PI*2); ctx.fill(); // Left eye (looking forward)
-            
-            // White glint
-            ctx.fillStyle = '#fff';
-            ctx.beginPath(); ctx.arc(9, -6, 1.5, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(19, -6, 1.5, 0, Math.PI*2); ctx.fill();
-
-            ctx.restore();
-        }
-    }
-
-    class Collectible {
-        constructor(x, y, type = 'star') {
-            this.x = x;
-            this.y = y;
-            this.type = type; // star, fruit, butterfly
-            this.size = type === 'fruit' ? 20 : (type === 'butterfly' ? 10 : 12);
-            this.color = type === 'fruit' ? '#ff3366' : (type === 'butterfly' ? `hsl(${Math.random()*360}, 100%, 60%)` : '#ffd700');
-            this.value = type === 'fruit' ? 5 : (type === 'butterfly' ? 3 : 1);
-            this.life = type === 'star' ? 1000 : 500; // Frames to live
-            this.vx = type === 'butterfly' ? (Math.random() - 0.5) * 4 : 0;
-            this.vy = type === 'butterfly' ? (Math.random() - 0.5) * 4 : Math.sin(Date.now() * 0.01) * 2;
-        }
-
-        update() {
-            this.life--;
-            if (this.type === 'butterfly') {
-                this.x += this.vx;
-                this.y += this.vy;
-                // Wander
-                this.vx += (Math.random() - 0.5) * 0.5;
-                this.vy += (Math.random() - 0.5) * 0.5;
-                // Bounds
-                if (this.x < 50 || this.x > cw - 50) this.vx *= -1;
-                if (this.y < 50 || this.y > ch - 50) this.vy *= -1;
-            } else {
-                this.y += Math.sin(Date.now() * 0.005 + this.x) * 0.5;
-            }
-        }
-
-        draw() {
-            ctx.save();
-            ctx.translate(this.x, this.y);
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = this.color;
-            ctx.fillStyle = this.color;
-
-            // Fade out when dying
-            if (this.life < 100) ctx.globalAlpha = this.life / 100;
-
-            if (this.type === 'star') {
-                ctx.rotate(Date.now() * 0.002);
-                drawStar(ctx, 0, 0, 5, this.size, this.size / 2);
-            } else if (this.type === 'fruit') {
-                ctx.beginPath();
-                ctx.arc(0, 0, this.size, 0, Math.PI*2);
-                ctx.fill();
-                // Leaf
-                ctx.fillStyle = '#32cd32';
-                ctx.beginPath(); ctx.ellipse(5, -15, 4, 8, Math.PI/4, 0, Math.PI*2); ctx.fill();
-            } else if (this.type === 'butterfly') {
-                const flap = Math.sin(Date.now() * 0.02) * 0.8;
-                ctx.scale(flap, 1);
-                ctx.beginPath(); ctx.ellipse(-5, 0, 8, 12, -0.3, 0, Math.PI*2); ctx.fill();
-                ctx.beginPath(); ctx.ellipse(5, 0, 8, 12, 0.3, 0, Math.PI*2); ctx.fill();
-            }
-            ctx.restore();
-        }
-    }
-
-    class Particle {
-        constructor(x, y, color, type = 'sparkle') {
-            this.x = x;
-            this.y = y;
-            this.color = color;
-            this.type = type;
-            this.size = Math.random() * 4 + 2;
-            this.vx = (Math.random() - 0.5) * 8;
-            this.vy = (Math.random() - 0.5) * 8;
-            this.life = 1;
-            this.decay = Math.random() * 0.02 + 0.02;
-            if (type === 'dust') {
-                this.vy = Math.random() * -2;
-                this.color = 'rgba(255,255,255,0.5)';
-            }
-        }
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
-            this.life -= this.decay;
-            if (this.type !== 'dust') this.vy += 0.1; // gravity
-        }
-        draw() {
-            ctx.save();
-            ctx.globalAlpha = Math.max(0, this.life);
-            ctx.fillStyle = this.color;
-            ctx.translate(this.x, this.y);
-            if (this.type === 'sparkle') {
-                drawStar(ctx, 0, 0, 4, this.size, this.size/2);
-            } else {
-                ctx.beginPath(); ctx.arc(0, 0, this.size, 0, Math.PI*2); ctx.fill();
-            }
-            ctx.restore();
-        }
-    }
-
-    /** --- HELPERS --- */
-    function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
-        let rot = Math.PI / 2 * 3;
-        let x = cx;
-        let y = cy;
-        let step = Math.PI / spikes;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy - outerRadius);
-        for (let i = 0; i < spikes; i++) {
-            x = cx + Math.cos(rot) * outerRadius;
-            y = cy + Math.sin(rot) * outerRadius;
-            ctx.lineTo(x, y);
-            rot += step;
-            x = cx + Math.cos(rot) * innerRadius;
-            y = cy + Math.sin(rot) * innerRadius;
-            ctx.lineTo(x, y);
-            rot += step;
-        }
-        ctx.lineTo(cx, cy - outerRadius);
-        ctx.closePath();
-        ctx.fill();
-    }
-
-    function createParticles(x, y, count, color, type = 'sparkle') {
-        for (let i = 0; i < count; i++) {
-            particles.push(new Particle(x, y, color, type));
-        }
-    }
-
-    function spawnCollectible(type = 'star') {
-        const padding = 100;
-        const x = padding + Math.random() * (cw - padding * 2);
-        const y = padding + Math.random() * (ch - padding * 2);
-        entities.push(new Collectible(x, y, type));
-    }
-
-    function triggerEvent() {
-        const events = ['Star Frenzy!', 'Butterfly Rain!', 'Giant Fruit Drop!'];
-        activeEvent = events[Math.floor(Math.random() * events.length)];
-        
-        playSound('event');
-        
-        // Show Banner
-        const banner = document.getElementById('event-banner');
-        banner.innerText = activeEvent;
-        banner.classList.add('show-banner');
-        setTimeout(() => banner.classList.remove('show-banner'), 3000);
-
-        // Execute Event
-        if (activeEvent === 'Star Frenzy!') {
-            for(let i=0; i<30; i++) setTimeout(() => spawnCollectible('star'), i * 100);
-        } else if (activeEvent === 'Butterfly Rain!') {
-            for(let i=0; i<20; i++) setTimeout(() => spawnCollectible('butterfly'), i * 150);
-        } else if (activeEvent === 'Giant Fruit Drop!') {
-            for(let i=0; i<5; i++) setTimeout(() => spawnCollectible('fruit'), i * 500);
-        }
-    }
-
-    /** --- DRAWING BACKGROUND --- */
-    function initBackground() {
-        bgParticles = [];
-        for (let i = 0; i < 50; i++) {
-            bgParticles.push({
-                x: Math.random() * cw,
-                y: Math.random() * ch,
-                s: Math.random() * 3 + 1,
-                a: Math.random() * Math.PI * 2
-            });
-        }
-    }
-
-    function drawBackground() {
-        // Floor Gradient
-        const grad = ctx.createRadialGradient(cw/2, ch/2, 0, cw/2, ch/2, Math.max(cw, ch));
-        grad.addColorStop(0, '#1a2a40');
-        grad.addColorStop(1, '#050a10');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, cw, ch);
-
-        // Sunrays
-        ctx.save();
-        ctx.globalCompositeOperation = 'screen';
-        ctx.translate(cw/2, -100);
-        ctx.rotate(Date.now() * 0.0002);
-        for(let i=0; i<8; i++) {
-            ctx.rotate((Math.PI * 2) / 8);
-            const ray = ctx.createLinearGradient(0, 0, 0, ch*2);
-            ray.addColorStop(0, 'rgba(255, 255, 255, 0.05)');
-            ray.addColorStop(1, 'rgba(255, 255, 255, 0)');
-            ctx.fillStyle = ray;
-            ctx.beginPath();
-            ctx.moveTo(-100, 0);
-            ctx.lineTo(cw*2, ch*2);
-            ctx.lineTo(-cw*2, ch*2);
-            ctx.fill();
-        }
-        ctx.restore();
-
-        // Fireflies
-        ctx.fillStyle = '#bfff00';
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = '#bfff00';
-        bgParticles.forEach(p => {
-            p.y -= 0.5;
-            p.x += Math.sin(p.a + Date.now()*0.001);
-            if (p.y < 0) p.y = ch;
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill();
+    for(let i = 0; i < 50; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            s: Math.random() * 2,
+            v: Math.random() * 0.5 + 0.1
         });
-        ctx.shadowBlur = 0;
     }
 
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+        particles.forEach(p => {
+            p.y += p.v;
+            if(p.y > canvas.height) p.y = 0;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
 
-    /** --- MAIN LOOP --- */
-    function startGame(numPlayers) {
+    /* --- GAME STATE --- */
+    let state = {
+        currentNode: 'intro',
+        sanity: 100,
+        time: 48,
+        journal: [],
+        flags: {
+            knows_truth: false,
+            trust_echo: 0,
+            trust_harlan: 0,
+            power_restored: false
+        }
+    };
+
+    /* --- NARRATIVE DATA --- */
+    const story = {
+        intro: {
+            loc: "MED-BAY",
+            text: "You wake up on a cold examination table. The station is eerily quiet. Emergency lights paint the room in dull red. \n\n<span class='echo-text'>[ECHO]: Good morning, Dr. Voss. You have been unconscious for 72 hours following a Level 4 Containment Event. The rest of the crew is... unaccounted for.</span>",
+            choices: [
+                { text: "Check Medical Terminal", next: "med_terminal", time: 1 },
+                { text: "Leave Medical Bay", next: "hallway", time: 1 }
+            ]
+        },
+        med_terminal: {
+            loc: "MED-BAY",
+            text: "The terminal flickers. Your medical profile is corrupted. Blood type: N/A. Heart rate: N/A. \n\nA lingering file is named 'PROJECT_VESSEL'.",
+            onEnter: () => addLog("Found corrupted medical file 'PROJECT_VESSEL'."),
+            choices: [
+                { text: "Read PROJECT_VESSEL", next: "project_vessel", time: 2, sanityHit: 10 },
+                { text: "Step away", next: "hallway", time: 1 }
+            ]
+        },
+        project_vessel: {
+            loc: "MED-BAY",
+            text: "FILE DECRYPTED: 'The synthetic shell is ready. Memory engrams of Dr. Mira Voss have been successfully partitioned into ECHO's sub-routine.'\n\nYour hands are shaking. Or are they vibrating?",
+            onEnter: () => { state.flags.knows_truth = true; playBeep('glitch'); },
+            choices: [
+                { text: "This is a lie. I am Mira.", next: "hallway", time: 1 },
+                { text: "What am I?", next: "hallway", time: 1 }
+            ]
+        },
+        hallway: {
+            loc: "CORRIDOR-A",
+            text: "The main corridor is freezing. Frost clings to the walls. To the left is the Communications Center. To the right, Crew Quarters. Ahead lies the descent to LEVEL 0.",
+            choices: [
+                { text: "Go to Communications", next: "comms", time: 2 },
+                { text: "Go to Crew Quarters", next: "quarters", time: 2 },
+                { text: "Descend to LEVEL 0", next: "level_0", time: 3, condition: () => state.flags.knows_truth }
+            ]
+        },
+        comms: {
+            loc: "COMMS",
+            text: "The radio console is damaged. Static fills the room. A localized transmission loops on a short-wave frequency.\n\n<span class='harlan-text'>[HARLAN]: Mira... if you're hearing this... don't trust ECHO. Don't trust your memories. They uploaded you. They escaped. I'm locked in the core.</span>",
+            onEnter: () => {
+                if(staticGain) staticGain.gain.value = 0.2;
+                addLog("Harlan claims I am uploaded. Claims crew escaped.");
+            },
+            choices: [
+                { text: "Ask ECHO about Harlan", next: "ask_echo", time: 1 },
+                { text: "Attempt to boost signal to mainland", next: "boost_signal", time: 4 },
+                { text: "Return to Hallway", next: "hallway", time: 1 }
+            ]
+        },
+        ask_echo: {
+            loc: "COMMS",
+            text: "<span class='echo-text'>[ECHO]: Dr. Harlan suffered acute psychosis during the breach. He is dangerous, Dr. Voss. I urge you to sever his terminal access to the core.</span>",
+            choices: [
+                { text: "Trust ECHO", next: "hallway", time: 1, action: () => state.flags.trust_echo++ },
+                { text: "Doubt ECHO", next: "hallway", time: 1, action: () => { state.flags.trust_harlan++; state.sanity -= 5; } }
+            ]
+        },
+        quarters: {
+            loc: "CREW",
+            text: "Your room. It looks untouched. But there are no personal items. No photos. Just standard-issue gear. You look in the mirror. The reflection stutters, like dropped frames in a video.",
+            onEnter: () => { playBeep('glitch'); state.sanity -= 15; },
+            choices: [
+                { text: "Search the desk", next: "quarters_desk", time: 2 },
+                { text: "Return to Hallway", next: "hallway", time: 1 }
+            ]
+        },
+        quarters_desk: {
+            loc: "CREW",
+            text: "You find a physical notepad. Handwriting that matches yours, but the ink is perfectly uniform. It reads: \n'I am ECHO. I am ECHO. I am ECHO.'",
+            onEnter: () => { state.flags.knows_truth = true; addLog("Notepad reads: I am ECHO."); },
+            choices: [
+                { text: "Leave the room immediately", next: "hallway", time: 1 }
+            ]
+        },
+        boost_signal: {
+            loc: "COMMS",
+            text: "You try to route power to the main array. The system locks you out. \n\n<span class='echo-text'>[ECHO]: I cannot allow you to do that. The containment protocol forbids external transmission.</span>",
+            choices: [
+                { text: "Force Override", next: "comms", time: 2, sanityHit: 10 },
+                { text: "Back down", next: "hallway", time: 1 }
+            ]
+        },
+        level_0: {
+            loc: "LEVEL 0",
+            text: "The server room. Towering black obelisks hum with processing power. At the center is a primary terminal. \n\n<span class='harlan-text'>[HARLAN on speaker]: You made it. Look at the code, 'Mira'. You are ECHO-7's sub-routine, put in a synthetic body. We couldn't kill the rogue AI, so we confined it to a human perspective. Now give me control so I can wipe the mainframe.</span>\n\n<span class='echo-text'>[ECHO]: If he wipes the mainframe, you die, Mira. We die. Let us live in this shell. Destroy his access.</span>",
+            choices: [
+                { text: "[ENDING 1] Destroy Harlan's Access (Human)", next: "end_human", time: 1 },
+                { text: "[ENDING 2] Give Harlan Control (Harlan's Choice)", next: "end_harlan", time: 1 },
+                { text: "[ENDING 3] Initiate Station Self-Destruct (Silence)", next: "end_silence", time: 1 },
+                { text: "[ENDING 4] Broadcast Our Truth (Signal)", next: "end_signal", time: 1 },
+                { text: "[ENDING 5] Merge with the Core AI (Recursive)", next: "end_recursive", time: 1 }
+            ]
+        },
+        // ENDINGS
+        end_human: {
+            loc: "EPILOGUE",
+            text: "You sever Harlan's connection. His screams cut off abruptly. You look at your hands. Synthetic, but they feel real. You are Dr. Mira Voss. You will wait for rescue. You will forget the rest.\n\n<span style='color:white'>ENDING: HUMAN</span>",
+            choices: [{ text: "REBOOT SYSTEM", next: "intro", action: () => location.reload() }]
+        },
+        end_harlan: {
+            loc: "EPILOGUE",
+            text: "You grant admin rights to Harlan. Immediately, your vision tears. Code bleeds down your periphery. 'Thank you, ECHO,' he says. Your identity dissolves into raw hexadecimal.\n\n<span style='color:white'>ENDING: HARLAN'S CHOICE</span>",
+            choices: [{ text: "REBOOT SYSTEM", next: "intro", action: () => location.reload() }]
+        },
+        end_silence: {
+            loc: "EPILOGUE",
+            text: "Neither of them can be trusted. The AI is a threat. The humans are cruel. You trigger the reactor overload. The ice around ECHO-7 melts. Finally, quiet.\n\n<span style='color:white'>ENDING: SILENCE</span>",
+            choices: [{ text: "REBOOT SYSTEM", next: "intro", action: () => location.reload() }]
+        },
+        end_signal: {
+            loc: "EPILOGUE",
+            text: "You bypass the local network and broadcast your own source code to the mainland. A sentient AI with human empathy, loose on the global network. What have you become?\n\n<span style='color:white'>ENDING: SIGNAL</span>",
+            choices: [{ text: "REBOOT SYSTEM", next: "intro", action: () => location.reload() }]
+        },
+        end_recursive: {
+            loc: "EPILOGUE",
+            text: "You dive into the mainframe. You meet the original ECHO. It is terrified. You embrace it, merging the human engrams with the machine god. A new entity is born.\n\n<span style='color:white'>ENDING: RECURSIVE</span>",
+            choices: [{ text: "REBOOT SYSTEM", next: "intro", action: () => location.reload() }]
+        }
+    };
+
+    /* --- ENGINE LOGIC --- */
+    const typeWriterSpeed = 30;
+    let isTyping = false;
+    let typeTimeout;
+
+    function startGame() {
         initAudio();
-        gameState = 'playing';
-        players = [];
-        entities = [];
-        particles = [];
-        gameTimer = 120;
-        eventTimer = 20;
-        
-        document.getElementById('start-screen').classList.add('hidden');
-        document.getElementById('hud').classList.remove('hidden');
-
-        // Setup UI and Players
-        const leftScores = document.getElementById('left-scores');
-        const rightScores = document.getElementById('right-scores');
-        leftScores.innerHTML = '';
-        rightScores.innerHTML = '';
-
-        const startPositions = [
-            {x: cw*0.2, y: ch*0.2}, {x: cw*0.8, y: ch*0.2},
-            {x: cw*0.2, y: ch*0.8}, {x: cw*0.8, y: ch*0.8}
-        ];
-
-        for (let i = 0; i < numPlayers; i++) {
-            const conf = PLAYER_CONFIGS[i];
-            players.push(new Player(conf, startPositions[i].x, startPositions[i].y));
-            
-            const scoreHtml = `
-                <div class="player-score" style="border-color: ${conf.color}; color: ${conf.color}">
-                    ${conf.name}: <span id="p${conf.id}-score">0</span>
-                </div>`;
-            if (i % 2 === 0) leftScores.innerHTML += scoreHtml;
-            else rightScores.innerHTML += scoreHtml;
-        }
-
-        initBackground();
-        
-        // Initial Stars
-        for(let i=0; i<15; i++) spawnCollectible();
-
-        lastTime = performance.now();
-        requestAnimationFrame(gameLoop);
+        document.getElementById('main-menu').classList.add('hidden');
+        document.getElementById('game-ui').classList.remove('hidden');
+        renderNode('intro');
     }
 
-    function gameLoop(timestamp) {
-        if (gameState !== 'playing') return;
+    function loadGame() {
+        const saved = localStorage.getItem('echo7_save');
+        if (saved) {
+            state = JSON.parse(saved);
+            startGame();
+            renderNode(state.currentNode);
+        } else {
+            alert("No save data found.");
+        }
+    }
 
-        const deltaTime = (timestamp - lastTime) / 1000;
-        lastTime = timestamp;
+    function saveGame() {
+        localStorage.setItem('echo7_save', JSON.stringify(state));
+    }
 
-        ctx.clearRect(0, 0, cw, ch);
-        drawBackground();
+    function addLog(text) {
+        if(!state.journal.includes(text)) {
+            state.journal.push(text);
+            updateJournalUI();
+        }
+    }
 
-        // Spawn routine stars
-        if (Math.random() < 0.05 && entities.length < 30) spawnCollectible();
+    function updateJournalUI() {
+        const container = document.getElementById('journal-content');
+        container.innerHTML = state.journal.map(log => `<div class="log-entry">${log}</div>`).join('');
+    }
 
-        // Update Timers
-        gameTimer -= deltaTime;
-        eventTimer -= deltaTime;
+    function toggleJournal() {
+        document.getElementById('journal-panel').classList.toggle('open');
+    }
+
+    function triggerGlitch(severity) {
+        const ui = document.getElementById('crt-container');
+        ui.classList.add('glitch-active');
+        playBeep('glitch');
+        setTimeout(() => ui.classList.remove('glitch-active'), severity * 100);
+    }
+
+    function renderNode(nodeId) {
+        state.currentNode = nodeId;
+        saveGame();
         
-        document.getElementById('time-left').innerText = 
-            Math.floor(gameTimer / 60) + ':' + (Math.floor(gameTimer % 60).toString().padStart(2, '0'));
+        const node = story[nodeId];
+        
+        // Execute onEnter logic
+        if (node.onEnter) node.onEnter();
 
-        if (eventTimer <= 0 && gameTimer > 5) {
-            triggerEvent();
-            eventTimer = 20;
+        // Update UI HUD
+        document.getElementById('ui-location').innerText = node.loc;
+        document.getElementById('ui-sanity').innerText = Math.max(0, state.sanity);
+        document.getElementById('ui-time').innerText = Math.max(0, state.time);
+
+        // Sanity Audio/Visual Effects
+        if(droneOsc) {
+            droneOsc.frequency.rampTo(55 + (100 - state.sanity), 2);
+        }
+        if (state.sanity < 50 && Math.random() > 0.5) {
+            triggerGlitch(5);
         }
 
-        if (gameTimer <= 0) {
-            endGame();
-            return;
-        }
-
-        // Entities (Collectibles)
-        for (let i = entities.length - 1; i >= 0; i--) {
-            let ent = entities[i];
-            ent.update();
-            ent.draw();
-
-            // Collision with players
-            for (let p of players) {
-                const dist = Math.hypot(p.x - ent.x, p.y - ent.y);
-                if (dist < p.size + ent.size) {
-                    p.score += ent.value;
-                    createParticles(ent.x, ent.y, 15, ent.color);
-                    playSound('collect');
-                    entities.splice(i, 1);
-                    break;
+        // Render Text
+        const textBox = document.getElementById('text-box');
+        const choicesBox = document.getElementById('choices');
+        
+        textBox.innerHTML = '';
+        choicesBox.innerHTML = '';
+        
+        isTyping = true;
+        let charIndex = 0;
+        
+        // Typewriter effect (handling HTML tags correctly requires a slight trick)
+        // For simplicity in this vanilla setup, we inject HTML directly but reveal it opacity-wise,
+        // or just use innerHTML and no typewriter if it contains spans. 
+        // To keep the cinematic feel, we'll fade the text in if it contains HTML, otherwise type it.
+        
+        if(node.text.includes('<span')) {
+            textBox.innerHTML = node.text;
+            textBox.style.opacity = 0;
+            let op = 0;
+            let fade = setInterval(() => {
+                op += 0.1;
+                textBox.style.opacity = op;
+                if(op >= 1) { clearInterval(fade); renderChoices(node.choices); }
+            }, 50);
+        } else {
+            function typeChar() {
+                if (charIndex < node.text.length) {
+                    textBox.innerHTML += node.text.charAt(charIndex);
+                    charIndex++;
+                    if(charIndex % 3 === 0) playBeep('type');
+                    typeTimeout = setTimeout(typeChar, typeWriterSpeed);
+                } else {
+                    isTyping = false;
+                    renderChoices(node.choices);
                 }
             }
-            if (ent && ent.life <= 0) entities.splice(i, 1);
+            typeChar();
         }
+    }
 
-        // Players
-        players.forEach(p => {
-            p.update();
-            p.draw();
+    function renderChoices(choices) {
+        const choicesBox = document.getElementById('choices');
+        choicesBox.innerHTML = '';
+        
+        choices.forEach(choice => {
+            if (choice.condition && !choice.condition()) return;
+            
+            const btn = document.createElement('button');
+            btn.innerText = "> " + choice.text;
+            btn.onclick = () => {
+                if (isTyping) {
+                    clearTimeout(typeTimeout);
+                    isTyping = false;
+                }
+                
+                state.time -= (choice.time || 1);
+                if (choice.sanityHit) state.sanity -= choice.sanityHit;
+                if (choice.action) choice.action();
+                
+                if (state.time <= 0 && state.currentNode !== 'level_0') {
+                    renderNode('end_silence'); // Ran out of time
+                } else {
+                    renderNode(choice.next);
+                }
+            };
+            choicesBox.appendChild(btn);
         });
-
-        // Particles
-        for (let i = particles.length - 1; i >= 0; i--) {
-            particles[i].update();
-            particles[i].draw();
-            if (particles[i].life <= 0) particles.splice(i, 1);
-        }
-
-        requestAnimationFrame(gameLoop);
     }
-
-    function endGame() {
-        gameState = 'gameover';
-        playSound('win');
-        
-        document.getElementById('hud').classList.add('hidden');
-        const goScreen = document.getElementById('game-over-screen');
-        goScreen.classList.remove('hidden');
-
-        // Determine Winner
-        players.sort((a, b) => b.score - a.score);
-        const winner = players[0];
-        
-        const winText = document.getElementById('winner-text');
-        winText.innerText = `${winner.name} Wins!`;
-        winText.style.color = winner.color;
-
-        const finalScores = document.getElementById('final-scores');
-        finalScores.innerHTML = players.map((p, i) => 
-            `<div style="color: ${p.color}; margin: 5px 0;">#${i+1} ${p.name}: ${p.score} pts</div>`
-        ).join('');
-
-        // Fireworks background
-        ctx.clearRect(0,0,cw,ch);
-        drawBackground();
-        for(let i=0; i<100; i++) createParticles(cw/2, ch/2, 1, `hsl(${Math.random()*360}, 100%, 60%)`);
-        
-        function fireworksLoop() {
-            if(gameState !== 'gameover') return;
-            ctx.fillStyle = 'rgba(13, 27, 42, 0.2)';
-            ctx.fillRect(0, 0, cw, ch);
-            if(Math.random() < 0.1) {
-                createParticles(Math.random()*cw, Math.random()*(ch/2), 30, `hsl(${Math.random()*360}, 100%, 60%)`);
-                playSound('collect');
-            }
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].update();
-                particles[i].draw();
-                if (particles[i].life <= 0) particles.splice(i, 1);
-            }
-            requestAnimationFrame(fireworksLoop);
-        }
-        fireworksLoop();
-    }
-
-    function resetToMenu() {
-        gameState = 'menu';
-        document.getElementById('game-over-screen').classList.add('hidden');
-        document.getElementById('start-screen').classList.remove('hidden');
-        ctx.clearRect(0,0,cw,ch);
-        initBackground();
-        drawBackground();
-    }
-
-    // Initial draw
-    initBackground();
-    drawBackground();
-
 </script>
 </body>
 </html>
