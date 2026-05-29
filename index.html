@@ -9,13 +9,12 @@
            GLOBAL STYLING & THRILLER THEME
            ========================================================= */
         :root {
-            --bg-color: #07070a;
+            --bg-color: #050508;
             --text-main: #e2e8f0;
             --text-muted: #64748b;
             --text-accent: #38bdf8;
             --text-danger: #ef4444;
             --border-color: #1e293b;
-            --ui-bg: rgba(15, 23, 42, 0.85);
             --font-serif: 'Georgia', serif;
             --font-mono: 'Courier New', Courier, monospace;
             --font-sans: 'Arial', sans-serif;
@@ -40,13 +39,13 @@
             width: 100vw;
         }
 
-        /* Ambient FX Layer */
+        /* Ambient FX Layer (Visual only, no audio) */
         #fx-layer {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none;
             z-index: 10;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.05));
             background-size: 100% 4px, 3px 100%;
             box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
             opacity: 0.8;
@@ -55,13 +54,61 @@
         .vignette {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 50%, #000 150%);
+            background: radial-gradient(circle, transparent 40%, #000 130%);
             z-index: 9;
             pointer-events: none;
         }
 
+        /* Thriller Flash Effects */
+        #threat-flash {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(239, 68, 68, 0.4);
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .flash-anim {
+            animation: flashOut 1s ease-out;
+        }
+
+        @keyframes flashOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* Screen Shake */
+        .shake-active {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 1px, 0); }
+            20%, 80% { transform: translate3d(4px, -2px, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 3px, 0); }
+            40%, 60% { transform: translate3d(6px, -3px, 0); }
+        }
+
+        /* Glitch Text Effect */
+        .glitch-text {
+            animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+            color: var(--text-danger);
+            text-shadow: 2px 0 blue, -2px 0 red;
+            font-weight: bold;
+        }
+
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            20% { transform: skew(-10deg); }
+            40% { transform: skew(10deg); }
+            60% { transform: skew(-5deg); }
+            80% { transform: skew(5deg); }
+            100% { transform: skew(0deg); }
+        }
+
         /* =========================================================
-           SCREENS
+           SCREENS & UI
            ========================================================= */
         .screen {
             position: absolute;
@@ -85,7 +132,7 @@
             text-transform: uppercase;
             margin-bottom: 5px;
             color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
         }
         #main-menu h3 {
             font-size: 1rem;
@@ -111,18 +158,14 @@
         }
         .btn:hover, .btn:focus {
             color: #fff;
-            border-color: var(--text-muted);
-            background: rgba(255,255,255,0.05);
+            border-color: var(--text-danger);
+            background: rgba(239, 68, 68, 0.05);
             letter-spacing: 4px;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
         }
-        .btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* =========================================================
-           GAME UI
-           ========================================================= */
+        /* Game UI */
         #game-ui {
             z-index: 15;
             display: flex;
@@ -147,13 +190,7 @@
             letter-spacing: 1px;
         }
 
-        .threat-high { color: var(--text-danger); animation: pulse 2s infinite; }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
+        .threat-high { color: var(--text-danger); font-weight: bold; }
 
         #story-container {
             flex-grow: 1;
@@ -164,11 +201,11 @@
         }
 
         #story-text {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             line-height: 1.8;
             margin-bottom: 40px;
             white-space: pre-wrap;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
 
         #choices-container {
@@ -179,27 +216,34 @@
         }
 
         .choice-btn {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.7);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 15px 20px;
+            padding: 18px 20px;
             font-family: var(--font-sans);
             font-size: 1rem;
             text-align: left;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 6px;
             transition: all 0.2s;
             display: flex;
             align-items: center;
         }
         .choice-btn::before {
             content: "▸";
-            margin-right: 10px;
-            color: var(--text-accent);
+            margin-right: 12px;
+            color: var(--text-danger);
+            font-size: 1.2rem;
+            transition: transform 0.2s;
         }
         .choice-btn:hover {
-            background: var(--text-main);
-            color: var(--bg-color);
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(255,255,255,0.3);
+        }
+        .choice-btn:hover::before {
+            transform: translateX(5px);
         }
 
         footer {
@@ -219,129 +263,74 @@
             text-transform: uppercase;
             transition: color 0.3s;
         }
-        .nav-btn:hover { color: var(--text-accent); }
-        .nav-btn.alert { color: var(--text-danger); animation: pulse 1s infinite; }
+        .nav-btn:hover { color: #fff; }
+        .nav-btn.alert { color: var(--text-danger); font-weight: bold; }
 
-        /* =========================================================
-           MODALS (Phone, Evidence, Journal)
-           ========================================================= */
+        /* Modals */
         .modal {
             position: absolute;
             top: 5%; left: 50%;
             transform: translateX(-50%);
-            width: 90%; max-width: 400px;
-            height: 90%;
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
+            width: 90%; max-width: 450px;
+            height: 85%;
+            background: #0a0a0f;
+            border: 1px solid #333;
+            border-radius: 8px;
             z-index: 50;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.9);
             overflow: hidden;
         }
 
         .modal-header {
-            background: #111;
+            background: #151515;
             padding: 15px;
             text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            font-family: var(--font-sans);
+            border-bottom: 1px solid #333;
+            font-family: var(--font-mono);
             font-weight: bold;
+            color: var(--text-danger);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .close-btn {
-            background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem;
-        }
+        .close-btn { background: none; border: none; color: #fff; cursor: pointer; font-size: 1.5rem; }
+        .modal-content { flex-grow: 1; overflow-y: auto; padding: 20px; font-family: var(--font-sans); }
 
-        .modal-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 15px;
-            font-family: var(--font-sans);
-            font-size: 0.9rem;
-        }
+        .sms-bubble { max-width: 85%; padding: 12px 16px; border-radius: 12px; margin-bottom: 15px; line-height: 1.4; clear: both; }
+        .sms-received { background: #1e293b; color: #fff; float: left; border-bottom-left-radius: 2px; border-left: 2px solid var(--text-danger); }
+        .sms-sent { background: #0284c7; color: #fff; float: right; border-bottom-right-radius: 2px; }
+        .sms-sender { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; clear: both; font-family: var(--font-mono); text-transform: uppercase;}
 
-        /* Phone UI Styling */
-        .sms-bubble {
-            max-width: 80%;
-            padding: 10px 15px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            line-height: 1.4;
-            clear: both;
-        }
-        .sms-received {
-            background: #1e293b;
-            color: #fff;
-            float: left;
-            border-bottom-left-radius: 2px;
-        }
-        .sms-sent {
-            background: #0284c7;
-            color: #fff;
-            float: right;
-            border-bottom-right-radius: 2px;
-        }
-        .sms-sender { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 5px; clear: both;}
+        .evidence-card { background: #111; border: 1px solid #333; padding: 15px; margin-bottom: 10px; border-left: 3px solid #fff; }
+        .evidence-title { font-weight: bold; color: #fff; margin-bottom: 5px; font-family: var(--font-mono); }
+        .evidence-desc { color: #999; font-size: 0.9rem; line-height: 1.5; }
 
-        /* Evidence Board Styling */
-        .evidence-card {
-            background: #111;
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            border-left: 3px solid var(--text-accent);
-        }
-        .evidence-title { font-weight: bold; color: var(--text-main); margin-bottom: 5px; font-family: var(--font-mono); }
-        .evidence-desc { color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; }
-
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background: var(--text-muted); }
-
+        ::-webkit-scrollbar-thumb { background: #333; }
     </style>
 </head>
 <body>
 
-    <!-- FX Layer -->
     <div id="fx-layer"></div>
     <div class="vignette"></div>
+    <div id="threat-flash"></div>
 
-    <!-- MAIN MENU -->
     <div id="main-menu" class="screen">
         <h1>THE TRUTH</h1>
         <h3>BEHIND THE FALL</h3>
         <button class="btn" onclick="UI.startGame()">New Investigation</button>
         <button class="btn" id="btn-continue" onclick="UI.loadGame()">Continue</button>
-        <button class="btn" onclick="UI.showCredits()">Case Files (Credits)</button>
-        <div style="margin-top: 40px; font-family: monospace; font-size: 0.7rem; color: #333;">SYSTEM v1.0.4 | LOCAL STORAGE ENABLED</div>
+        <div style="margin-top: 40px; font-family: monospace; font-size: 0.7rem; color: #444;">SYSTEM v2.0 | NO BACKGROUND LOOP</div>
     </div>
 
-    <!-- CREDITS SCREEN -->
-    <div id="credits-screen" class="screen hidden">
-        <h2>CASE ARCHIVES</h2>
-        <br>
-        <p style="text-align:center; color:gray; line-height:2;">
-            Story Adaptation: ECHO-7 Thriller<br>
-            Audio Engine: Web Audio API Synthesizer<br>
-            Graphics: Procedural CSS<br>
-            Engine: Vanilla HTML5/JS
-        </p>
-        <br>
-        <button class="btn" onclick="UI.hideCredits()">Return</button>
-    </div>
-
-    <!-- GAME UI -->
     <div id="game-ui" class="screen hidden">
         <header>
             <div id="hud-chapter">Prologue</div>
-            <div id="hud-threat">Threat Level: LOW</div>
+            <div id="hud-threat">Threat: LOW</div>
             <div id="hud-time">03:47 AM</div>
         </header>
 
@@ -358,17 +347,14 @@
         </footer>
     </div>
 
-    <!-- MODALS -->
-    <!-- Phone Modal -->
     <div id="modal-phone" class="modal hidden">
         <div class="modal-header">
-            <span>SECURE MESSAGES</span>
+            <span>SECURE INBOX</span>
             <button class="close-btn" onclick="Modals.close()">×</button>
         </div>
         <div class="modal-content" id="phone-content"></div>
     </div>
 
-    <!-- Evidence Modal -->
     <div id="modal-evidence" class="modal hidden">
         <div class="modal-header">
             <span>EVIDENCE BOARD</span>
@@ -377,7 +363,6 @@
         <div class="modal-content" id="evidence-content"></div>
     </div>
 
-    <!-- Journal Modal -->
     <div id="modal-journal" class="modal hidden">
         <div class="modal-header">
             <span>INVESTIGATION NOTES</span>
@@ -389,45 +374,20 @@
 <script>
 /**
  * =========================================================
- * AUDIO ENGINE (Web Audio API)
- * Procedural generation of thriller sounds
+ * AUDIO ENGINE (Event-Based Thriller Sounds Only)
+ * NO CONTINUOUS DRONES
  * =========================================================
  */
 const AudioEngine = {
     ctx: null,
     masterGain: null,
-    droneOsc: null,
 
     init() {
         if (this.ctx) return;
         this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         this.masterGain = this.ctx.createGain();
-        this.masterGain.gain.value = 0.4;
+        this.masterGain.gain.value = 0.6;
         this.masterGain.connect(this.ctx.destination);
-        this.startDrone();
-    },
-
-    startDrone() {
-        // Low ambient thriller drone
-        this.droneOsc = this.ctx.createOscillator();
-        this.droneOsc.type = 'sine';
-        this.droneOsc.frequency.value = 45; 
-        
-        const filter = this.ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 100;
-
-        const lfo = this.ctx.createOscillator();
-        lfo.type = 'sine';
-        lfo.frequency.value = 0.05;
-        const lfoGain = this.ctx.createGain();
-        lfoGain.gain.value = 30;
-
-        lfo.connect(lfoGain).connect(filter.frequency);
-        this.droneOsc.connect(filter).connect(this.masterGain);
-        
-        this.droneOsc.start();
-        lfo.start();
     },
 
     playType() {
@@ -437,10 +397,10 @@ const AudioEngine = {
         osc.connect(gain).connect(this.masterGain);
         
         osc.type = 'square';
-        osc.frequency.setValueAtTime(400 + Math.random() * 200, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(300 + Math.random() * 100, this.ctx.currentTime);
         gain.gain.setValueAtTime(0.01, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
-        osc.start(); osc.stop(this.ctx.currentTime + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.04);
     },
 
     playNotification() {
@@ -450,17 +410,58 @@ const AudioEngine = {
         osc.connect(gain).connect(this.masterGain);
         
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(440, this.ctx.currentTime + 0.3);
-        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.5);
-        osc.start(); osc.stop(this.ctx.currentTime + 0.5);
+        osc.frequency.setValueAtTime(900, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(300, this.ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.4);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.4);
     },
 
-    playTension() {
-        if (!this.ctx || !this.droneOsc) return;
-        // Pitch up drone slightly for tension
-        this.droneOsc.frequency.rampTo(55, 2);
+    // A sharp, startling sound for jumpscares / bad news
+    playSting() {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain).connect(this.masterGain);
+        
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.6);
+        
+        gain.gain.setValueAtTime(0.6, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.6);
+        
+        osc.start(); osc.stop(this.ctx.currentTime + 0.6);
+    },
+
+    // A deep double-thump used during tense choices
+    playHeartbeat() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        
+        // Thump 1
+        const osc1 = this.ctx.createOscillator();
+        const gain1 = this.ctx.createGain();
+        osc1.connect(gain1).connect(this.masterGain);
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(50, now);
+        osc1.frequency.exponentialRampToValueAtTime(20, now + 0.2);
+        gain1.gain.setValueAtTime(0, now);
+        gain1.gain.linearRampToValueAtTime(1, now + 0.05);
+        gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc1.start(now); osc1.stop(now + 0.3);
+
+        // Thump 2
+        const osc2 = this.ctx.createOscillator();
+        const gain2 = this.ctx.createGain();
+        osc2.connect(gain2).connect(this.masterGain);
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(55, now + 0.3);
+        osc2.frequency.exponentialRampToValueAtTime(25, now + 0.5);
+        gain2.gain.setValueAtTime(0, now + 0.3);
+        gain2.gain.linearRampToValueAtTime(1, now + 0.35);
+        gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+        osc2.start(now + 0.3); osc2.stop(now + 0.6);
     }
 };
 
@@ -474,33 +475,26 @@ let gameState = {
     chapter: 'Prologue',
     time: '03:47 AM',
     threatLevel: 0,
-    inventory: [],
     evidence: [],
     messages: [],
-    journal: [],
-    flags: {
-        trustVikram: 0,
-        trustSana: 0,
-        policeInvolved: false
-    }
+    journal: []
 };
 
 const Engine = {
     saveGame() {
-        localStorage.setItem('echo7_save', JSON.stringify(gameState));
-        UI.flashNav('💾 Save');
+        localStorage.setItem('echo7_save2', JSON.stringify(gameState));
+        UI.flashNav('💾 Saved');
     },
     loadGame() {
-        const saved = localStorage.getItem('echo7_save');
+        const saved = localStorage.getItem('echo7_save2');
         if (saved) {
             gameState = JSON.parse(saved);
             return true;
         }
         return false;
     },
-    hasSave() {
-        return localStorage.getItem('echo7_save') !== null;
-    },
+    hasSave() { return localStorage.getItem('echo7_save2') !== null; },
+    
     addEvidence(id, title, desc) {
         if (!gameState.evidence.find(e => e.id === id)) {
             gameState.evidence.push({id, title, desc});
@@ -547,31 +541,23 @@ const Modals = {
         container.innerHTML = '';
 
         if (type === 'phone') {
-            if(gameState.messages.length === 0) container.innerHTML = '<p style="color:gray;text-align:center;">No messages.</p>';
+            if(gameState.messages.length === 0) container.innerHTML = '<p style="color:#555;text-align:center;margin-top:20px;">Inbox empty.</p>';
             gameState.messages.forEach(msg => {
                 const alignClass = msg.isReceived ? 'sms-received' : 'sms-sent';
                 const senderDiv = msg.isReceived ? `<div class="sms-sender">${msg.sender}</div>` : '';
-                container.innerHTML += `
-                    ${senderDiv}
-                    <div class="sms-bubble ${alignClass}">${msg.text}</div>
-                `;
+                container.innerHTML += `${senderDiv}<div class="sms-bubble ${alignClass}">${msg.text}</div>`;
             });
         } 
         else if (type === 'evidence') {
-            if(gameState.evidence.length === 0) container.innerHTML = '<p style="color:gray;text-align:center;">Board empty.</p>';
+            if(gameState.evidence.length === 0) container.innerHTML = '<p style="color:#555;text-align:center;margin-top:20px;">Board empty.</p>';
             gameState.evidence.forEach(ev => {
-                container.innerHTML += `
-                    <div class="evidence-card">
-                        <div class="evidence-title">${ev.title}</div>
-                        <div class="evidence-desc">${ev.desc}</div>
-                    </div>
-                `;
+                container.innerHTML += `<div class="evidence-card"><div class="evidence-title">${ev.title}</div><div class="evidence-desc">${ev.desc}</div></div>`;
             });
         }
         else if (type === 'journal') {
-            if(gameState.journal.length === 0) container.innerHTML = '<p style="color:gray;text-align:center;">No entries yet.</p>';
+            if(gameState.journal.length === 0) container.innerHTML = '<p style="color:#555;text-align:center;margin-top:20px;">No entries.</p>';
             gameState.journal.forEach(entry => {
-                container.innerHTML += `<p style="margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid #1e293b;">- ${entry}</p>`;
+                container.innerHTML += `<p style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid #1e293b; line-height:1.5;">- ${entry}</p>`;
             });
         }
     }
@@ -581,11 +567,8 @@ const UI = {
     typingTimer: null,
 
     init() {
-        if(Engine.hasSave()) {
-            document.getElementById('btn-continue').disabled = false;
-        } else {
-            document.getElementById('btn-continue').disabled = true;
-        }
+        if(Engine.hasSave()) document.getElementById('btn-continue').disabled = false;
+        else document.getElementById('btn-continue').disabled = true;
     },
     startGame() {
         AudioEngine.init();
@@ -593,7 +576,7 @@ const UI = {
         document.getElementById('game-ui').classList.remove('hidden');
         gameState = {
             currentNode: 'prologue_start', chapter: 'Prologue', time: '03:47 AM', threatLevel: 0,
-            inventory: [], evidence: [], messages: [], journal: [], flags: {trustVikram:0, trustSana:0, policeInvolved:false}
+            evidence: [], messages: [], journal: []
         };
         StoryEngine.renderNode(gameState.currentNode);
     },
@@ -605,46 +588,60 @@ const UI = {
             StoryEngine.renderNode(gameState.currentNode, true);
         }
     },
-    showCredits() {
-        document.getElementById('main-menu').classList.add('hidden');
-        document.getElementById('credits-screen').classList.remove('hidden');
-    },
-    hideCredits() {
-        document.getElementById('credits-screen').classList.add('hidden');
-        document.getElementById('main-menu').classList.remove('hidden');
-    },
     flashNav(text) {
-        const btns = document.querySelectorAll('.nav-btn');
-        const saveBtn = btns[3];
-        saveBtn.innerText = "[ SAVED ]";
-        setTimeout(() => saveBtn.innerText = text, 2000);
+        const saveBtn = document.querySelectorAll('.nav-btn')[3];
+        saveBtn.innerText = text;
+        setTimeout(() => saveBtn.innerText = "💾 Save", 2000);
+    },
+    triggerScare() {
+        // Physical visual and audio scare
+        AudioEngine.playSting();
+        
+        // Shake screen
+        const gameBody = document.getElementById('game-ui');
+        gameBody.classList.remove('shake-active');
+        void gameBody.offsetWidth; // trigger reflow
+        gameBody.classList.add('shake-active');
+
+        // Red flash
+        const flash = document.getElementById('threat-flash');
+        flash.classList.remove('flash-anim');
+        void flash.offsetWidth;
+        flash.classList.add('flash-anim');
     },
     updateHUD() {
         document.getElementById('hud-chapter').innerText = gameState.chapter;
         document.getElementById('hud-time').innerText = gameState.time;
         
         const threatEl = document.getElementById('hud-threat');
-        if (gameState.threatLevel > 50) {
-            threatEl.innerText = "Threat Level: CRITICAL";
+        if (gameState.threatLevel >= 50) {
+            threatEl.innerText = "THREAT: CRITICAL";
             threatEl.className = "threat-high";
-            AudioEngine.playTension();
-        } else if (gameState.threatLevel > 20) {
-            threatEl.innerText = "Threat Level: ELEVATED";
+            AudioEngine.playHeartbeat(); // Adds a heartbeat thump when UI updates at high threat
+        } else if (gameState.threatLevel >= 25) {
+            threatEl.innerText = "THREAT: ELEVATED";
             threatEl.className = "";
         } else {
-            threatEl.innerText = "Threat Level: LOW";
+            threatEl.innerText = "THREAT: LOW";
             threatEl.className = "";
         }
     },
-    typeText(text, callback) {
+    typeText(text, isGlitch, callback) {
         const container = document.getElementById('story-text');
         container.innerHTML = '';
         let i = 0;
         clearTimeout(this.typingTimer);
 
+        // Apply glitch styling if flagged
+        if (isGlitch) {
+            container.classList.add('glitch-text');
+            this.triggerScare();
+        } else {
+            container.classList.remove('glitch-text');
+        }
+
         function type() {
             if (i < text.length) {
-                // Handle basic HTML line breaks
                 if(text.charAt(i) === '<' && text.substring(i, i+4) === '<br>') {
                     container.innerHTML += '<br>';
                     i += 4;
@@ -652,8 +649,7 @@ const UI = {
                     container.innerHTML += text.charAt(i);
                     i++;
                 }
-                
-                if (i % 3 === 0) AudioEngine.playType();
+                if (i % 4 === 0) AudioEngine.playType();
                 UI.typingTimer = setTimeout(type, 15);
             } else {
                 if(callback) callback();
@@ -669,17 +665,14 @@ const UI = {
  * =========================================================
  */
 const StoryNodes = {
-    // PROLOGUE
     "prologue_start": {
         chapter: "Prologue", time: "03:47 AM",
         text: "Your phone wakes you at 3:47 AM.<br><br>Not an alarm. Not a call. A text from a number you don't recognise — eleven digits, no country code, no name. The screen glows in the dark of your flat in Koramangala. Your ceiling fan hums. Somewhere outside, a dog barks twice and stops.",
         onEnter: () => {
             Engine.addMessage("Unknown Sender", "He told us you'd delete this. Don't. Your brother didn't fall.");
-            Engine.addJournal("Received a strange text at 3:47 AM about Arjun's death.");
+            Engine.addJournal("Received a strange text at 3:47 AM claiming Arjun's death wasn't an accident.");
         },
-        choices: [
-            { text: "Read the message on your Phone.", next: "prologue_read" }
-        ]
+        choices: [ { text: "Read the message on your Phone.", next: "prologue_read" } ]
     },
     "prologue_read": {
         chapter: "Prologue", time: "03:49 AM",
@@ -700,11 +693,9 @@ const StoryNodes = {
         text: "You try to close your eyes, but the words burn in your mind. 'Your brother didn't fall.'<br><br>You don't sleep again.",
         choices: [ { text: "Wait until morning.", next: "ch1_start" } ]
     },
-
-    // CHAPTER 1
     "ch1_start": {
         chapter: "Chapter 1", time: "09:12 AM",
-        text: "You go to the building. Arjun's building. You tell yourself it's just to look. Just to stand where he stood.<br><br>The security guard at the gate is new. He lets you sign in without asking why. The visitor log has your name in it already. You didn't write it.<br><br>You ask him about this. He says, quietly, 'Sir wrote your name last week. Said his sister would come.'<br><br>Sir. Arjun. Last week. Eight months after he died.",
+        text: "You go to the building. Arjun's building. You tell yourself it's just to look.<br><br>The security guard at the gate is new. He lets you sign in without asking why. The visitor log has your name in it already. You didn't write it.<br><br>You ask him about this. He says, quietly, 'Sir wrote your name last week. Said his sister would come.'<br><br>Sir. Arjun. Last week. Eight months after he died.",
         onEnter: () => Engine.addEvidence("visitor_log", "Visitor Log", "Arjun wrote my name in the security log a week ago. 8 months after his death."),
         choices: [ { text: "Take the lift to his floor.", next: "ch1_door" } ]
     },
@@ -715,10 +706,10 @@ const StoryNodes = {
     },
     "ch1_note": {
         chapter: "Chapter 1", time: "09:16 AM",
-        text: "Inside is a handwritten note:<br><br>'Priya. Don't go to the police. They are the problem. Go to the parking lot on level B2. White Honda City, KA-03-MF-4421. The man inside is the only one who knows everything. Tell him I sent you. He will be afraid. That's okay. So am I.'",
+        text: "'Priya. Don't go to the police. They are the problem. Go to the parking lot on level B2. White Honda City, KA-03-MF-4421. The man inside is the only one who knows everything. Tell him I sent you. He will be afraid. That's okay. So am I.'",
         onEnter: () => Engine.addEvidence("arjun_note", "Arjun's Letter", "Instructs me to find a man in a white Honda City on level B2. Warns against police."),
         choices: [
-            { text: "Go to level B2.", next: "ch1_parking" },
+            { text: "Go down to level B2.", next: "ch1_parking" },
             { text: "Take the note straight to the police.", next: "police_bad_end" }
         ]
     },
@@ -727,19 +718,15 @@ const StoryNodes = {
         text: "Your hands are shaking when you reach B2. The car is there. The engine is off. The windows are fogged. You tap on the glass and a man inside flinches so hard he hits the steering wheel.<br><br>He rolls down the window two inches and stares at you with red, hollow eyes.",
         choices: [ { text: "Tell him Arjun sent you.", next: "ch2_start" } ]
     },
-
-    // CHAPTER 2
     "ch2_start": {
         chapter: "Chapter 2", time: "09:40 AM",
-        text: "His name is Vikram Nair. He was Arjun's colleague at Prism Solutions. He speaks in a low, careful voice.<br><br>He tells you that six weeks before Arjun died, they discovered something inside the company's internal data pipeline regarding state land records being modified for shell companies owned by untouchable politicians.",
-        onEnter: () => Engine.addJournal("Met Vikram. Discovered Arjun found massive land record corruption at Prism Solutions involving powerful politicians."),
-        choices: [
-            { text: "Ask what happened next.", next: "ch2_drive" }
-        ]
+        text: "His name is Vikram Nair. He speaks in a low, careful voice.<br><br>He tells you that six weeks before Arjun died, they discovered something inside their company's internal data pipeline. State land records were being maliciously modified for shell companies owned by 'untouchable' politicians.",
+        onEnter: () => Engine.addJournal("Met Vikram. Discovered Arjun found massive land record corruption involving powerful politicians."),
+        choices: [ { text: "Ask what happened next.", next: "ch2_drive" } ]
     },
     "ch2_drive": {
         chapter: "Chapter 2", time: "09:45 AM",
-        text: "'Arjun had made copies,' Vikram says. 'Three weeks later, he was dead.'<br><br>Vikram reaches under the seat and pulls out a small hard drive in a ziplock bag. He holds it out to you like it weighs a hundred kilograms. 'Arjun made me promise to give this only to you.'",
+        text: "'Arjun made copies,' Vikram says. 'Three weeks later, he was dead.'<br><br>Vikram reaches under the seat and pulls out a small hard drive in a ziplock bag. 'Arjun made me promise to give this only to you.'",
         choices: [
             { text: "Take the hard drive.", next: "ch2_surveillance" },
             { text: "Refuse. 'It's too dangerous.'", next: "vikram_bad_end" }
@@ -747,48 +734,47 @@ const StoryNodes = {
     },
     "ch2_surveillance": {
         chapter: "Chapter 2", time: "09:47 AM",
-        text: "You take the drive.<br><br>'They're watching me,' Vikram says. 'I think they're watching you now too.'<br><br>You look in the side mirror. At the far end of the parking level, a man in a grey shirt is leaning against a pillar, looking at his phone.",
+        text: "You take the drive.<br><br>'They're watching me,' Vikram says. 'I think they're watching you now too.'<br><br>You look in the side mirror. At the far end of the parking level, a man in a grey shirt is leaning against a pillar, looking directly at you.",
+        isScary: true,
         onEnter: () => {
-            gameState.threatLevel += 25;
-            Engine.addEvidence("hard_drive", "Encrypted Hard Drive", "Given by Vikram. Contains Prism Solutions data.");
+            gameState.threatLevel = 25;
+            Engine.addEvidence("hard_drive", "Encrypted Hard Drive", "Given by Vikram. Contains the corruption files.");
         },
-        choices: [ { text: "Leave quickly and go home.", next: "ch3_start" } ]
+        choices: [ { text: "Leave quickly.", next: "ch3_start" } ]
     },
-
-    // CHAPTER 3
     "ch3_start": {
         chapter: "Chapter 3", time: "11:00 PM",
-        text: "You spend eighteen hours finding a laptop that has never been connected to your accounts, buying it with cash, and carrying it home on a different route.<br><br>The drive is password-protected. You try his birthday, your mother's name. Nothing. Then you remember: Arjun used to hide things in plain sight. The old Wi-Fi password from 10 years ago.",
+        text: "You buy a burner laptop with cash and take a different route home.<br><br>The drive is password-protected. You try his birthday, your mother's name. Nothing. Then you remember: Arjun used to hide things in plain sight. The old Wi-Fi password from 10 years ago.",
         choices: [ { text: "Type: Priya1994koramangala", next: "ch3_inside" } ]
     },
     "ch3_inside": {
         chapter: "Chapter 3", time: "11:30 PM",
-        text: "The drive opens. Inside: 847 files. Spreadsheets, PDFs, audio recordings. And a video file, dated the night before he died, titled simply: 'for you.'<br><br>You press play. Arjun is sitting at his desk. He looks thin, but his voice is steady.",
+        text: "The drive opens. Inside: 847 files. Spreadsheets, PDFs. And a video file, dated the night before he died, titled simply: 'for you.'<br><br>You press play. Arjun is sitting at his desk. He looks thin, but his voice is steady.",
         choices: [ { text: "Watch the video.", next: "ch3_video" } ]
     },
     "ch3_video": {
         chapter: "Chapter 3", time: "11:35 PM",
         text: "'Priya. What happened to me was not an accident. I need you to survive. Find the journalist — her name is Sana Mirza in the CONTACTS folder. Give her the drive. Then disappear for a while. Go to Amma's house. Don't trust anyone else.'<br><br>He leans close. 'The man who gave the order has his name in the last file. He is not untouchable.'",
-        onEnter: () => Engine.addJournal("Arjun's final video told me to find a journalist named Sana Mirza and to trust no one else."),
+        onEnter: () => Engine.addJournal("Arjun's video told me to find a journalist named Sana Mirza and to trust no one else."),
         choices: [ { text: "Close the laptop.", next: "ch3_threat" } ]
     },
     "ch3_threat": {
         chapter: "Chapter 3", time: "11:45 PM",
-        text: "You sit in the dark. Your phone lights up. A text arrives.",
+        text: "WE KNOW YOU HAVE THE DRIVE. YOU HAVE 24 HOURS TO RETURN IT AND FORGET EVERYTHING. AFTER THAT, WE STOP ASKING NICELY.",
+        isScary: true,
         onEnter: () => {
-            gameState.threatLevel += 40;
-            Engine.addMessage("Unknown Sender", "We know you have the drive. You have 24 hours to return it and forget everything. After that, we stop asking nicely.");
+            gameState.threatLevel = 100; // Critical Threat
+            Engine.addMessage("Unknown Sender", "We know you have the drive. You have 24 hours to return it. After that, we stop asking nicely.");
         },
         choices: [
             { text: "Follow Arjun's instruction: Contact Sana.", next: "ch4_start" },
             { text: "Destroy the drive to protect your family.", next: "destroy_bad_end" }
         ]
     },
-
-    // CHAPTER 4
     "ch4_start": {
         chapter: "Chapter 4", time: "07:15 AM",
-        text: "Her name is Sana Mirza. You write to her from a temporary email address. She replies naming a loud coffee shop. 'Come alone.'<br><br>She sits across from you. She looks at you the way a doctor looks at a patient. 'You look exactly like him.'",
+        text: "You write to Sana Mirza. She replies naming a loud coffee shop. 'Come alone.'<br><br>She sits across from you. She looks at you the way a doctor looks at a patient. 'You look exactly like him.'",
+        onEnter: () => { gameState.threatLevel = 50; },
         choices: [ { text: "Show her the drive.", next: "ch4_convo" } ]
     },
     "ch4_convo": {
@@ -802,13 +788,12 @@ const StoryNodes = {
     "ch4_publish": {
         chapter: "Chapter 4", time: "07:30 AM",
         text: "You think of Arjun on the video. You think of a man waiting in a parking lot because a dead man asked him to. <br><br>'He spent the last six weeks of his life trying to make sure this reached you,' you say. 'I'm not going to be the reason it didn't.'<br><br>She picks up the drive.",
+        onEnter: () => { gameState.threatLevel = 0; },
         choices: [ { text: "Wait for publication.", next: "ch5_start" } ]
     },
-
-    // CHAPTER 5 (EPILOGUE)
     "ch5_start": {
         chapter: "Epilogue", time: "Day 47",
-        text: "What happens next moves faster than you expect. Sana's team works for eleven days. On the twelfth day, the story drops. Names, shell companies, the untouchables laid bare.<br><br>By noon, arrests are made. By evening, the man who ordered the hit is trending globally. Your mother calls, crying tears of relief. They know it wasn't an accident.",
+        text: "Sana's team works for eleven days. On the twelfth day, the story drops. Names, shell companies, the untouchables laid bare.<br><br>By noon, arrests are made. By evening, the man who ordered the hit is trending globally. Your mother calls, crying tears of relief. They know it wasn't an accident.",
         choices: [ { text: "Visit Arjun's apartment one last time.", next: "ch5_end" } ]
     },
     "ch5_end": {
@@ -816,26 +801,26 @@ const StoryNodes = {
         text: "You go back to the sixth floor. The flat is cleared out. On your way out, you notice something scratched into the doorframe in his neat handwriting:<br><br>'Truth is not brave. Silence is the coward. — A.M.'<br><br>You photograph it. Sana publishes it. That night, you sleep through until morning. The silence feels like yours.",
         choices: [ { text: "END GAME", next: "credits" } ]
     },
-
-    // BAD ENDINGS
     "police_bad_end": {
-        chapter: "Ending: Conspiracy Survives", time: "--:--",
-        text: "You ignore Arjun's warning and take the note to the police. The inspector smiles, takes the note, and asks you to wait in an interrogation room. You wait for hours. No one comes. When you try the door, it's locked. The men who took Arjun have found you.",
+        chapter: "Ending", time: "--:--",
+        text: "You take the note to the police. The inspector smiles, takes the note, and asks you to wait in an interrogation room. You wait for hours. When you try the door, it's locked. The men who took Arjun have found you.",
+        isScary: true,
         choices: [ { text: "RESTART", next: "prologue_start" } ]
     },
     "vikram_bad_end": {
-        chapter: "Ending: Truth Buried", time: "--:--",
-        text: "You refuse the drive. Vikram looks devastated but accepts it. Two days later, Vikram is found dead in his car. The police rule it a suicide. The truth dies with him.",
+        chapter: "Ending", time: "--:--",
+        text: "You refuse the drive. Two days later, Vikram is found dead in his car. The police rule it a suicide. The truth dies with him.",
+        isScary: true,
         choices: [ { text: "RESTART", next: "prologue_start" } ]
     },
     "destroy_bad_end": {
-        chapter: "Ending: Evidence Destroyed", time: "--:--",
-        text: "Terrified by the threat, you take a hammer to the hard drive and throw the pieces into a river. Your family is safe, but the guilt of letting Arjun's murderers walk free haunts you for the rest of your life.",
+        chapter: "Ending", time: "--:--",
+        text: "Terrified by the threat, you smash the hard drive and throw the pieces into a river. Your family is safe, but the guilt of letting Arjun's murderers walk free haunts you forever.",
         choices: [ { text: "RESTART", next: "prologue_start" } ]
     },
     "coward_end": {
-        chapter: "Ending: Partial Justice", time: "--:--",
-        text: "You withhold the files containing the powerful names. Sana publishes a watered-down story. Prism Solutions faces a fine, but the politicians walk free. Arjun's death remains officially an 'accident'.",
+        chapter: "Ending", time: "--:--",
+        text: "You withhold the files containing the powerful names. Sana publishes a watered-down story. Prism Solutions faces a fine, but the politicians walk free. Arjun's death remains an 'accident'.",
         choices: [ { text: "RESTART", next: "prologue_start" } ]
     },
     "credits": {
@@ -860,13 +845,16 @@ const StoryEngine = {
         UI.updateHUD();
 
         const choicesContainer = document.getElementById('choices-container');
-        choicesContainer.innerHTML = ''; // Clear choices during typing
+        choicesContainer.innerHTML = ''; 
 
         if (skipType) {
-            document.getElementById('story-text').innerHTML = node.text.replace(/<br>/g, '<br>');
+            const container = document.getElementById('story-text');
+            container.innerHTML = node.text.replace(/<br>/g, '<br>');
+            if(node.isScary) container.classList.add('glitch-text');
+            else container.classList.remove('glitch-text');
             this.renderChoices(node.choices);
         } else {
-            UI.typeText(node.text, () => {
+            UI.typeText(node.text, node.isScary, () => {
                 this.renderChoices(node.choices);
             });
         }
@@ -882,6 +870,8 @@ const StoryEngine = {
             btn.innerText = c.text;
             btn.onclick = () => {
                 AudioEngine.playType();
+                // Play heartbeat on choice selection if tension is high
+                if(gameState.threatLevel >= 50) AudioEngine.playHeartbeat();
                 this.renderNode(c.next);
             };
             container.appendChild(btn);
