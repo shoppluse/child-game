@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Journey of the Glowing Soul</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0f172a;
+            font-family: 'Nunito', sans-serif;
+            touch-action: none; /* Prevent scroll on mobile */
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* UI Overlays */
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .screen {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            pointer-events: auto;
+            transition: opacity 0.5s;
+            max-width: 80%;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin: 0 0 20px 0;
+            color: #fff;
+            text-shadow: 0 0 15px #ffd700, 0 0 30px #ff8c00;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            margin: 0 0 15px 0;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.5;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ffd700, #ff8c00);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.5em;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 140, 0, 0.4), inset 0 -5px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 15px 25px rgba(255, 140, 0, 0.6), inset 0 -5px 10px rgba(0,0,0,0.1);
+        }
+
+        /* HUD */
+        #hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-size: 1.5em;
+            font-weight: 900;
+            text-shadow: 0 0 10px #ffd700;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        #pause-btn {
+            pointer-events: auto;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="hud" class="hidden">
+        <div>Score: <span id="score-display">0</span><br><span style="font-size: 0.6em; color: #ffeb3b;">Level: <span id="level-display">1</span></span></div>
+        <button id="pause-btn">⏸</button>
+    </div>
+
+    <div id="ui-layer">
+        <div id="start-screen" class="screen">
+            <h1>Journey of the<br>Glowing Soul</h1>
+            <p>Guide the magical butterfly to spread happiness.</p>
+            <p>✨ Collect golden orbs for energy<br>🐰 Touch sad animals to cheer them up<br>☁️ Avoid the dark storm clouds</p>
+            <p><em>Use Arrow Keys, Mouse, or Touch to move.</em></p>
+            <button class="btn" id="start-btn">Play Now</button>
+        </div>
+
+        <div id="game-over-screen" class="screen hidden">
+            <h2>The Storm Passed!</h2>
+            <p>You spread so much light.</p>
+            <p>Score: <span id="final-score">0</span></p>
+            <p>Best Score: <span id="best-score">0</span></p>
+            <button class="btn" id="restart-btn">Play Again</button>
+        </div>
+
+        <div id="pause-screen" class="screen hidden">
+            <h2>Game Paused</h2>
+            <button class="btn" id="resume-btn">Resume</button>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        // --- Setup and Globals ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let cw, ch;
+        function resize() {
+            cw = canvas.width = window.innerWidth;
+            ch = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Game State
+        let gameState = 'start'; // start, playing, paused, gameover
+        let score = 0;
+        let level = 1;
+        let highScore = localStorage.getItem('glowingSoulHighScore') || 0;
+        let frameCount = 0;
+        let difficultyMultiplier = 1;
+
+        // Input State
+        const input = { x: cw/2, y: ch/2, isTouching: false };
+        const keys = { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false };
+
+        window.addEventListener('mousemove', e => { if (gameState === 'playing') { input.x = e.clientX; input.y = e.clientY; } });
+        window.addEventListener('touchmove', e => { if (gameState === 'playing') { input.x = e.touches[0].clientX; input.y = e.touches[0].clientY; } });
+        window.addEventListener('keydown', e => { if (keys.hasOwnProperty(e.key)) keys[e.key] = true; });
+        window.addEventListener('keyup', e => { if (keys.hasOwnProperty(e.key)) keys[e.key] = false; });
+
+        // --- Audio Synthesizer ---
+        let audioCtx;
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+            
+            if (type === 'orb') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now);
+                osc.stop(now + 0.1);
+            } else if (type === 'happy') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, now); // A4
+                osc.frequency.setValueAtTime(554.37, now + 0.1); // C#5
+                osc.frequency.setValueAtTime(659.25, now + 0.2); // E5
+                gainNode.gain.setValueAtTime(0.15, now);
+                gainNode.gain.linearRampToValueAtTime(0, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } else if (type === 'hit') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
+                gainNode.gain.setValueAtTime(0.2, now);
+                gainNode.gain.linearRampToValueAtTime(0, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'level') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.linearRampToValueAtTime(1046.50, now + 0.5); // C6
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.linearRampToValueAtTime(0, now + 0.5);
+                osc.start(now);
+                osc.stop(now + 0.5);
+            }
+        }
+
+        // --- Game Entities ---
+        
+        class Player {
+            constructor() {
+                this.x = cw / 2;
+                this.y = ch / 2;
+                this.size = 20;
+                this.speed = 6;
+                this.energy = 100;
+                this.wingAngle = 0;
+            }
+
+            update() {
+                // Keyboard movement
+                if (keys.ArrowUp) this.y -= this.speed;
+                if (keys.ArrowDown) this.y += this.speed;
+                if (keys.ArrowLeft) this.x -= this.speed;
+                if (keys.ArrowRight) this.x += this.speed;
+
+                // Mouse/Touch tracking (smooth follow)
+                if (!keys.ArrowUp && !keys.ArrowDown && !keys.ArrowLeft && !keys.ArrowRight) {
+                    const dx = input.x - this.x;
+                    const dy = input.y - this.y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist > this.speed) {
+                        this.x += (dx / dist) * this.speed;
+                        this.y += (dy / dist) * this.speed;
+                    }
+                }
+
+                // Boundaries
+                this.x = Math.max(this.size, Math.min(cw - this.size, this.x));
+                this.y = Math.max(this.size, Math.min(ch - this.size, this.y));
+
+                // Animation
+                this.wingAngle = Math.sin(frameCount * 0.2) * 0.5;
+                
+                // Trail particles
+                if (frameCount % 3 === 0) {
+                    particles.push(new Particle(this.x, this.y, 'gold'));
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                
+                // Glowing Soul (Center)
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size * 0.6, 0, Math.PI * 2);
+                ctx.fillStyle = '#fff';
+                ctx.shadowColor = '#ffd700';
+                ctx.shadowBlur = 30;
+                ctx.fill();
+                
+                // Butterfly Wings
+                ctx.shadowBlur = 10;
+                ctx.fillStyle = 'rgba(255, 215, 0, 0.7)';
+                
+                // Left Wing
+                ctx.save();
+                ctx.rotate(this.wingAngle);
+                ctx.beginPath();
+                ctx.ellipse(-15, -10, 15, 25, Math.PI / 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                // Right Wing
+                ctx.save();
+                ctx.rotate(-this.wingAngle);
+                ctx.beginPath();
+                ctx.ellipse(15, -10, 15, 25, -Math.PI / 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                ctx.restore();
+            }
+        }
+
+        class Orb {
+            constructor() {
+                this.x = Math.random() * (cw - 40) + 20;
+                this.y = -30;
+                this.size = 10;
+                this.speed = (Math.random() * 2 + 1) * difficultyMultiplier;
+                this.wobble = Math.random() * Math.PI * 2;
+            }
+            update() {
+                this.y += this.speed;
+                this.x += Math.sin(this.wobble + frameCount * 0.05) * 2;
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#fff';
+                ctx.shadowColor = '#00ffff';
+                ctx.shadowBlur = 20;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class Animal {
+            constructor() {
+                this.x = Math.random() > 0.5 ? -40 : cw + 40;
+                this.y = ch - (Math.random() * 150 + 50);
+                this.size = 25;
+                this.speed = (this.x < 0 ? 1 : -1) * (Math.random() * 1.5 + 0.5);
+                this.isHappy = false;
+                this.bounce = 0;
+            }
+            update() {
+                this.x += this.speed;
+                if (this.isHappy) {
+                    this.bounce = Math.abs(Math.sin(frameCount * 0.1)) * 15;
+                    if (Math.random() < 0.1) {
+                        particles.push(new Particle(this.x, this.y - this.size, 'pink', true)); // Hearts
+                    }
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y - this.bounce);
+                
+                // Body
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.isHappy ? '#ffb6c1' : '#708090'; // Pink if happy, grey if sad
+                ctx.shadowColor = this.isHappy ? '#ff69b4' : 'transparent';
+                ctx.shadowBlur = this.isHappy ? 20 : 0;
+                ctx.fill();
+
+                // Ears (Bunny)
+                const earAngle = this.isHappy ? 0.2 : 0.8;
+                ctx.save();
+                ctx.rotate(-earAngle);
+                ctx.beginPath();
+                ctx.ellipse(-10, -25, 8, 20, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+                
+                ctx.save();
+                ctx.rotate(earAngle);
+                ctx.beginPath();
+                ctx.ellipse(10, -25, 8, 20, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                // Face
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(-8, -5, 3, 0, Math.PI*2); // Left eye
+                ctx.arc(8, -5, 3, 0, Math.PI*2);  // Right eye
+                ctx.fill();
+
+                ctx.beginPath();
+                if (this.isHappy) {
+                    ctx.arc(0, 5, 5, 0, Math.PI); // Smile
+                } else {
+                    ctx.arc(0, 10, 5, Math.PI, 0); // Frown
+                }
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.restore();
+            }
+        }
+
+        class Cloud {
+            constructor() {
+                this.x = Math.random() * cw;
+                this.y = -60;
+                this.size = Math.random() * 30 + 40;
+                this.speed = (Math.random() * 2 + 2) * difficultyMultiplier;
+                this.drift = (Math.random() - 0.5) * 2;
+            }
+            update() {
+                this.y += this.speed;
+                this.x += this.drift;
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.fillStyle = '#2c3e50';
+                ctx.shadowColor = '#000';
+                ctx.shadowBlur = 20;
+
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.arc(-this.size*0.6, 10, this.size*0.7, 0, Math.PI * 2);
+                ctx.arc(this.size*0.6, 10, this.size*0.7, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Lightning flash occasionally
+                if (Math.random() < 0.02) {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        class Particle {
+            constructor(x, y, color, isHeart = false) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.isHeart = isHeart;
+                this.size = Math.random() * 4 + 2;
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = (Math.random() - 0.5) * 4 - 1; // Tendency to float up
+                this.life = 1.0;
+                this.decay = Math.random() * 0.02 + 0.02;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.life);
+                ctx.translate(this.x, this.y);
+                
+                if (this.isHeart) {
+                    // Draw tiny heart
+                    ctx.fillStyle = '#ff1493';
+                    ctx.beginPath();
+                    const s = this.size;
+                    ctx.moveTo(0, s/2);
+                    ctx.bezierCurveTo(s/2, -s/2, s, s/2, 0, s);
+                    ctx.bezierCurveTo(-s, s/2, -s/2, -s/2, 0, s/2);
+                    ctx.fill();
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        // --- Lists and Variables ---
+        let player;
+        let orbs = [];
+        let animals = [];
+        let clouds = [];
+        let particles = [];
+        let backgroundParticles = [];
+
+        function initBackground() {
+            backgroundParticles = [];
+            for (let i = 0; i < 50; i++) {
+                backgroundParticles.push({
+                    x: Math.random() * cw,
+                    y: Math.random() * ch,
+                    size: Math.random() * 3 + 1,
+                    speed: Math.random() * 0.5 + 0.1,
+                    angle: Math.random() * Math.PI * 2
+                });
+            }
+        }
+
+        function drawBackground() {
+            // Magical Sky Gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, ch);
+            gradient.addColorStop(0, '#1a1025'); // Deep purple top
+            gradient.addColorStop(0.6, '#2a3b5c'); // Soft blue middle
+            gradient.addColorStop(1, '#0e382b'); // Magical forest green bottom
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, cw, ch);
+
+            // Sun Rays
+            ctx.save();
+            ctx.globalCompositeOperation = 'screen';
+            ctx.translate(cw / 2, ch); // Bottom center
+            const rayAngle = frameCount * 0.002;
+            for (let i = 0; i < 6; i++) {
+                ctx.rotate(Math.PI / 3 + rayAngle);
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(-cw, -ch * 2);
+                ctx.lineTo(cw, -ch * 2);
+                const rayGrad = ctx.createLinearGradient(0, 0, 0, -ch*2);
+                rayGrad.addColorStop(0, 'rgba(255, 215, 0, 0.1)');
+                rayGrad.addColorStop(1, 'rgba(255, 215, 0, 0)');
+                ctx.fillStyle = rayGrad;
+                ctx.fill();
+            }
+            ctx.restore();
+
+            // Floating dust/fireflies
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            backgroundParticles.forEach(p => {
+                p.y -= p.speed;
+                p.x += Math.sin(p.angle + frameCount * 0.02) * 0.5;
+                if (p.y < -10) p.y = ch + 10;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        // --- Core Logic ---
+        function startGame() {
+            initAudio();
+            gameState = 'playing';
+            score = 0;
+            level = 1;
+            difficultyMultiplier = 1;
+            frameCount = 0;
+            
+            player = new Player();
+            input.x = cw/2;
+            input.y = ch/2;
+            
+            orbs = [];
+            animals = [];
+            clouds = [];
+            particles = [];
+            
+            initBackground();
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-over-screen').classList.add('hidden');
+            document.getElementById('pause-screen').classList.add('hidden');
+            document.getElementById('hud').classList.remove('hidden');
+            
+            updateHUD();
+            gameLoop();
+        }
+
+        function gameOver() {
+            gameState = 'gameover';
+            playSound('hit');
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('glowingSoulHighScore', highScore);
+            }
+            document.getElementById('hud').classList.add('hidden');
+            document.getElementById('game-over-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('best-score').innerText = highScore;
+        }
+
+        function updateHUD() {
+            document.getElementById('score-display').innerText = score;
+            document.getElementById('level-display').innerText = level;
+        }
+
+        function spawnEntities() {
+            // Spawn Orbs
+            if (frameCount % (60 - Math.min(40, level * 2)) === 0) {
+                orbs.push(new Orb());
+            }
+            // Spawn Animals
+            if (frameCount % 180 === 0 && animals.length < 3) {
+                animals.push(new Animal());
+            }
+            // Spawn Clouds
+            if (frameCount % (100 - Math.min(60, level * 5)) === 0) {
+                clouds.push(new Cloud());
+            }
+        }
+
+        function checkCollisions() {
+            // Orbs
+            for (let i = orbs.length - 1; i >= 0; i--) {
+                const orb = orbs[i];
+                const dist = Math.hypot(player.x - orb.x, player.y - orb.y);
+                if (dist < player.size + orb.size) {
+                    orbs.splice(i, 1);
+                    score += 10;
+                    playSound('orb');
+                    for(let j=0; j<5; j++) particles.push(new Particle(orb.x, orb.y, '#00ffff'));
+                    checkLevelUp();
+                    updateHUD();
+                }
+            }
+
+            // Animals
+            animals.forEach(animal => {
+                if (!animal.isHappy) {
+                    const dist = Math.hypot(player.x - animal.x, player.y - animal.y);
+                    if (dist < player.size + animal.size + 10) { // Slightly larger hitbox for easier rescue
+                        animal.isHappy = true;
+                        score += 50;
+                        playSound('happy');
+                        for(let j=0; j<10; j++) particles.push(new Particle(animal.x, animal.y, 'gold'));
+                        checkLevelUp();
+                        updateHUD();
+                    }
+                }
+            });
+
+            // Clouds
+            for (let i = 0; i < clouds.length; i++) {
+                const cloud = clouds[i];
+                const dist = Math.hypot(player.x - cloud.x, player.y - cloud.y);
+                // Forgive hit box slightly for better child experience
+                if (dist < (player.size + cloud.size) * 0.7) {
+                    for(let j=0; j<20; j++) particles.push(new Particle(player.x, player.y, '#2c3e50'));
+                    gameOver();
+                    return;
+                }
+            }
+        }
+
+        function checkLevelUp() {
+            const nextLevelThreshold = level * 200;
+            if (score >= nextLevelThreshold) {
+                level++;
+                difficultyMultiplier += 0.2;
+                playSound('level');
+                // Sparkle burst
+                for(let j=0; j<30; j++) particles.push(new Particle(player.x, player.y, '#ffd700'));
+            }
+        }
+
+        function updateAndDrawArray(arr, isCloud = false) {
+            for (let i = arr.length - 1; i >= 0; i--) {
+                const obj = arr[i];
+                obj.update();
+                obj.draw();
+                
+                // Remove if off screen
+                if (obj.life !== undefined) {
+                    if (obj.life <= 0) arr.splice(i, 1);
+                } else if (
+                    obj.y > ch + 100 || 
+                    obj.y < -100 || 
+                    obj.x > cw + 100 || 
+                    obj.x < -100
+                ) {
+                    arr.splice(i, 1);
+                }
+            }
+        }
+
+        // --- Main Loop ---
+        function gameLoop() {
+            if (gameState !== 'playing') return;
+
+            ctx.clearRect(0, 0, cw, ch);
+            frameCount++;
+
+            drawBackground();
+            spawnEntities();
+
+            // Update & Draw
+            updateAndDrawArray(orbs);
+            updateAndDrawArray(animals);
+            updateAndDrawArray(clouds);
+            updateAndDrawArray(particles);
+
+            player.update();
+            player.draw();
+
+            checkCollisions();
+
+            if (gameState === 'playing') {
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        // --- UI Listeners ---
+        document.getElementById('start-btn').addEventListener('click', startGame);
+        document.getElementById('restart-btn').addEventListener('click', startGame);
+        
+        document.getElementById('pause-btn').addEventListener('click', () => {
+            if (gameState === 'playing') {
+                gameState = 'paused';
+                document.getElementById('pause-screen').classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('resume-btn').addEventListener('click', () => {
+            if (gameState === 'paused') {
+                gameState = 'playing';
+                document.getElementById('pause-screen').classList.add('hidden');
+                requestAnimationFrame(gameLoop);
+            }
+        });
+
+        // Draw initial static background before start
+        initBackground();
+        drawBackground();
+
+    </script>
+</body>
+</html>
