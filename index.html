@@ -3,855 +3,326 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE 9TH FLOOR</title>
+    <title>3:47 AM — You Are Awake</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Special+Elite&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
     <style>
-        /* --- GLOBAL VARIABLES & FONTS --- */
+        /* --- Base Theme Variables --- */
         :root {
-            --bg-base: #050505;
-            --text-main: #d4d4d4;
-            --text-dim: #6b6b6b;
-            --text-highlight: #c7a052; /* Faded gold */
-            --text-glitch: #ff3333;
-            --ui-border: rgba(199, 160, 82, 0.3);
-            --crt-scanline: rgba(255, 255, 255, 0.02);
-            --font-main: 'Courier New', Courier, monospace;
-            --font-title: 'Georgia', serif;
+            --font-sans: 'Inter', system-ui, sans-serif;
+            --font-mono: 'Courier New', Courier, monospace;
+            
+            --color-background-primary: #ffffff;
+            --color-background-secondary: #f8fafc;
+            
+            --color-text-primary: #0f172a;
+            --color-text-secondary: #475569;
+            --color-text-tertiary: #64748b;
+            
+            --color-border-primary: #94a3b8;
+            --color-border-secondary: #cbd5e1;
+            --color-border-tertiary: #e2e8f0;
+            
+            --border-radius-md: 6px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-        }
-
-        body {
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            font-family: var(--font-main);
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* --- ATMOSPHERIC EFFECTS (CRT, GRAIN, GLITCH) --- */
-        #fx-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.6;
-        }
-
-        .crt-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: 100;
-            pointer-events: none;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 3px 100%;
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
-        }
-
-        .vignette {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 40%, #000000 120%);
-            z-index: 99;
-            pointer-events: none;
-        }
-
-        .glitch-anim {
-            animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
-            color: var(--text-glitch);
-            text-shadow: 2px 0 blue, -2px 0 red;
-        }
-
-        @keyframes glitch-skew {
-            0% { transform: skew(0deg); }
-            20% { transform: skew(-10deg); }
-            40% { transform: skew(10deg); }
-            60% { transform: skew(-5deg); }
-            80% { transform: skew(5deg); }
-            100% { transform: skew(0deg); }
-        }
-
-        @keyframes flicker {
-            0% { opacity: 1; }
-            5% { opacity: 0.8; }
-            10% { opacity: 1; }
-            15% { opacity: 0.4; }
-            20% { opacity: 1; }
-            50% { opacity: 1; }
-            55% { opacity: 0.9; }
-            60% { opacity: 1; }
-        }
-
-        /* --- UI LAYOUT --- */
-        #game-container {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            z-index: 10;
-            padding: 40px;
-        }
-
-        .hidden { display: none !important; }
-
-        /* Main Menu */
-        #main-menu {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: rgba(5, 5, 5, 0.95);
-            z-index: 200;
-        }
-
-        #main-menu h1 {
-            font-family: var(--font-title);
-            font-size: 4rem;
-            letter-spacing: 15px;
-            margin-bottom: 5px;
-            color: var(--text-main);
-            text-shadow: 0 0 20px rgba(255,255,255,0.2);
-            animation: flicker 4s infinite;
-        }
-
-        #main-menu h3 {
-            font-size: 1rem;
-            letter-spacing: 5px;
-            color: var(--text-dim);
-            margin-bottom: 50px;
-        }
-
-        .btn {
-            background: transparent;
-            color: var(--text-dim);
-            border: 1px solid transparent;
-            padding: 10px 20px;
-            font-family: var(--font-main);
-            font-size: 1.2rem;
-            letter-spacing: 3px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            margin: 5px 0;
-            width: 300px;
-            text-align: center;
-        }
-
-        .btn:hover {
-            color: var(--text-highlight);
-            border: 1px solid var(--ui-border);
-            background: rgba(199, 160, 82, 0.05);
-            letter-spacing: 5px;
-        }
-
-        /* Game HUD */
-        header {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--ui-border);
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            color: var(--text-dim);
-        }
-
-        .hud-distortion { color: var(--text-glitch); }
-
-        /* Main Story View */
-        #story-view {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            padding-right: 15px;
-        }
-
-        #story-text {
-            font-size: 1.15rem;
-            line-height: 1.8;
-            margin-bottom: 40px;
-            min-height: 200px;
-            white-space: pre-wrap;
-            text-shadow: 0 0 5px rgba(255,255,255,0.1);
-        }
-
-        #choices-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: auto;
-            margin-bottom: 20px;
-        }
-
-        .choice-btn {
-            background: rgba(10, 10, 10, 0.8);
-            border: 1px solid var(--ui-border);
-            color: var(--text-main);
-            padding: 15px 20px;
-            text-align: left;
-            font-family: var(--font-main);
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .choice-btn:hover {
-            background: var(--text-main);
-            color: var(--bg-base);
-            box-shadow: 0 0 15px rgba(255,255,255,0.2);
-        }
-
-        /* Modals (Evidence, Inventory) */
-        .modal {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%; height: 80%;
-            background: rgba(10, 10, 12, 0.98);
-            border: 1px solid var(--ui-border);
-            z-index: 150;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 50px rgba(0,0,0,1);
-        }
-
-        .modal h2 { margin-bottom: 20px; color: var(--text-highlight); letter-spacing: 2px;}
-        .modal-content { flex-grow: 1; overflow-y: auto; }
-        .modal-close { margin-top: 20px; align-self: flex-end; }
+        /* --- Original Styles Provided --- */
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
         
-        .evidence-item {
-            border-bottom: 1px solid #333;
-            padding: 15px 0;
-        }
-        .evidence-title { color: var(--text-highlight); font-weight: bold; margin-bottom: 5px;}
-
-        /* Footer Nav */
-        footer {
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
             display: flex;
-            justify-content: space-around;
-            border-top: 1px solid var(--ui-border);
-            padding-top: 15px;
+            justify-content: center;
+            background-color: var(--color-background-primary);
+            padding: 40px 20px;
         }
-        .nav-btn {
-            background: none; border: none; color: var(--text-dim);
-            cursor: pointer; letter-spacing: 2px; font-size: 0.9rem;
-        }
-        .nav-btn:hover { color: var(--text-highlight); }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--bg-base); }
-        ::-webkit-scrollbar-thumb { background: var(--text-dim); }
-
+        .story-wrap { font-family: var(--font-sans); color: var(--color-text-primary); max-width: 680px; width: 100%; }
+        .chapter-bar { display: flex; gap: 6px; padding: 16px 0 20px; flex-wrap: wrap; }
+        .ch-btn { font-size: 12px; padding: 5px 14px; border-radius: 20px; border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; transition: all .2s; }
+        .ch-btn.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
+        .chapter { display: none; animation: fadein .4s ease; }
+        .chapter.visible { display: block; }
+        @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        
+        .ch-header { margin-bottom: 20px; }
+        .ch-tag { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 6px; }
+        .ch-title { font-size: 22px; font-weight: 500; line-height: 1.3; color: var(--color-text-primary); }
+        .ch-sub { font-size: 13px; color: var(--color-text-tertiary); margin-top: 4px; }
+        
+        .story-body { font-size: 15px; line-height: 1.9; color: var(--color-text-primary); }
+        .story-body p { margin-bottom: 1.1rem; }
+        
+        .log-block { border-left: 2px solid var(--color-border-secondary); padding: 10px 16px; margin: 18px 0; background: var(--color-background-secondary); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; }
+        .log-label { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 4px; }
+        .log-text { font-family: var(--font-mono); font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+        
+        .tension { border-left: 2px solid #E24B4A; padding: 10px 16px; margin: 18px 0; background: #FCEBEB; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; }
+        .tension .log-text { color: #A32D2D; }
+        
+        .nav-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 0 0; border-top: 0.5px solid var(--color-border-tertiary); margin-top: 24px; }
+        .nav-btn { font-size: 13px; padding: 7px 18px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; transition: all .18s; }
+        .nav-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+        .nav-btn.primary { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
+        .nav-btn:disabled { opacity: .3; cursor: not-allowed; }
+        
+        .progress { font-size: 12px; color: var(--color-text-tertiary); }
+        .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 20px 0; }
+        
+        .ending-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0; }
+        .ending-card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 12px 14px; cursor: pointer; transition: all .18s; }
+        .ending-card:hover { border-color: var(--color-border-primary); background: var(--color-background-secondary); }
+        .ending-card .e-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+        .ending-card .e-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+        
+        .pulse { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #E24B4A; margin-right: 6px; animation: pulse 1.4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(.7); } }
+        
+        .meta-row { display: flex; gap: 16px; margin: 12px 0 20px; flex-wrap: wrap; }
+        .meta-chip { font-size: 12px; color: var(--color-text-tertiary); display: flex; align-items: center; gap: 5px; }
     </style>
 </head>
 <body>
 
-    <canvas id="fx-canvas"></canvas>
-    <div class="vignette"></div>
-    <div class="crt-overlay"></div>
+<div class="story-wrap">
+  <div class="chapter-bar" id="chapBar"></div>
 
-    <div id="main-menu">
-        <h1>THE 9TH FLOOR</h1>
-        <h3>ASHCROFT HEIGHTS</h3>
-        <button class="btn" onclick="startGame()">Enter Building</button>
-        <button class="btn" onclick="loadGame()" id="continue-btn">Continue Investigation</button>
-        <div style="margin-top: 50px; font-size: 0.7rem; color: #444; letter-spacing: 1px;">WARNING: REALITY INSTABILITY DETECTED</div>
+  <div class="chapter visible" id="ch0">
+    <div class="ch-header">
+      <div class="ch-tag">Prologue</div>
+      <div class="ch-title">3:47 AM — You Are Awake</div>
+      <div class="ch-sub">Bengaluru · September 14, 2026</div>
     </div>
-
-    <div id="game-container" class="hidden">
-        <header>
-            <div id="hud-location">APT 402</div>
-            <div id="hud-time">03:15 AM</div>
-            <div id="hud-status">STABLE</div>
-        </header>
-
-        <div id="story-view">
-            <div id="story-text"></div>
-            <div id="choices-container"></div>
-        </div>
-
-        <footer>
-            <button class="nav-btn" onclick="openModal('evidence')">[ EVIDENCE BOARD ]</button>
-            <button class="nav-btn" onclick="openModal('inventory')">[ INVENTORY ]</button>
-            <button class="nav-btn" onclick="saveGame()">[ SAVE RECORD ]</button>
-        </footer>
+    <div class="meta-row">
+      <span class="meta-chip"><span class="pulse"></span>Live story — thriller</span>
+      <span class="meta-chip"><i class="ti ti-clock" style="font-size:14px" aria-hidden="true"></i> ~18 min read</span>
+      <span class="meta-chip"><i class="ti ti-notebook" style="font-size:14px" aria-hidden="true"></i> 6 chapters</span>
     </div>
-
-    <div id="evidence-modal" class="modal hidden">
-        <h2>EVIDENCE BOARD</h2>
-        <div class="modal-content" id="evidence-list">No evidence collected.</div>
-        <button class="btn modal-close" onclick="closeModals()">Close</button>
+    <div class="story-body">
+      <p>Your phone wakes you at 3:47 AM.</p>
+      <p>Not an alarm. Not a call. A text from a number you don't recognise — eleven digits, no country code, no name. The screen glows in the dark of your flat in Koramangala. Your ceiling fan hums. Somewhere outside, a dog barks twice and stops.</p>
+      <p>The message reads:</p>
+      <div class="log-block">
+        <div class="log-label">SMS · Unknown sender</div>
+        <div class="log-text">He told us you'd delete this.<br>Don't.<br>Your brother didn't fall.</div>
+      </div>
+      <p>You sit up. Your mouth is dry.</p>
+      <p>Your brother Arjun died eight months ago. The police report said he fell from the terrace of his apartment building in Whitefield. Sixth floor. The investigation lasted eleven days and was closed with a single word: <em>accidental</em>.</p>
+      <p>You believed them. You had no reason not to.</p>
+      <p>You stare at the message until the screen dims. Then you type back: <em>Who is this?</em></p>
+      <p>Three dots appear. Then they vanish. No reply comes.</p>
+      <p>You don't sleep again.</p>
     </div>
-
-    <div id="inventory-modal" class="modal hidden">
-        <h2>INVENTORY & MEMORIES</h2>
-        <div class="modal-content" id="inventory-list">Pockets are empty.</div>
-        <button class="btn modal-close" onclick="closeModals()">Close</button>
+    <div class="nav-row">
+      <span class="progress">Chapter 1 of 6</span>
+      <button class="nav-btn primary" onclick="goTo(1)">Continue <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
     </div>
+  </div>
+
+  <div class="chapter" id="ch1">
+    <div class="ch-header">
+      <div class="ch-tag">Chapter 1</div>
+      <div class="ch-title">The Man in the Parking Lot</div>
+      <div class="ch-sub">Day 1 · 9:12 AM</div>
+    </div>
+    <div class="story-body">
+      <p>You go to the building. Arjun's building. You tell yourself it's just to look. Just to stand where he stood.</p>
+      <p>The security guard at the gate is new — a young man who wasn't there eight months ago. He lets you sign in without asking why. The visitor log has your name in it already. You didn't write it.</p>
+      <p>You ask him about this. He looks at the book. He looks at you. He says, quietly, "Sir wrote your name last week. Said his sister would come."</p>
+      <p><em>Sir.</em> Arjun. Last week. Eight months after he died.</p>
+      <p>You take the lift to the sixth floor. The door to his flat is sealed with police tape that has yellowed and curled at the edges. Nobody has touched this place. And yet, slid under the door, there is an envelope. Cream-coloured. No stamp. Your name written on the front in handwriting you would know anywhere.</p>
+      <p>Your brother's handwriting.</p>
+      <div class="tension">
+        <div class="log-label">Note — handwritten</div>
+        <div class="log-text">"Priya. Don't go to the police. They are the problem. Go to the parking lot on level B2. White Honda City, KA-03-MF-4421. The man inside is the only one who knows everything. Tell him I sent you. He will be afraid. That's okay. So am I."</div>
+      </div>
+      <p>Your hands are shaking when you reach B2. The car is there. The engine is off. The windows are fogged. You tap on the glass and a man inside flinches so hard he hits the steering wheel. He rolls down the window two inches and stares at you with red, hollow eyes. He looks like he hasn't slept in weeks. He looks like a man who has been waiting for something terrible to find him.</p>
+      <p>"Arjun sent me," you say.</p>
+      <p>He closes his eyes. He says, almost to himself: "Then it's already too late."</p>
+      <p>He unlocks the door.</p>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goTo(0)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+      <span class="progress">Chapter 2 of 6</span>
+      <button class="nav-btn primary" onclick="goTo(2)">Continue <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+    </div>
+  </div>
+
+  <div class="chapter" id="ch2">
+    <div class="ch-header">
+      <div class="ch-tag">Chapter 2</div>
+      <div class="ch-title">The Witness</div>
+      <div class="ch-sub">Day 1 · 9:40 AM · Level B2</div>
+    </div>
+    <div class="story-body">
+      <p>His name is Vikram Nair. He was Arjun's colleague at a mid-sized data analytics firm called Prism Solutions, on the 11th floor of a glass tower near Outer Ring Road. He speaks in a low, careful voice, like someone who has rehearsed this conversation many times and is still terrified to have it.</p>
+      <p>He tells you that six weeks before Arjun died, the two of them discovered something inside the company's internal data pipeline. Prism Solutions ran analytics contracts for three state government departments — health, infrastructure, land records. Vikram had found a routine data irregularity while auditing a transport ministry contract. He had brought it to Arjun. Arjun had pulled the thread.</p>
+      <p>What they found beneath it was not routine.</p>
+      <div class="log-block">
+        <div class="log-label">Vikram's account — verbatim</div>
+        <div class="log-text">"Land records. Hundreds of them. Being modified in the system — small changes, parcels being reclassified — right before contracts were awarded. The beneficiaries were different shell companies but the ownership traced back to two names. One was a minister. The other was a name we both recognised from the news. A man people describe as untouchable."</div>
+      </div>
+      <p>Arjun had made copies of everything. He had given one copy to Vikram and kept one himself. He had told Vikram to hide it, tell no one, and wait for him to figure out what to do next.</p>
+      <p>Three weeks later, Arjun was dead.</p>
+      <p>"The day after the funeral," Vikram says, "two men came to my flat. Plain clothes. They didn't show badges. They told me Arjun had been under investigation for financial misconduct. They said if I knew anything about files he had taken from work, I should return them quietly. For my own good. That was the phrase — <em>your own good</em>."</p>
+      <p>"Did you?" you ask. "Return them?"</p>
+      <p>He shakes his head. He reaches under the driver's seat and pulls out a small hard drive in a ziplock bag. He holds it out to you like it weighs a hundred kilograms.</p>
+      <p>"Arjun made me promise," he says. "He said: if anything happens to me, give this to my sister. Only her. No one else."</p>
+      <p>You take it. Your palm is sweating. The drive is cold.</p>
+      <p>"They're watching me," Vikram says. "They've been watching me for months. I think they're watching you now too."</p>
+      <p>You look in the side mirror. At the far end of the parking level, a man in a grey shirt is leaning against a pillar. He is looking at his phone. He has been there since you got in the car.</p>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goTo(1)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+      <span class="progress">Chapter 3 of 6</span>
+      <button class="nav-btn primary" onclick="goTo(3)">Continue <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+    </div>
+  </div>
+
+  <div class="chapter" id="ch3">
+    <div class="ch-header">
+      <div class="ch-tag">Chapter 3</div>
+      <div class="ch-title">Inside the Drive</div>
+      <div class="ch-sub">Day 2 · 11 PM · Your flat</div>
+    </div>
+    <div class="story-body">
+      <p>You spend eighteen hours finding a laptop that has never been connected to your accounts, buying it with cash at a shop in Jayanagar, and carrying it home on a different route each time you double back to check if you're being followed.</p>
+      <p>You are not sure if you're being followed. That uncertainty is its own form of terror.</p>
+      <p>The drive is password-protected. You try Arjun's birthday, your mother's name, the name of the street you grew up on. Nothing opens it. Then you remember: Arjun used to hide things in plain sight. You type the Wi-Fi password from the flat you shared ten years ago. The one he always said was too obvious. <em>Priya1994koramangala.</em></p>
+      <p>The drive opens.</p>
+      <p>Inside: 847 files. Spreadsheets. PDFs. Screenshots of internal dashboards. A folder labelled VOICES containing forty-three audio recordings. And a video file, dated the night before he died, titled simply: <em>for you.</em></p>
+      <p>You press play.</p>
+      <p>Arjun is sitting at his desk. He looks thin. His eyes are very still. He speaks directly to the camera with the quiet, controlled voice of someone who has already made peace with something.</p>
+      <div class="tension">
+        <div class="log-label">Video log · Arjun Mehta · September 13, 2025 · 11:58 PM</div>
+        <div class="log-text">"Priya. If you're watching this, you already know what happened to me was not an accident. I need you to understand something: I am not asking you to do anything dangerous. I am asking you to survive. Take this drive. Don't open it on any device connected to you. Find the journalist — her name is in the CONTACTS folder. She already knows half of this story. She's been waiting for the second half for eight months. Give her the drive. Then disappear for a while. Go to Amma's house. Stay there. Don't trust anyone who comes to you first. Not the police. Not anyone from my office. Not anyone who seems too helpful too fast."</div>
+      </div>
+      <p>He pauses. He looks off-camera for a moment, like he heard something. Then he looks back.</p>
+      <p>"I'm sorry I didn't tell you any of this while I was alive. I was trying to protect you. I understand now that I was wrong. The only thing that actually protects you is the truth — getting it out, making it too big to bury."</p>
+      <p>He leans close to the camera. His voice drops.</p>
+      <p>"One more thing. The man who gave the order — he has a name. It's in the last file in the VERIFIED folder. I want you to know: he is not untouchable. Nobody is. I almost believed they were. That was my mistake. Don't make it yours."</p>
+      <p>The video ends.</p>
+      <p>You sit in the dark of your flat for a long time. Outside, the city hums. A generator somewhere starts and stops. Your phone lights up — a number you don't recognise. You let it ring. It rings nine times. It stops.</p>
+      <p>Then a text arrives.</p>
+      <div class="log-block">
+        <div class="log-label">SMS · Unknown sender</div>
+        <div class="log-text">We know you have the drive.<br>You have 24 hours to return it and forget everything.<br>After that, we stop asking nicely.</div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goTo(2)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+      <span class="progress">Chapter 4 of 6</span>
+      <button class="nav-btn primary" onclick="goTo(4)">Continue <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+    </div>
+  </div>
+
+  <div class="chapter" id="ch4">
+    <div class="ch-header">
+      <div class="ch-tag">Chapter 4</div>
+      <div class="ch-title">The Journalist</div>
+      <div class="ch-sub">Day 3 · 7:15 AM</div>
+    </div>
+    <div class="story-body">
+      <p>Her name is Sana Mirza. She writes for a publication that nobody powerful reads until the day they print something those people don't want printed. You find her contact in the CONTACTS folder on the drive — just an email address and a single sentence Arjun had written: <em>She is careful. She is honest. She is not afraid of them. Trust her.</em></p>
+      <p>You write to her from a temporary email address you create at an internet cafe in Sadashivanagar. You say only: <em>I am Arjun Mehta's sister. I have what he was going to give you. I need to meet in person.</em></p>
+      <p>She replies in four minutes. She names a coffee shop. She says: <em>Come alone. If you feel followed, walk past and keep walking. I'll find you.</em></p>
+      <p>The coffee shop is small and loud. You arrive ten minutes early. You order nothing. At 7:15, a woman sits across from you without asking. She is in her mid-thirties, wearing the kind of tired that comes from years of doing something that matters. She looks at you the way a doctor looks at a patient — careful, assessing, already thinking three steps ahead.</p>
+      <p>"You look exactly like him," she says. It is not a pleasantry. It is an observation.</p>
+      <p>You slide the drive across the table under your palm. She doesn't look at it. She looks at you.</p>
+      <p>"Before I take that," she says, "I need you to understand something. Once this story is published, there is no undoing it. The men on that drive have resources. They have lawyers. They have people who will come after the people around you. Your mother. Friends. Anyone they can use as pressure. I need to know you have thought about that."</p>
+      <p>"I've thought about it," you say.</p>
+      <p>"And?"</p>
+      <p>You think of Arjun on the video, leaning toward the camera in the last minutes of his life, telling you that nobody is untouchable. You think of a parking lot. A drive hidden under a seat for eight months. A man who waited because a dead man had asked him to.</p>
+      <p>"He spent the last six weeks of his life trying to make sure this reached you," you say. "I'm not going to be the reason it didn't."</p>
+      <p>She picks up the drive.</p>
+      <hr class="divider">
+      <p>What happens next moves faster than you expect. Sana's team works for eleven days. They verify every file, cross-reference every land record, authenticate every audio clip. They bring in a lawyer. They share the material with two international press partners for simultaneous publication.</p>
+      <p>On the morning of the twelfth day, you wake up to your phone flooding with notifications. The story is everywhere. Names. Numbers. Shell companies laid bare like dissected anatomy. The minister's office issues a denial that convinces nobody. Prism Solutions' CEO calls a press conference and says nothing in a great many words.</p>
+      <p>By noon, two arrests have been made.</p>
+      <p>By evening, the name in the last file of the VERIFIED folder — the name Arjun had saved for last, the name of the man who gave the order — is trending on every platform.</p>
+      <p>Your phone rings. This time it's a number you know. It's your mother. She is crying. You realise, with a jolt, that they are not the usual tears.</p>
+      <p>"They're saying on the news," she says. "They're saying what happened to Arjun — they're saying it wasn't an accident."</p>
+      <p>"I know, Amma," you say. "I know."</p>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goTo(3)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+      <span class="progress">Chapter 5 of 6</span>
+      <button class="nav-btn primary" onclick="goTo(5)">Continue <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+    </div>
+  </div>
+
+  <div class="chapter" id="ch5">
+    <div class="ch-header">
+      <div class="ch-tag">Chapter 5 — Epilogue</div>
+      <div class="ch-title">What He Left Behind</div>
+      <div class="ch-sub">Day 47</div>
+    </div>
+    <div class="story-body">
+      <p>The trial takes months. You are called as a witness once. You sit in a courtroom that smells of old wood and old files and you answer questions in a steady voice that surprises you.</p>
+      <p>Vikram moves cities. He sends you one message: <em>Still alive. Thank you.</em></p>
+      <p>You go back to the building one last time. Not to the parking lot. To the sixth floor. The police tape is gone. The flat has been cleared out. There is nothing inside except pale rectangles on the wall where Arjun's shelves used to be and the faint smell of him — coffee, old books, the particular soap he'd used since college.</p>
+      <p>You stand there for a few minutes. You don't cry. You already did that, alone, on the night you watched the video. You cried until there was nothing left and then you felt something settle in you like sediment after a flood — a quietness that is not peace exactly, but is not despair either.</p>
+      <p>It is the feeling of having done the one thing you could do.</p>
+      <p>On your way out, you notice something you missed the first time — scratched into the doorframe at eye level, in the small, neat hand he'd had since childhood:</p>
+      <div class="log-block">
+        <div class="log-label">Scratched into the doorframe — Arjun's handwriting</div>
+        <div class="log-text">"Truth is not brave.<br>Silence is the coward.<br>— A.M."</div>
+      </div>
+      <p>You photograph it with your phone. You send it to Sana. She publishes it the next morning, at the top of her follow-up piece, with no caption. None is needed.</p>
+      <hr class="divider">
+      <p>That night you sleep through until morning for the first time in forty-seven days.</p>
+      <p>Outside your window, Bengaluru hums in the dark. Autorickshaws, generators, someone cooking at midnight. The ordinary machinery of a city that does not know and does not stop.</p>
+      <p>Your phone is quiet. No unknown numbers. No warnings.</p>
+      <p>For now, at least — the silence feels like yours.</p>
+    </div>
+    <hr class="divider">
+    <div style="margin-bottom:8px;font-size:13px;color:var(--color-text-secondary)">Want to build this as a playable game?</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="nav-btn" onclick="console.log('Build this as a playable interactive choice game in an artifact')">Build as choice game ↗</button>
+      <button class="nav-btn" onclick="console.log('Write the full game design document for ECHO-7 with all branching paths')">Full design doc ↗</button>
+      <button class="nav-btn" onclick="console.log('Write chapter 2 of this story with more detail and new characters')">Expand the story ↗</button>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goTo(4)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+      <span class="progress">End of story</span>
+      <button class="nav-btn" onclick="goTo(0)"><i class="ti ti-refresh" aria-hidden="true"></i> Read again</button>
+    </div>
+  </div>
+</div>
 
 <script>
-    /* ==========================================
-       AUDIO ENGINE (Web Audio API)
-       Procedural Soundscapes. No External Files.
-       ========================================== */
-    let audioCtx;
-    let masterGain, droneOsc, droneFilter;
+    // Chapter Navigation Logic
+    const titles = ["Prologue", "Chapter 1", "Chapter 2", "Chapter 3", "Chapter 4", "Epilogue"];
+    const bar = document.getElementById('chapBar');
+    
+    titles.forEach((t, i) => {
+        const b = document.createElement('button');
+        b.className = 'ch-btn' + (i === 0 ? ' active' : '');
+        b.textContent = t;
+        b.onclick = () => goTo(i);
+        b.id = 'cb' + i;
+        bar.appendChild(b);
+    });
 
-    function initAudio() {
-        if (audioCtx) return;
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        masterGain = audioCtx.createGain();
-        masterGain.gain.value = 0.5;
-        masterGain.connect(audioCtx.destination);
-
-        // Ambient Low Drone (The Hum of the building)
-        droneOsc = audioCtx.createOscillator();
-        droneOsc.type = 'sawtooth';
-        droneOsc.frequency.value = 40; 
+    function goTo(n) {
+        // Hide all chapters
+        document.querySelectorAll('.chapter').forEach(c => c.classList.remove('visible'));
+        // Remove active state from all buttons
+        document.querySelectorAll('.ch-btn').forEach(b => b.classList.remove('active'));
         
-        droneFilter = audioCtx.createBiquadFilter();
-        droneFilter.type = 'lowpass';
-        droneFilter.frequency.value = 100;
-
-        const lfo = audioCtx.createOscillator();
-        lfo.type = 'sine';
-        lfo.frequency.value = 0.1;
-        const lfoGain = audioCtx.createGain();
-        lfoGain.gain.value = 50;
-
-        lfo.connect(lfoGain).connect(droneFilter.frequency);
-        droneOsc.connect(droneFilter).connect(masterGain);
+        // Show selected chapter and set active button
+        document.getElementById('ch' + n).classList.add('visible');
+        document.getElementById('cb' + n).classList.add('active');
         
-        droneOsc.start();
-        lfo.start();
+        // Scroll to top of the story wrap
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    function playSound(type) {
-        if (!audioCtx) return;
-        const now = audioCtx.currentTime;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain).connect(masterGain);
-
-        if (type === 'click') {
-            // UI Click
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(600, now);
-            osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
-            gain.gain.setValueAtTime(0.1, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
-            osc.start(now); osc.stop(now + 0.1);
-        } else if (type === 'glitch') {
-            // Unsettling Glitch/Static
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(150 + Math.random()*200, now);
-            osc.frequency.setValueAtTime(50, now + 0.1);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.linearRampToValueAtTime(0, now + 0.3);
-            osc.start(now); osc.stop(now + 0.3);
-        } else if (type === 'elevator') {
-            // Heavy metallic clank
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(100, now);
-            osc.frequency.exponentialRampToValueAtTime(20, now + 0.5);
-            gain.gain.setValueAtTime(0.4, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
-            osc.start(now); osc.stop(now + 0.5);
-        }
-    }
-
-    function updateAudioDistortion(level) {
-        if (!audioCtx) return;
-        // As distortion rises, drone gets higher and more erratic
-        droneFilter.frequency.rampTo(100 + (level * 20), 2);
-    }
-
-    /* ==========================================
-       VISUAL FX ENGINE (Canvas)
-       ========================================== */
-    const canvas = document.getElementById('fx-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    function initParticles() {
-        particles = [];
-        for (let i = 0; i < 150; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 2,
-                speedY: Math.random() * 0.5 + 0.1,
-                speedX: (Math.random() - 0.5) * 0.5,
-                opacity: Math.random() * 0.5
-            });
-        }
-    }
-
-    function animateFX() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Base atmospheric dust
-        let dist = gameState.distortion || 0;
-        let color = dist > 70 ? 'rgba(255, 50, 50,' : 'rgba(200, 200, 220,';
-
-        particles.forEach(p => {
-            p.y -= p.speedY;
-            p.x += p.speedX;
-            if (p.y < 0) p.y = canvas.height;
-            if (p.x < 0) p.x = canvas.width;
-            if (p.x > canvas.width) p.x = 0;
-
-            ctx.fillStyle = `${color} ${p.opacity})`;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size + (dist > 80 ? 1 : 0), 0, Math.PI * 2);
-            ctx.fill();
-        });
-
-        requestAnimationFrame(animateFX);
-    }
-    initParticles();
-    animateFX();
-
-    /* ==========================================
-       GAME STATE & LOGIC
-       ========================================== */
-    let gameState = {
-        node: 'intro',
-        time: '03:15 AM',
-        location: 'APT 402',
-        distortion: 0,
-        inventory: [],
-        evidence: [],
-        flags: {
-            knows_loop: false,
-            trust_management: 0,
-            trust_self: 0,
-            loop_iteration: localStorage.getItem('ashcroft_loops') ? parseInt(localStorage.getItem('ashcroft_loops')) : 1
-        }
-    };
-
-    let typingTimer;
-
-    function startGame() {
-        initAudio();
-        document.getElementById('main-menu').classList.add('hidden');
-        document.getElementById('game-container').classList.remove('hidden');
-        
-        // Meta-narrative trick: If they've played before, it's a loop.
-        if (gameState.flags.loop_iteration > 1) {
-            gameState.node = 'intro_loop';
-        }
-        
-        renderNode(gameState.node);
-    }
-
-    function loadGame() {
-        const saved = localStorage.getItem('ashcroft_save');
-        if (saved) {
-            gameState = JSON.parse(saved);
-            startGame();
-        } else {
-            alert("No saved record found.");
-        }
-    }
-
-    function saveGame() {
-        localStorage.setItem('ashcroft_save', JSON.stringify(gameState));
-        playSound('click');
-        
-        const btn = document.querySelector('footer button:nth-child(3)');
-        btn.innerText = "[ RECORD SAVED ]";
-        setTimeout(() => btn.innerText = "[ SAVE RECORD ]", 2000);
-    }
-
-    function addEvidence(id, title, desc) {
-        if (!gameState.evidence.find(e => e.id === id)) {
-            gameState.evidence.push({ id, title, desc });
-            gameState.distortion += 10;
-            playSound('glitch');
-            updateHUD();
-        }
-    }
-
-    function addInventory(item) {
-        if (!gameState.inventory.includes(item)) {
-            gameState.inventory.push(item);
-        }
-    }
-
-    function openModal(type) {
-        playSound('click');
-        document.getElementById('evidence-modal').classList.add('hidden');
-        document.getElementById('inventory-modal').classList.add('hidden');
-        
-        if (type === 'evidence') {
-            const list = document.getElementById('evidence-list');
-            if (gameState.evidence.length === 0) list.innerHTML = "No evidence collected. Reality remains undocumented.";
-            else {
-                list.innerHTML = gameState.evidence.map(e => `
-                    <div class="evidence-item">
-                        <div class="evidence-title">${e.title}</div>
-                        <div>${e.desc}</div>
-                    </div>
-                `).join('');
-            }
-            document.getElementById('evidence-modal').classList.remove('hidden');
-        } else {
-            const list = document.getElementById('inventory-list');
-            if (gameState.inventory.length === 0) list.innerHTML = "You carry nothing.";
-            else {
-                list.innerHTML = gameState.inventory.map(i => `
-                    <div class="evidence-item">> ${i}</div>
-                `).join('');
-            }
-            document.getElementById('inventory-modal').classList.remove('hidden');
-        }
-    }
-
-    function closeModals() {
-        playSound('click');
-        document.getElementById('evidence-modal').classList.add('hidden');
-        document.getElementById('inventory-modal').classList.add('hidden');
-    }
-
-    function updateHUD() {
-        document.getElementById('hud-location').innerText = gameState.location;
-        document.getElementById('hud-time').innerText = gameState.time;
-        
-        const statusEl = document.getElementById('hud-status');
-        if (gameState.distortion < 20) { statusEl.innerText = "STABLE"; statusEl.className = ""; }
-        else if (gameState.distortion < 60) { statusEl.innerText = "SHIFTING"; statusEl.className = ""; }
-        else if (gameState.distortion < 90) { statusEl.innerText = "UNSTABLE"; statusEl.className = "hud-distortion"; }
-        else { statusEl.innerText = "REALITY FAILURE"; statusEl.className = "glitch-anim"; }
-
-        updateAudioDistortion(gameState.distortion);
-    }
-
-    /* ==========================================
-       NARRATIVE DATA (The Script)
-       ========================================== */
-    const storyData = {
-        "intro": {
-            loc: "APT 402", time: "03:15 AM",
-            text: "You can't sleep. The hum of the building's wiring feels louder tonight. It vibrates in your teeth.\n\nYou moved into Ashcroft Heights three weeks ago. It's a cheap, concrete brutalist block. Eight floors. \n\nBut something is wrong. The hallway clock just stopped.",
-            choices: [
-                { text: "Look out the window", next: "intro_window" },
-                { text: "Leave the apartment", next: "hallway_f4" }
-            ]
-        },
-        "intro_loop": {
-            loc: "APT 402", time: "03:15 AM",
-            text: "You wake up gasping. \n\nThe hum of the building is deafening. You moved in... when did you move in? Three weeks ago? Or was it longer? \n\nThe hallway clock stopped. Just like it did before. A severe sense of Deja Vu washes over you.",
-            onEnter: () => { gameState.distortion += 20; },
-            choices: [
-                { text: "Leave the apartment", next: "hallway_f4" }
-            ]
-        },
-        "intro_window": {
-            loc: "APT 402", time: "03:16 AM",
-            text: "You look down at the street. It's empty. No cars, no streetlights. Just a dense, impenetrable gray fog swallowing the ground floor. It looks like the building is floating in a void.",
-            choices: [
-                { text: "Go to the hallway", next: "hallway_f4" }
-            ]
-        },
-        "hallway_f4": {
-            loc: "4TH FLOOR HALLWAY", time: "03:16 AM",
-            text: "The fluorescent lights flicker. The hallway seems longer than it did yesterday. The doors stretch down into the gloom. \n\nAt the end of the hall, the elevator doors are open. The interior light is amber. Waiting.",
-            choices: [
-                { text: "Approach the elevator", next: "elevator_first" },
-                { text: "Knock on your neighbor's door (403)", next: "neighbor_403" }
-            ]
-        },
-        "neighbor_403": {
-            loc: "4TH FLOOR HALLWAY", time: "03:16 AM",
-            text: "You knock on Mrs. Gable's door. No answer. \n\nYou try the knob. It's locked. But you notice something strange. The nameplate doesn't say GABLE anymore. It's blank. The metal is smooth, as if a name was never engraved there.",
-            onEnter: () => { 
-                addEvidence('blank_plate', 'Blank Nameplate', 'Mrs. Gable\'s nameplate on apt 403 has vanished completely.');
-            },
-            choices: [
-                { text: "Go to the elevator", next: "elevator_first" }
-            ]
-        },
-        "elevator_first": {
-            loc: "ELEVATOR", time: "03:17 AM",
-            text: "You step inside the cramped, wood-paneled elevator. The control panel has buttons 1 through 8. \n\nSuddenly, the panel sparks. A heavy mechanical grinding echoes from the shaft. The panel shifts, and a new button slides into place at the top.\n\n[ 9 ]",
-            onEnter: () => { playSound('elevator'); },
-            choices: [
-                { text: "Press 9", next: "floor_9_early" },
-                { text: "Press 1 (Lobby)", next: "lobby" },
-                { text: "Press B (Basement Archives)", next: "basement" }
-            ]
-        },
-        "floor_9_early": {
-            loc: "ELEVATOR", time: "03:17 AM",
-            text: "You press 9. \n\nThe button is cold. The elevator shudders, begins to rise... then halts violently. The lights go out. \n\nA voice comes over the intercom, synthesized and flat: \n\n'AUTHORIZATION DENIED. RESIDENT CYCLE INCOMPLETE.' \n\nThe elevator drops back down to the lobby.",
-            onEnter: () => { playSound('glitch'); gameState.distortion += 10; },
-            choices: [
-                { text: "Exit to Lobby", next: "lobby" }
-            ]
-        },
-        "lobby": {
-            loc: "LOBBY", time: "04:02 AM",
-            text: "The lobby is deserted. The front doors are chained shut from the inside with heavy padlocks. Through the glass, you only see the swirling gray fog.\n\nBehind the concierge desk is the Security Room door.",
-            choices: [
-                { text: "Check Security Room", next: "security_room" },
-                { text: "Go down to Basement", next: "basement" },
-                { text: "Return to Elevator", next: "elevator_hub" }
-            ]
-        },
-        "security_room": {
-            loc: "SECURITY", time: "04:15 AM",
-            text: "Banks of CRT monitors glow in the dark room. Most show static. \n\nOne monitor shows the 4th-floor hallway. You see a figure standing outside your door (402). The timestamp says it's happening right now. \n\nAnother monitor shows... the 9th floor?",
-            choices: [
-                { text: "Examine 4th Floor monitor", next: "sec_monitor_4" },
-                { text: "Examine 9th Floor monitor", next: "sec_monitor_9" },
-                { text: "Search the desk files", next: "sec_files" },
-                { text: "Leave", next: "lobby" }
-            ]
-        },
-        "sec_monitor_4": {
-            loc: "SECURITY", time: "04:16 AM",
-            text: "You look closely at the figure outside your door. \n\nIt's you. \n\nYou are watching yourself on the screen. But you are down here. The 'you' on the screen slowly turns and looks directly into the camera. The camera feed cuts to black.",
-            onEnter: () => { 
-                playSound('glitch'); 
-                addEvidence('camera_self', 'The Doppelganger', 'Saw myself on the 4th floor camera while I was in the lobby.');
-            },
-            choices: [
-                { text: "Back away from the monitors", next: "security_room" }
-            ]
-        },
-        "sec_monitor_9": {
-            loc: "SECURITY", time: "04:18 AM",
-            text: "The 9th floor feed is heavily corrupted. You can barely make out a long hallway, identical to the others, but the walls are lined with server racks and medical equipment instead of apartment doors. \n\nA massive vault door sits at the end.",
-            onEnter: () => { 
-                addEvidence('floor9_visual', 'Floor 9 Feed', 'Floor 9 exists. It looks like a laboratory or containment facility.');
-            },
-            choices: [
-                { text: "Back away", next: "security_room" }
-            ]
-        },
-        "sec_files": {
-            loc: "SECURITY", time: "04:20 AM",
-            text: "You rifle through the security logs. You find a 'Purge Schedule'. \n\nIt lists apartment numbers and dates. \n'Apt 403 (Gable) - Cycle End'\n'Apt 201 (Davis) - Cycle End'\n\nAt the bottom of the page, written in fresh red ink:\n'Apt 402 (You) - Tonight.'",
-            onEnter: () => {
-                gameState.flags.trust_management -= 10;
-                addEvidence('purge_list', 'The Purge Schedule', 'Management is erasing tenants. I am scheduled for tonight.');
-            },
-            choices: [
-                { text: "Take the Override Keycard from the desk", next: "take_keycard" },
-                { text: "Leave", next: "lobby" }
-            ]
-        },
-        "take_keycard": {
-            loc: "SECURITY", time: "04:22 AM",
-            text: "You pocket the yellow Management Override Keycard. This should give you access to the elevator's restricted systems.",
-            onEnter: () => { addInventory('Override Keycard'); },
-            choices: [
-                { text: "Leave Security", next: "lobby" }
-            ]
-        },
-        "basement": {
-            loc: "BASEMENT ARCHIVES", time: "04:30 AM",
-            text: "The basement is flooded with an inch of freezing water. Tall metal filing cabinets line the walls. \n\nThis is where they keep the old tenant records.",
-            choices: [
-                { text: "Search records for your name", next: "base_records_self" },
-                { text: "Search records for Floor 9", next: "base_records_9" },
-                { text: "Return to Elevator", next: "elevator_hub" }
-            ]
-        },
-        "base_records_self": {
-            loc: "BASEMENT", time: "04:35 AM",
-            text: "You find the folder for Apt 402. \n\nInside is a lease agreement. It has your photo, your signature. But the move-in date is from 1994. Thirty years ago. \n\nYou haven't aged a day. How is that possible?",
-            onEnter: () => { 
-                gameState.flags.trust_self -= 10;
-                addEvidence('old_lease', '1994 Lease', 'My lease is 30 years old. My memory of moving in three weeks ago is false.');
-            },
-            choices: [
-                { text: "Keep searching", next: "basement" }
-            ]
-        },
-        "base_records_9": {
-            loc: "BASEMENT", time: "04:38 AM",
-            text: "You find a locked cabinet marked 'ASHCROFT PROTOCOL'. You force it open. \n\nInside is a single architectural blueprint. It details the 9th floor. It's labeled 'MEMORY RE-SEQUENCING CHUte'. \n\nText reads: 'When residents discover the loop, they must be processed on Floor 9 and returned to day 1. Do not let them reach the core.'",
-            onEnter: () => { 
-                gameState.flags.knows_loop = true;
-                addEvidence('protocol', 'Ashcroft Protocol', 'The building is a trap. Residents are memory-wiped and looped.');
-            },
-            choices: [
-                { text: "Keep searching", next: "basement" }
-            ]
-        },
-        "elevator_hub": {
-            loc: "ELEVATOR", time: "05:00 AM",
-            text: "You are back in the elevator. The grinding noise is constant now. The building feels alive, breathing, shifting around you. \n\nThe 9 button is glowing brightly.",
-            choices: [
-                { text: "Swipe Override Keycard and press 9", next: "floor_9_final", condition: () => gameState.inventory.includes('Override Keycard') },
-                { text: "Press 1 (Lobby)", next: "lobby" },
-                { text: "Press B (Basement)", next: "basement" },
-                { text: "Accept your fate (Give Up)", next: "ending_loop" }
-            ]
-        },
-        // --- THE 9TH FLOOR (CLIMAX) ---
-        "floor_9_final": {
-            loc: "9TH FLOOR", time: "05:15 AM",
-            text: "The elevator doors open. \n\nThe air is freezing. The architecture here is entirely alien. Black metallic walls, glowing servers, and cables thick as pythons lining the floor. \n\nIn the center of the room is a chair with mechanical restraints. Beside it is a tape recorder.",
-            onEnter: () => { 
-                gameState.distortion = 100; // Max distortion
-                updateHUD();
-                playSound('elevator');
-            },
-            choices: [
-                { text: "Play the tape", next: "floor_9_tape" }
-            ]
-        },
-        "floor_9_tape": {
-            loc: "9TH FLOOR", time: "05:17 AM",
-            text: "You press play. \n\nIt's your voice. \n\n'If you're hearing this, you figured it out again. This is iteration... I don't even know anymore. They trap us here. They wipe us on this chair. We are batteries for the building. \n\nWhatever you do, don't sit in the chair. You have to break the console, or take over the system. Don't let the loop reset.'",
-            choices: [
-                { text: "Smash the control console (Escape)", next: "ending_escape" },
-                { text: "Sit in the chair and override the system (Sacrifice)", next: "ending_sacrifice" },
-                { text: "Plug yourself into the mainframe (Caretaker)", next: "ending_caretaker" },
-                { text: "Open the sealed vault door behind the chair (Beyond)", next: "ending_beyond", condition: () => gameState.evidence.length >= 4 }
-            ]
-        },
-        // --- ENDINGS ---
-        "ending_escape": {
-            loc: "OUTSIDE", time: "06:00 AM",
-            text: "ENDING 1: ESCAPE\n\nYou grab a heavy wrench and smash the main console. Sirens blare. The building shudders violently. You run to the stairs, bypassing the elevator, descending through the dark.\n\nYou hit the ground floor, shatter the glass doors, and run into the fog.\n\nYou are free. But as you look back, Ashcroft Heights stands tall. The others are still trapped inside. You survived, but you left them behind.",
-            onEnter: () => { incrementLoops(); },
-            choices: [ { text: "PLAY AGAIN", next: "intro" } ]
-        },
-        "ending_sacrifice": {
-            loc: "VOID", time: "--:--",
-            text: "ENDING 2: SACRIFICE\n\nYou sit in the chair. You don't let it wipe you. You hack the restraints, reversing the memory flow. You upload a fatal virus to the building's neural net.\n\nYou feel your own mind tearing apart as the building's systems overload. Down below, the padlocks unlock. The fog lifts. The tenants wake up and walk outside, free.\n\nAshcroft Heights collapses in on itself. You vanish with it.",
-            onEnter: () => { incrementLoops(); },
-            choices: [ { text: "PLAY AGAIN", next: "intro" } ]
-        },
-        "ending_caretaker": {
-            loc: "CORE", time: "ETERNITY",
-            text: "ENDING 3: THE CARETAKER\n\nYou realize the building needs an administrator. The previous one is gone. If the system crashes, everyone dies.\n\nYou plug the cables into your own spine. Your vision expands. You can see every room, every hallway, every tenant.\n\nYou are no longer a resident. You are Ashcroft Heights. You will maintain the loop. You will keep them safe, forever.",
-            onEnter: () => { incrementLoops(); },
-            choices: [ { text: "PLAY AGAIN", next: "intro" } ]
-        },
-        "ending_beyond": {
-            loc: "???", time: "???",
-            text: "ENDING 4: BEYOND FLOOR 9\n\nYou ignore the chair. You walk to the massive vault door you saw on the cameras. Armed with the total truth of the building, you spin the wheel.\n\nIt opens.\n\nThere is no room behind it. Only a vast, cosmic expanse. A massive eye, composed of twisting geometry and dead stars, looks down at you. You have walked out of the simulation and into the realm of the Architects. \n\nHumanity was never alone. We were just contained.",
-            onEnter: () => { incrementLoops(); },
-            choices: [ { text: "PLAY AGAIN", next: "intro" } ]
-        },
-        "ending_loop": {
-            loc: "CHAIR", time: "03:17 AM",
-            text: "ENDING 5: ENDLESS LOOP\n\nYou are tired. You are so tired. You sit on the floor of the elevator as it brings you up to the 9th floor automatically. \n\nFaceless figures drag you to the chair. The electrodes attach to your temples. There is a flash of bright, blinding white light.\n\n...",
-            onEnter: () => { incrementLoops(); },
-            choices: [ { text: "WAKE UP", next: "intro" } ]
-        }
-    };
-
-    function incrementLoops() {
-        let loops = localStorage.getItem('ashcroft_loops');
-        loops = loops ? parseInt(loops) + 1 : 2;
-        localStorage.setItem('ashcroft_loops', loops);
-        gameState.flags.loop_iteration = loops;
-    }
-
-    /* ==========================================
-       RENDER ENGINE
-       ========================================== */
-    function renderNode(nodeId) {
-        const node = storyData[nodeId];
-        if (!node) return;
-
-        gameState.node = nodeId;
-        gameState.location = node.loc;
-        gameState.time = node.time;
-
-        if (node.onEnter) node.onEnter();
-        updateHUD();
-
-        const storyTextEl = document.getElementById('story-text');
-        const choicesEl = document.getElementById('choices-container');
-        
-        // Clear previous
-        storyTextEl.innerHTML = '';
-        choicesEl.innerHTML = '';
-        clearTimeout(typingTimer);
-
-        // Apply Glitch FX to text if distortion is high
-        if (gameState.distortion > 70) {
-            storyTextEl.classList.add('glitch-anim');
-        } else {
-            storyTextEl.classList.remove('glitch-anim');
-        }
-
-        // Cinematic Typing Effect
-        let i = 0;
-        let textToType = node.text;
-        
-        function typeWriter() {
-            if (i < textToType.length) {
-                // If it's a line break, add it properly
-                if (textToType.charAt(i) === '\n') {
-                    storyTextEl.innerHTML += '<br>';
-                } else {
-                    storyTextEl.innerHTML += textToType.charAt(i);
-                }
-                
-                // Randomize typing speed slightly, add audio blip occasionally
-                if (i % 4 === 0) playSound('click');
-                
-                i++;
-                let speed = gameState.distortion > 50 ? (Math.random() * 20 + 10) : 30; // Faster/erratic if distorted
-                typingTimer = setTimeout(typeWriter, speed);
-            } else {
-                renderChoices(node.choices);
-            }
-        }
-        typeWriter();
-    }
-
-    function renderChoices(choices) {
-        const choicesEl = document.getElementById('choices-container');
-        choices.forEach(choice => {
-            // Check conditions
-            if (choice.condition && !choice.condition()) return;
-
-            const btn = document.createElement('button');
-            btn.className = 'choice-btn';
-            btn.innerHTML = `<span>> ${choice.text}</span>`;
-            
-            btn.onclick = () => {
-                playSound('click');
-                renderNode(choice.next);
-            };
-            choicesEl.appendChild(btn);
-        });
-    }
-
 </script>
+
 </body>
 </html>
