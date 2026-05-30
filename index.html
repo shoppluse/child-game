@@ -3,3744 +3,566 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Learn Python from zero to hero. Gamified platform with roadmap, playground, projects, and interview prep.">
-    <title>PyLearn: Professional Python Interactive Platform</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>CodeForge Studio</title>
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/fold/foldgutter.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/dialog/dialog.min.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* ==========================================
-           1. DESIGN SYSTEM & VARIABLES
-           ========================================== */
         :root {
-            /* Theme: Dark (Default) */
-            --bg-base: #07080d;
-            --bg-surface: rgba(18, 20, 32, 0.75);
-            --bg-surface-hover: rgba(26, 29, 46, 0.85);
-            --bg-input: #0e111a;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(99, 102, 241, 0.2);
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            
-            /* Gradients */
-            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-            --gradient-accent: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            --glass-blur: blur(12px) saturate(180%);
-            
-            /* Functional Colors */
-            --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.4);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --sidebar-width: 260px;
-            --header-height: 70px;
-            --transition-speed: 0.3s;
+            --bg-dark: #121212;
+            --bg-panel: #1e1e1e;
+            --bg-header: #252526;
+            --text-main: #cccccc;
+            --text-muted: #858585;
+            --accent: #007acc;
+            --accent-hover: #005f9e;
+            --border: #333333;
+            --danger: #f48771;
+            --success: #89d185;
+            --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
-        [data-theme="light"] {
-            /* Theme: Light */
-            --bg-base: #f4f6fa;
-            --bg-surface: rgba(255, 255, 255, 0.85);
-            --bg-surface-hover: rgba(255, 255, 255, 0.95);
-            --bg-input: #ffffff;
-            --border-color: rgba(0, 0, 0, 0.08);
-            --border-glow: rgba(99, 102, 241, 0.1);
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            
-            --primary-glow: rgba(99, 102, 241, 0.15);
-            --border-glow: rgba(99, 102, 241, 0.08);
-        }
-        /* ==========================================
-           2. RESET & LAYOUT BASE
-           ========================================== */
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary) var(--bg-input);
         }
+
         body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-base);
-            color: var(--text-primary);
-            min-height: 100vh;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            height: 100vh;
             display: flex;
-            overflow-x: hidden;
-            transition: background-color var(--transition-speed), color var(--transition-speed);
+            flex-direction: column;
+            overflow: hidden;
         }
-        /* Custom Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+
+        /* Top Navigation Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--bg-header);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border);
+            height: 50px;
         }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-input);
+
+        .brand {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #fff;
         }
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
+
+        .brand i { color: var(--accent); }
+
+        .toolbar-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .btn {
+            background-color: var(--bg-panel);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.8rem;
             border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #4f46e5;
-        }
-        a, button, input, textarea {
-            font-family: inherit;
-        }
-        button {
             cursor: pointer;
-            border: none;
-            background: none;
-        }
-        /* ==========================================
-           3. APP WRAPPER & NAVIGATION
-           ========================================== */
-        .app-container {
-            display: flex;
-            width: 100%;
-            position: relative;
-        }
-        /* Sidebar Design */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: var(--bg-surface);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border-right: 1px solid var(--border-color);
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-            transition: transform var(--transition-speed), width var(--transition-speed);
-        }
-        .logo-section {
-            height: var(--header-height);
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
-            border-bottom: 1px solid var(--border-color);
-            gap: 12px;
-        }
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--gradient-primary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-        .logo-text {
-            font-weight: 800;
-            font-size: 1.25rem;
-            letter-spacing: -0.5px;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .nav-links {
-            list-style: none;
-            padding: 24px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-        .nav-item button {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 12px 16px;
-            color: var(--text-secondary);
-            border-radius: 12px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            text-align: left;
-        }
-        .nav-item button svg {
-            width: 20px;
-            height: 20px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-            transition: stroke 0.2s ease;
-        }
-        .nav-item.active button,
-        .nav-item button:hover {
-            color: var(--text-primary);
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            box-shadow: 0 0 10px rgba(99, 102, 241, 0.05);
-        }
-        .nav-item.active button {
-            background: var(--gradient-primary);
-            border: none;
-            color: white;
-        }
-        .sidebar-footer {
-            padding: 16px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .user-summary-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .user-avatar-placeholder {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--gradient-accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: white;
-            font-size: 1.1rem;
-        }
-        .user-info {
-            overflow: hidden;
-        }
-        .user-level-title {
             font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .user-xp-sub {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-        /* Main View Shell */
-        .main-content {
-            margin-left: var(--sidebar-width);
-            flex-grow: 1;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            width: calc(100% - var(--sidebar-width));
-            transition: margin-left var(--transition-speed), width var(--transition-speed);
-        }
-        /* Top Header */
-        .top-header {
-            height: var(--header-height);
-            border-bottom: 1px solid var(--border-color);
-            background: var(--bg-surface);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-            position: sticky;
-            top: 0;
-            z-index: 99;
-        }
-        .search-container {
-            position: relative;
-            width: 320px;
-        }
-        .search-input {
-            width: 100%;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 10px 16px 10px 42px;
-            color: var(--text-primary);
-            font-size: 0.9rem;
+            gap: 0.4rem;
             transition: all 0.2s ease;
         }
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 10px var(--primary-glow);
+
+        .btn:hover {
+            background-color: #2a2d2e;
+            border-color: #454545;
         }
-        .search-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 18px;
-            height: 18px;
-            color: var(--text-muted);
-            pointer-events: none;
+
+        .btn.primary {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
         }
-        .header-controls {
+
+        .btn.primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .device-toggles {
             display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .xp-pill {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.25);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--primary);
-        }
-        .xp-pill svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-        .theme-toggle {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            padding: 8px;
-            border-radius: 12px;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-        .theme-toggle:hover {
-            color: var(--text-primary);
-            border-color: var(--primary);
-        }
-        .theme-toggle svg {
-            width: 20px;
-            height: 20px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-        }
-        /* View sections styling */
-        .view-section {
-            padding: 32px;
-            flex-grow: 1;
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
-        .view-section.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        /* ==========================================
-           4. VIEW: DASHBOARD
-           ========================================== */
-        .dashboard-header {
-            margin-bottom: 32px;
-        }
-        .dashboard-header h1 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 6px;
-            background: linear-gradient(135deg, var(--text-primary) 50%, var(--text-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-        .stat-card {
-            background: var(--bg-surface);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 24px;
-            position: relative;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 4px;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            transition: transform 0.2s ease, border-color 0.2s ease;
         }
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--border-glow);
-        }
-        .stat-icon {
-            width: 54px;
-            height: 54px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            flex-shrink: 0;
-        }
-        .stat-icon.primary { background: var(--gradient-primary); }
-        .stat-icon.accent { background: var(--gradient-accent); }
-        .stat-icon.success { background: var(--gradient-success); }
-        .stat-icon.warning { background: var(--gradient-warning); }
-        .stat-icon svg {
-            width: 26px;
-            height: 26px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-        }
-        .stat-details {
-            display: flex;
-            flex-direction: column;
-        }
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1.2;
-        }
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-        .dashboard-main-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 24px;
-        }
-        .chart-card, .achievements-card {
-            background: var(--bg-surface);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 28px;
-        }
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .card-title svg {
-            width: 22px;
-            height: 22px;
-            stroke: var(--primary);
-            fill: none;
-            stroke-width: 2;
-        }
-        /* Custom SVG Visual Progress Arc */
-        .progress-radial-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            width: 100%;
-            height: 220px;
-        }
-        .radial-svg {
-            transform: rotate(-90deg);
-        }
-        .radial-bg {
-            fill: none;
-            stroke: var(--border-color);
-            stroke-width: 14;
-        }
-        .radial-progress {
-            fill: none;
-            stroke: url(#progressGrad);
-            stroke-width: 14;
-            stroke-linecap: round;
-            stroke-dasharray: 565.48; /* 2 * PI * r (r=90) */
-            stroke-dashoffset: 565.48;
-            transition: stroke-dashoffset 1s ease-in-out;
-        }
-        .radial-percentage {
-            position: absolute;
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .radial-percentage span {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-        /* Badge Collection styling */
-        .badge-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-        .badge-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            opacity: 0.4;
-            transition: all 0.3s ease;
-            filter: grayscale(1);
-        }
-        .badge-item.unlocked {
-            opacity: 1;
-            filter: grayscale(0);
-        }
-        .badge-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
-            border: 2px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 8px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        .badge-item.unlocked .badge-icon {
-            background: var(--gradient-primary);
-            border-color: transparent;
-            box-shadow: 0 0 15px var(--primary-glow);
-            animation: floatBadge 3s ease-in-out infinite;
-        }
-        .badge-icon svg {
-            width: 28px;
-            height: 28px;
-            stroke: white;
-            fill: none;
-            stroke-width: 2;
-        }
-        .badge-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            max-width: 75px;
-        }
-        @keyframes floatBadge {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        /* ==========================================
-           5. VIEW: ROADMAP
-           ========================================== */
-        .roadmap-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            position: relative;
-            padding: 20px 0;
-        }
-        .roadmap-timeline {
-            position: absolute;
-            left: 50%;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--border-color);
-            transform: translateX(-50%);
-            z-index: 1;
-        }
-        .roadmap-timeline-progress {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: var(--gradient-primary);
-            height: 0%;
-            transition: height 0.6s ease;
-        }
-        .roadmap-module {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-            position: relative;
-            z-index: 2;
-            width: 100%;
-        }
-        .roadmap-module:nth-child(even) {
-            flex-direction: row-reverse;
-        }
-        .roadmap-card {
-            width: 45%;
-            background: var(--bg-surface);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 2px solid var(--border-color);
-            border-radius: 20px;
-            padding: 24px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            position: relative;
-        }
-        .roadmap-card::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 20px;
-            height: 2px;
-            background: var(--border-color);
-            z-index: -1;
-        }
-        .roadmap-module:nth-child(odd) .roadmap-card::after {
-            right: -20px;
-            transform: translateY(-50%);
-        }
-        .roadmap-module:nth-child(even) .roadmap-card::after {
-            left: -20px;
-            transform: translateY(-50%);
-        }
-        .roadmap-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            border-color: var(--primary);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.15);
-        }
-        .roadmap-card.completed {
-            border-color: var(--success);
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
-        }
-        .roadmap-card.completed .module-number {
-            background: var(--gradient-success);
-        }
-        .roadmap-dot {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--bg-base);
-            border: 4px solid var(--border-color);
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 3;
-            transition: all 0.3s ease;
-        }
-        .roadmap-module.completed .roadmap-dot {
-            background: var(--success);
-            border-color: var(--bg-base);
-            box-shadow: 0 0 10px var(--success);
-        }
-        .roadmap-module.active-node .roadmap-dot {
-            background: var(--primary);
-            border-color: var(--bg-base);
-            box-shadow: 0 0 12px var(--primary);
-            animation: pulseNode 2s infinite;
-        }
-        @keyframes pulseNode {
-            0% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.15); box-shadow: 0 0 20px var(--primary); }
-            100% { transform: translateX(-50%) scale(1); }
-        }
-        .module-number {
-            display: inline-block;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            background: var(--gradient-primary);
-            color: white;
-            margin-bottom: 12px;
-        }
-        .module-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-        .module-desc {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-        /* ==========================================
-           6. LESSON ENGINE (MODAL / OVERLAY VIEW)
-           ========================================== */
-        .lesson-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(7, 8, 13, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 200;
-            display: none;
-            overflow-y: auto;
-            padding: 40px;
-        }
-        .lesson-container {
-            max-width: 1100px;
-            margin: 0 auto;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            min-height: calc(100vh - 80px);
-        }
-        .lesson-header {
-            padding: 24px 32px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .lesson-close-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: all 0.2s ease;
-        }
-        .lesson-close-btn:hover {
-            background: var(--danger);
-            color: white;
-            border-color: transparent;
-        }
-        .lesson-workspace {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            flex-grow: 1;
-            height: calc(100vh - 170px);
-        }
-        /* Left Pane: Concept Material */
-        .lesson-materials {
-            padding: 32px;
-            overflow-y: auto;
-            border-right: 1px solid var(--border-color);
-        }
-        .lesson-section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: var(--text-primary);
-        }
-        .lesson-text {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 24px;
-        }
-        .lesson-text p {
-            margin-bottom: 14px;
-        }
-        .visual-block {
-            background: rgba(99, 102, 241, 0.05);
-            border-left: 4px solid var(--primary);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 24px;
-        }
-        .visual-block h4 {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-        .visual-block p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-        .key-note {
-            background: rgba(245, 158, 11, 0.05);
-            border-left: 4px solid var(--warning);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 24px;
-        }
-        .key-note h4 {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--warning);
-            margin-bottom: 8px;
-        }
-        .interactive-section {
-            margin-top: 32px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 24px;
-        }
-        /* Right Pane: Interactive Elements (Quizzes & Challenges) */
-        .lesson-interaction {
-            padding: 32px;
-            background: rgba(7, 8, 13, 0.3);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-        /* Mini Quiz Card layout */
-        .quiz-panel {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 28px;
-        }
-        .quiz-question {
-            font-size: 1.05rem;
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: var(--text-primary);
-        }
-        .quiz-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 18px;
-        }
-        .option-btn {
-            width: 100%;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px 18px;
-            text-align: left;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            transition: all 0.2s ease;
-        }
-        .option-btn:hover {
-            color: var(--text-primary);
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.05);
-        }
-        .option-btn.selected {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.15);
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-        .option-btn.correct {
-            border-color: var(--success);
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--text-primary);
-        }
-        .option-btn.wrong {
-            border-color: var(--danger);
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--text-primary);
-        }
-        /* Coding Challenge in Module details */
-        .challenge-panel {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .challenge-prompt {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-        .challenge-instructions {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 14px;
-            line-height: 1.4;
-        }
-        .lesson-code-editor {
-            flex-grow: 1;
-            min-height: 200px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            margin-bottom: 14px;
-        }
-        .editor-header {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 8px 16px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .editor-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .editor-textarea {
-            width: 100%;
-            flex-grow: 1;
+
+        .device-btn {
             background: transparent;
             border: none;
-            resize: none;
-            padding: 16px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            color: #38bdf8;
-            outline: none;
-            line-height: 1.5;
+            color: var(--text-muted);
+            padding: 0.4rem 0.8rem;
+            cursor: pointer;
         }
-        .editor-actions {
-            padding: 16px 0;
+
+        .device-btn.active {
+            background: var(--border);
+            color: #fff;
+        }
+
+        /* Main Workspace */
+        .workspace {
             display: flex;
-            gap: 12px;
+            flex: 1;
+            height: calc(100vh - 50px);
+            overflow: hidden;
         }
-        .btn {
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-        }
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
-        }
-        .btn-secondary {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-        }
-        .btn-secondary:hover {
-            color: var(--text-primary);
-            border-color: var(--text-secondary);
-        }
-        .challenge-console {
-            background: #020306;
-            border-radius: 10px;
-            padding: 14px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: #a7f3d0;
-            min-height: 80px;
-            border: 1px solid rgba(16, 185, 129, 0.15);
-            white-space: pre-wrap;
-            overflow-y: auto;
-        }
-        /* ==========================================
-           7. VIEW: CODE PLAYGROUND
-           ========================================== */
-        .playground-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 24px;
-            height: calc(100vh - 170px);
-        }
-        .playground-sidebar {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 20px;
+
+        /* Left Panel - Preview */
+        .panel-preview {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
+            background-color: #000;
+            position: relative;
         }
-        .playground-examples-title {
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-        .example-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .example-item {
-            width: 100%;
-            text-align: left;
-            padding: 10px 14px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-secondary);
+
+        .preview-header {
+            background-color: var(--bg-header);
+            padding: 0.4rem 1rem;
             font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-        .example-item:hover {
-            color: var(--text-primary);
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.05);
-        }
-        .playground-workspace {
-            display: grid;
-            grid-template-rows: 1fr 150px;
-            gap: 16px;
-        }
-        .playground-editor-container {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .playground-editor {
-            flex-grow: 1;
-            background: var(--bg-input);
-            padding: 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.95rem;
-            color: #67e8f9;
-            border: none;
-            resize: none;
-            outline: none;
-            line-height: 1.6;
-        }
-        .playground-console-container {
-            background: #020306;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .playground-console-header {
-            background: rgba(0,0,0,0.4);
-            padding: 8px 20px;
-            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .iframe-container {
+            flex: 1;
+            display: flex;
             align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, #2a2a2a 0%, #121212 100%);
+            overflow: auto;
+            padding: 1rem;
         }
-        .playground-console {
-            flex-grow: 1;
-            padding: 16px 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: #34d399;
-            overflow-y: auto;
-            white-space: pre-wrap;
+
+        iframe {
+            background-color: #fff;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: width 0.3s, height 0.3s;
+            width: 100%;
+            height: 100%;
         }
-        /* ==========================================
-           8. VIEW: PROJECTS
-           ========================================== */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-        }
-        .project-card {
-            background: var(--bg-surface);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 28px;
+
+        /* Console Panel */
+        .console-panel {
+            height: 200px;
+            background-color: var(--bg-panel);
+            border-top: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
         }
-        .project-card.locked {
-            opacity: 0.6;
+
+        .console-header {
+            padding: 0.3rem 1rem;
+            background-color: var(--bg-header);
+            font-size: 0.8rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
         }
-        .project-card.locked::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(7, 8, 13, 0.4);
+
+        .console-output {
+            flex: 1;
+            padding: 0.5rem;
+            overflow-y: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+        }
+
+        .log-entry { margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid #333; }
+        .log-error { color: var(--danger); }
+        .log-warn { color: #cca700; }
+        
+        /* Resizer */
+        .resizer {
+            width: 6px;
+            background-color: var(--bg-header);
+            cursor: col-resize;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
             z-index: 10;
         }
-        .project-lock-badge {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--text-muted);
-            z-index: 11;
+        .resizer:hover, .resizer:active {
+            background-color: var(--accent);
         }
-        .project-lock-badge svg {
-            width: 14px;
-            height: 14px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2.5;
-        }
-        .project-card:not(.locked):hover {
-            transform: translateY(-6px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 25px var(--primary-glow);
-        }
-        .project-diff {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--warning);
-            margin-bottom: 12px;
-        }
-        .project-diff.easy { color: var(--success); }
-        .project-diff.medium { color: var(--warning); }
-        .project-diff.hard { color: var(--danger); }
-        .project-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--text-primary);
-        }
-        .project-desc {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin-bottom: 20px;
-            flex-grow: 1;
-        }
-        .project-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 24px;
-        }
-        .project-tag {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 4px 8px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-        .project-unlock-req {
-            font-size: 0.75rem;
-            color: var(--primary);
-            font-weight: 600;
-            margin-top: auto;
-        }
-        /* ==========================================
-           9. VIEW: INTERVIEW PREP
-           ========================================== */
-        .interview-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 32px;
-        }
-        .interview-categories {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 16px;
+
+        /* Right Panel - Code Editor */
+        .panel-editor {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            height: fit-content;
+            background-color: var(--bg-panel);
+            width: 50%;
         }
-        .category-tab {
-            width: 100%;
+
+        .tabs {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            color: var(--text-secondary);
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--border);
         }
-        .category-tab:hover, .category-tab.active {
-            color: var(--text-primary);
-            background: rgba(99, 102, 241, 0.08);
-        }
-        .category-tab.active {
-            background: var(--primary);
-            color: white;
-        }
-        .question-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .question-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            transition: border-color 0.2s ease;
-        }
-        .question-card:hover {
-            border-color: var(--border-glow);
-        }
-        .question-text {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-        }
-        .reveal-btn {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-        .reveal-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-        .answer-panel {
-            display: none;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            animation: slideDown 0.3s ease;
-        }
-        .answer-panel.visible {
-            display: block;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        /* ==========================================
-           10. VIEW: NOTES
-           ========================================== */
-        .notes-layout {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 28px;
-            height: calc(100vh - 170px);
-        }
-        .notes-form-container {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .notes-form-container input,
-        .notes-form-container textarea,
-        .notes-form-container select {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px 16px;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            outline: none;
-            transition: border-color 0.2s ease;
-        }
-        .notes-form-container input:focus,
-        .notes-form-container textarea:focus,
-        .notes-form-container select:focus {
-            border-color: var(--primary);
-        }
-        .notes-form-container textarea {
-            resize: none;
-            flex-grow: 1;
-            min-height: 180px;
-        }
-        .notes-list-container {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .notes-list {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            overflow-y: auto;
-        }
-        .note-card {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-        .note-card:hover {
-            transform: scale(1.01);
-            border-color: var(--border-glow);
-        }
-        .note-tag {
-            align-self: flex-start;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 3px 8px;
-            background: rgba(99, 102, 241, 0.15);
-            color: var(--primary);
-            border-radius: 6px;
-            margin-bottom: 8px;
-        }
-        .note-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 6px;
-        }
-        .note-body {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            white-space: pre-wrap;
-            margin-bottom: 12px;
-        }
-        .note-actions {
-            display: flex;
-            gap: 12px;
-            align-self: flex-end;
-        }
-        .note-btn {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            transition: color 0.2s ease;
-        }
-        .note-btn:hover {
-            color: var(--primary);
-        }
-        .note-btn.delete:hover {
-            color: var(--danger);
-        }
-        /* ==========================================
-           11. VIEW: SETTINGS
-           ========================================== */
-        .settings-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-        }
-        .settings-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .settings-info h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-        .settings-info p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        /* Toggle switch */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 48px;
-            height: 24px;
-        }
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
+
+        .tab {
+            padding: 0.6rem 1.2rem;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--bg-input);
-            border: 1px solid var(--border-color);
-            transition: .3s;
-            border-radius: 24px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 3px;
-            bottom: 3px;
-            background-color: var(--text-secondary);
-            transition: .3s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: var(--primary);
-        }
-        input:checked + .slider:before {
-            transform: translateX(24px);
-            background-color: white;
-        }
-        /* ==========================================
-           12. LEVEL-UP POPUP & CONFETTI
-           ========================================== */
-        .overlay-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(7, 8, 13, 0.85);
-            backdrop-filter: blur(10px);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-right: 1px solid var(--border);
+            border-bottom: 2px solid transparent;
             display: flex;
             align-items: center;
-            justify-content: center;
-            z-index: 300;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
+            gap: 0.5rem;
         }
-        .overlay-popup.active {
-            opacity: 1;
-            pointer-events: auto;
+
+        .tab:hover { color: var(--text-main); }
+        .tab.active {
+            color: #fff;
+            background-color: var(--bg-panel);
+            border-bottom-color: var(--accent);
         }
-        .levelup-card {
-            background: var(--bg-surface);
-            border: 2px solid var(--primary);
-            border-radius: 28px;
-            padding: 40px;
-            text-align: center;
-            max-width: 440px;
-            width: 90%;
-            box-shadow: 0 0 40px rgba(99, 102, 241, 0.4);
-            transform: scale(0.8);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+        .tab-icon.html { color: #e34c26; }
+        .tab-icon.css { color: #264de4; }
+        .tab-icon.js { color: #f0db4f; }
+
+        .editor-container {
+            flex: 1;
             position: relative;
-            overflow: hidden;
         }
-        .overlay-popup.active .levelup-card {
-            transform: scale(1);
-        }
-        .levelup-badge {
-            width: 120px;
-            height: 120px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            box-shadow: 0 0 30px var(--primary-glow);
-            animation: pulseBadge 2s infinite;
-        }
-        .levelup-badge svg {
-            width: 58px;
-            height: 58px;
-            stroke: white;
-            fill: none;
-            stroke-width: 2.5;
-        }
-        .levelup-card h2 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin-bottom: 8px;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .levelup-card p {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-        }
-        /* Floating XP Effect */
-        .xp-float {
+
+        .editor-wrapper {
             position: absolute;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--success);
-            pointer-events: none;
-            z-index: 1000;
-            animation: xpFloatUp 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-        @keyframes xpFloatUp {
-            0% { transform: translateY(0) scale(0.8); opacity: 0; }
-            20% { opacity: 1; }
-            100% { transform: translateY(-60px) scale(1.1); opacity: 0; }
-        }
-        /* Search overlay dropdown */
-        .search-results-overlay {
-            position: absolute;
-            top: calc(var(--header-height) - 10px);
-            left: 32px;
-            width: 320px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            max-height: 350px;
-            overflow-y: auto;
-            z-index: 101;
+            top: 0; left: 0; right: 0; bottom: 0;
             display: none;
         }
-        .search-result-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-        .search-result-item:hover {
-            background-color: var(--bg-surface-hover);
-        }
-        .search-result-title {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text-primary);
-        }
-        .search-result-type {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--primary);
-            margin-top: 4px;
-        }
-        /* ==========================================
-           13. RESPONSIVE MEDIA QUERIES
-           ========================================== */
-        @media (max-width: 1024px) {
-            .dashboard-main-row {
-                grid-template-columns: 1fr;
-            }
-            .playground-layout {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-            .playground-sidebar {
-                max-height: 200px;
-            }
-            .notes-layout {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-            .notes-form-container {
-                margin-bottom: 24px;
-            }
-            .interview-layout {
-                grid-template-columns: 1fr;
-            }
-            .lesson-workspace {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-            .lesson-materials {
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
-            }
-        }
-        @media (max-width: 768px) {
-            :root {
-                --sidebar-width: 0px;
-            }
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .sidebar.mobile-open {
-                transform: translateX(0);
-                width: 260px;
-            }
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-            .top-header {
-                padding: 0 16px;
-            }
-            .roadmap-timeline {
-                left: 20px;
-            }
-            .roadmap-module {
-                flex-direction: row !important;
-                margin-bottom: 30px;
-            }
-            .roadmap-card {
-                width: calc(100% - 50px);
-                margin-left: 40px;
-            }
-            .roadmap-card::after {
-                left: -20px !important;
-                right: auto !important;
-            }
-            .roadmap-dot {
-                left: 20px;
-            }
-            .view-section {
-                padding: 20px;
-            }
+
+        .editor-wrapper.active { display: block; }
+
+        /* CodeMirror Overrides */
+        .CodeMirror {
+            height: 100%;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <!-- Radial progress bar gradient definition -->
-    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
-        <defs>
-            <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#6366f1" />
-                <stop offset="50%" stop-color="#a855f7" />
-                <stop offset="100%" stop-color="#ec4899" />
-            </linearGradient>
-        </defs>
-    </svg>
-    <div class="app-container">
-        <!-- ==========================================
-           A. SIDEBAR COMPONENT
-           ========================================== -->
-        <aside class="sidebar" id="appSidebar">
-            <div class="logo-section">
-                <div class="logo-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2 17L12 22L22 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2 12L12 17L22 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <span class="logo-text">PyLearn</span>
+
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid fa-fire-flame-curved"></i> CodeForge Studio
+        </div>
+        
+        <div class="toolbar-group">
+            <div class="device-toggles">
+                <button class="device-btn active" onclick="setDevice('desktop')" title="Desktop"><i class="fa-solid fa-desktop"></i></button>
+                <button class="device-btn" onclick="setDevice('tablet')" title="Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
+                <button class="device-btn" onclick="setDevice('mobile')" title="Mobile"><i class="fa-solid fa-mobile-screen"></i></button>
+            </div>
+        </div>
+
+        <div class="toolbar-group">
+            <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                <input type="checkbox" id="autoRun" checked> Auto Run
+            </label>
+            <button class="btn" onclick="saveProject()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+            <button class="btn" onclick="exportProject()"><i class="fa-solid fa-download"></i> Export</button>
+            <button class="btn primary" onclick="runCode()"><i class="fa-solid fa-play"></i> Run</button>
+        </div>
+    </nav>
+
+    <div class="workspace">
+        
+        <div class="panel-preview" id="leftPanel">
+            <div class="preview-header">
+                <span><i class="fa-solid fa-eye"></i> Live Output</span>
+                <span id="previewSize">Responsive</span>
             </div>
             
-            <ul class="nav-links">
-                <li class="nav-item active" data-view="dashboard">
-                    <button>
-                        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                        Dashboard
-                    </button>
-                </li>
-                <li class="nav-item" data-view="roadmap">
-                    <button>
-                        <svg viewBox="0 0 24 24"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon><line x1="9" y1="3" x2="9" y2="18"></line><line x1="15" y1="6" x2="15" y2="21"></line></svg>
-                        Roadmap
-                    </button>
-                </li>
-                <li class="nav-item" data-view="playground">
-                    <button>
-                        <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                        Playground
-                    </button>
-                </li>
-                <li class="nav-item" data-view="projects">
-                    <button>
-                        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-                        Projects
-                    </button>
-                </li>
-                <li class="nav-item" data-view="interview">
-                    <button>
-                        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                        Interview Prep
-                    </button>
-                </li>
-                <li class="nav-item" data-view="notes">
-                    <button>
-                        <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                        Study Notes
-                    </button>
-                </li>
-                <li class="nav-item" data-view="settings">
-                    <button>
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                        Settings
-                    </button>
-                </li>
-            </ul>
-            <div class="sidebar-footer">
-                <div class="user-summary-card">
-                    <div class="user-avatar-placeholder" id="avatarLetter">U</div>
-                    <div class="user-info">
-                        <div class="user-level-title" id="sidebarLevel">Beginner</div>
-                        <div class="user-xp-sub" id="sidebarXP">0 XP</div>
-                    </div>
-                </div>
+            <div class="iframe-container">
+                <iframe id="preview-frame" sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin allow-popups allow-forms"></iframe>
             </div>
-        </aside>
-        <!-- ==========================================
-           B. MAIN APP WINDOW
-           ========================================== -->
-        <main class="main-content">
-            <!-- Header Panel -->
-            <header class="top-header">
-                <div class="search-container">
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" class="search-input" placeholder="Search lessons, projects, questions..." id="globalSearch">
-                    <div class="search-results-overlay" id="searchResults"></div>
+
+            <div class="console-panel">
+                <div class="console-header">
+                    <span><i class="fa-solid fa-terminal"></i> Console</span>
+                    <button style="background:none; border:none; color:var(--text-muted); cursor:pointer;" onclick="clearConsole()"><i class="fa-solid fa-ban"></i></button>
                 </div>
-                <div class="header-controls">
-                    <div class="xp-pill">
-                        <svg viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z"></path></svg>
-                        <span id="headerXPCount">0 XP</span>
-                    </div>
-                    <button class="theme-toggle" id="themeToggler" aria-label="Toggle Theme">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                    </button>
-                </div>
-            </header>
-            <!-- 1. VIEW: DASHBOARD -->
-            <section class="view-section active" id="view-dashboard">
-                <div class="dashboard-header">
-                    <h1 id="dashboardWelcome">Welcome back, Explorer!</h1>
-                    <p style="color: var(--text-secondary);">Your Python learning analytics and progress updates.</p>
-                </div>
-                <div class="dashboard-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon primary">
-                            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                        </div>
-                        <div class="stat-details">
-                            <span class="stat-value" id="dashboardXP">0</span>
-                            <span class="stat-label">Total XP Earned</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon accent">
-                            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                        </div>
-                        <div class="stat-details">
-                            <span class="stat-value" id="dashboardLessons">0/15</span>
-                            <span class="stat-label">Lessons Done</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon success">
-                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
-                        </div>
-                        <div class="stat-details">
-                            <span class="stat-value" id="dashboardChallenges">0</span>
-                            <span class="stat-label">Coding Challenges</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon warning">
-                            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
-                        </div>
-                        <div class="stat-details">
-                            <span class="stat-value" id="dashboardLevel">Level 1</span>
-                            <span class="stat-label">Current Level</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="dashboard-main-row">
-                    <div class="chart-card">
-                        <h2 class="card-title">
-                            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                            Roadmap Progress Breakdown
-                        </h2>
-                        <div class="progress-radial-container">
-                            <svg width="200" height="200" class="radial-svg">
-                                <circle cx="100" cy="100" r="90" class="radial-bg"/>
-                                <circle cx="100" cy="100" r="90" class="radial-progress" id="roadmapProgressBar"/>
-                            </svg>
-                            <div class="radial-percentage">
-                                <span id="radialPercentText">0%</span>
-                                <span>Complete</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="achievements-card">
-                        <h2 class="card-title">
-                            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
-                            Achievements
-                        </h2>
-                        <div class="badge-list" id="achievementsGrid">
-                            <!-- Badges will be generated dynamically -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- 2. VIEW: ROADMAP -->
-            <section class="view-section" id="view-roadmap">
-                <div class="dashboard-header">
-                    <h1>Python Learning Roadmap</h1>
-                    <p style="color: var(--text-secondary);">Start your journey from Introduction to Capstone projects and Interview prep.</p>
-                </div>
-                <div class="roadmap-container">
-                    <div class="roadmap-timeline">
-                        <div class="roadmap-timeline-progress" id="roadmapLineProgress"></div>
-                    </div>
-                    <div id="roadmapFlow">
-                        <!-- Module blocks will be generated dynamically -->
-                    </div>
-                </div>
-            </section>
-            <!-- 3. VIEW: CODE PLAYGROUND -->
-            <section class="view-section" id="view-playground">
-                <div class="dashboard-header">
-                    <h1>Simulated Code Playground</h1>
-                    <p style="color: var(--text-secondary);">Write basic Python code, run tests, and experiment with variables and structures.</p>
-                </div>
-                <div class="playground-layout">
-                    <div class="playground-sidebar">
-                        <h3 class="playground-examples-title">Preloaded Examples</h3>
-                        <div class="example-list" id="playgroundExampleList">
-                            <!-- Populated dynamically -->
-                        </div>
-                    </div>
-                    <div class="playground-workspace">
-                        <div class="playground-editor-container">
-                            <div class="editor-header">
-                                <span class="editor-title">simulated_editor.py</span>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);">Python Syntax Simulation</span>
-                            </div>
-                            <textarea class="playground-editor" id="playgroundTextarea" spellcheck="false" placeholder="# Write your Python code here..."></textarea>
-                        </div>
-                        <div class="playground-console-container">
-                            <div class="playground-console-header">
-                                <span class="editor-title" style="color: var(--text-muted);">Simulated Output Console</span>
-                                <div style="display: flex; gap: 8px;">
-                                    <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;" id="btnPlaygroundReset">Reset Code</button>
-                                    <button class="btn btn-primary" style="padding: 4px 10px; font-size: 0.75rem;" id="btnPlaygroundRun">Run Code</button>
-                                </div>
-                            </div>
-                            <div class="playground-console" id="playgroundConsole">>>> Welcome to PyLearn interactive environment. Hit Run!</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- 4. VIEW: PROJECTS -->
-            <section class="view-section" id="view-projects">
-                <div class="dashboard-header">
-                    <h1>Practical Capstone Projects</h1>
-                    <p style="color: var(--text-secondary);">Unlock guided blueprints to construct production-ready tools as you progress.</p>
-                </div>
-                <div class="projects-grid" id="projectsGrid">
-                    <!-- Project cards will be populated dynamically -->
-                </div>
-            </section>
-            <!-- 5. VIEW: INTERVIEW PREP -->
-            <section class="view-section" id="view-interview">
-                <div class="dashboard-header">
-                    <h1>Technical Interview Prep</h1>
-                    <p style="color: var(--text-secondary);">Master Python architectures, databases, APIs, and algorithmic optimizations.</p>
-                </div>
-                <div class="interview-layout">
-                    <div class="interview-categories" id="interviewCategories">
-                        <!-- Loaded dynamically -->
-                    </div>
-                    <div class="question-list" id="interviewQuestionContainer">
-                        <!-- Questions dynamically loaded -->
-                    </div>
-                </div>
-            </section>
-            <!-- 6. VIEW: STUDY NOTES -->
-            <section class="view-section" id="view-notes">
-                <div class="dashboard-header">
-                    <h1>My Study Notes</h1>
-                    <p style="color: var(--text-secondary);">Take custom notes, copy snippets, and record concepts as you study.</p>
-                </div>
-                <div class="notes-layout">
-                    <div class="notes-form-container">
-                        <h3 style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary);">Create / Edit Note</h3>
-                        <input type="text" id="noteTitle" placeholder="Note Title" required>
-                        <select id="noteTopic">
-                            <option value="General">General Python</option>
-                            <option value="Roadmap">Roadmap Notes</option>
-                            <option value="OOP">Object Oriented Programming</option>
-                            <option value="Databases">Databases & SQL</option>
-                            <option value="WebDev">Web Dev / API</option>
-                        </select>
-                        <textarea id="noteContent" placeholder="Write notes here... Markdown and code structures are welcome." required></textarea>
-                        <button class="btn btn-primary" id="btnSaveNote" style="width: 100%;">Save Note</button>
-                    </div>
-                    <div class="notes-list-container">
-                        <h3 style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary); margin-bottom: 16px;">Saved Notebook</h3>
-                        <div class="notes-list" id="notesList">
-                            <!-- Note list will render dynamically -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- 7. VIEW: SETTINGS -->
-            <section class="view-section" id="view-settings">
-                <div class="dashboard-header">
-                    <h1>Settings</h1>
-                    <p style="color: var(--text-secondary);">Manage platform appearance, system parameters, and backup utilities.</p>
-                </div>
-                <div class="settings-container">
-                    <div class="settings-row">
-                        <div class="settings-info">
-                            <h3>Aesthetic Mode</h3>
-                            <p>Toggle between Dark mode and Light mode visual layers.</p>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="themeSwitch" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    
-                    <div class="settings-row">
-                        <div class="settings-info">
-                            <h3>Backup Data</h3>
-                            <p>Export all progress configurations, XP details, and saved notebook blocks.</p>
-                        </div>
-                        <button class="btn btn-secondary" id="btnExportProgress">Export Config</button>
-                    </div>
-                    <div class="settings-row">
-                        <div class="settings-info" style="max-width: 60%;">
-                            <h3>Restore Data</h3>
-                            <p>Import previously saved platform configurations from a JSON file.</p>
-                        </div>
-                        <input type="file" id="importFile" style="display:none;" accept=".json">
-                        <button class="btn btn-secondary" id="btnImportProgress">Import Config</button>
-                    </div>
-                    <div class="settings-row">
-                        <div class="settings-info">
-                            <h3 style="color: var(--danger);">Reset Progress</h3>
-                            <p>Clear all local details, achievements, notebooks, XP statistics, and module completion markers.</p>
-                        </div>
-                        <button class="btn btn-danger" id="btnResetProgress" style="background: var(--gradient-danger); color: white;">Reset All</button>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-    <!-- ==========================================
-       C. LESSON WORKSPACE INTERFACE OVERLAY
-       ========================================== -->
-    <div class="lesson-overlay" id="lessonOverlay">
-        <div class="lesson-container">
-            <div class="lesson-header">
-                <div>
-                    <span class="module-number" id="lessonModuleTag">Module 1</span>
-                    <h2 class="module-title" id="lessonModuleTitle" style="margin-bottom: 0; margin-top: 4px;">Introduction to Programming</h2>
-                </div>
-                <button class="lesson-close-btn" id="btnCloseLesson" aria-label="Close Lesson">&times;</button>
+                <div class="console-output" id="consoleOutput"></div>
+            </div>
+        </div>
+
+        <div class="resizer" id="resizer"></div>
+
+        <div class="panel-editor" id="rightPanel">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('html')"><i class="fa-brands fa-html5 tab-icon html"></i> index.html</div>
+                <div class="tab" onclick="switchTab('css')"><i class="fa-brands fa-css3-alt tab-icon css"></i> style.css</div>
+                <div class="tab" onclick="switchTab('js')"><i class="fa-brands fa-js tab-icon js"></i> script.js</div>
             </div>
             
-            <div class="lesson-workspace">
-                <!-- Concept Content Panel -->
-                <div class="lesson-materials" id="lessonMaterials">
-                    <!-- Loaded dynamically -->
+            <div class="editor-container">
+                <div class="editor-wrapper active" id="wrap-html">
+                    <textarea id="editor-html"></textarea>
                 </div>
-                
-                <!-- Interactive Actions Pane -->
-                <div class="lesson-interaction">
-                    <!-- Quiz Section -->
-                    <div class="quiz-panel">
-                        <h3 class="lesson-section-title" style="font-size: 1.1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
-                            Module Mini-Quiz
-                        </h3>
-                        <div class="quiz-question" id="quizQuestion">Loading quiz details...</div>
-                        <div class="quiz-options" id="quizOptions"></div>
-                        <div id="quizExplanation" style="margin-top:12px; font-size:0.85rem; color:var(--success); font-weight:500; display:none;"></div>
-                    </div>
-                    
-                    <!-- Challenge Section -->
-                    <div class="challenge-panel">
-                        <h3 class="lesson-section-title" style="font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                            Coding Challenge
-                        </h3>
-                        <div class="challenge-prompt" id="challengeTitle">Loading challenge...</div>
-                        <div class="challenge-instructions" id="challengeDescription">Instructions...</div>
-                        
-                        <div style="font-size: 0.8rem; color: var(--warning); margin-bottom: 10px; font-weight: 500;" id="challengeHint">Hint: ...</div>
-                        <div class="lesson-code-editor">
-                            <div class="editor-header">
-                                <span class="editor-title">challenge_workspace.py</span>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);" id="challengeUnlockTracker">Solution Hidden</span>
-                            </div>
-                            <textarea class="editor-textarea" id="challengeTextarea" spellcheck="false"></textarea>
-                        </div>
-                        
-                        <div class="challenge-console" id="challengeConsole">>>> Output Console...</div>
-                        
-                        <div class="editor-actions">
-                            <button class="btn btn-secondary" id="btnRevealSolution">Reveal Solution</button>
-                            <button class="btn btn-primary" id="btnRunChallenge">Run & Validate</button>
-                        </div>
-                    </div>
+                <div class="editor-wrapper" id="wrap-css">
+                    <textarea id="editor-css"></textarea>
+                </div>
+                <div class="editor-wrapper" id="wrap-js">
+                    <textarea id="editor-js"></textarea>
                 </div>
             </div>
         </div>
+
     </div>
-    <!-- ==========================================
-       D. LEVEL-UP EVENT MODAL POPUP
-       ========================================== -->
-    <div class="overlay-popup" id="levelupPopup">
-        <div class="levelup-card">
-            <div class="levelup-badge">
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            </div>
-            <h2 id="levelUpTitle">New Level Unlocked!</h2>
-            <p id="levelUpDesc">Congratulations! You have level up to level.</p>
-            <button class="btn btn-primary" id="btnClaimReward" style="margin: 0 auto;">Claim Reward</button>
-        </div>
-    </div>
-    <!-- ==========================================
-       E. LOGIC AND STATIC PLATFORM DATA
-       ========================================== -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/fold/foldcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/fold/foldgutter.min.js"></script>
+
     <script>
-        /* ==========================================
-           1. COMPREHENSIVE ROADMAP DATA
-           ========================================== */
-        const ROADMAP_MODULES = [
-            {
-                id: 1,
-                title: "Introduction to Programming",
-                desc: "Explore compiler dynamics, algorithms, and execute your first basic Python structure.",
-                tag: "Module 1",
-                concept: `
-                    <h3>Computer Programs</h3>
-                    <p>At its core, programming is writing a list of instructions for computers to execute. A computer is highly efficient at processing arithmetic and logical expressions but is inherently passive—it requires instructions from programmers.</p>
-                    <div class="visual-block">
-                        <h4>Program flow diagram:</h4>
-                        <p>Input &rarr; Memory &rarr; Central Processing Unit &rarr; Output</p>
-                    </div>
-                    <h3>Why Python?</h3>
-                    <p>Python is an interpreted, high-level programming language designed for readability. Unlike compiled languages (like C++), Python runs source code line-by-line via the <strong>Python Interpreter</strong>, translating keywords directly to byte-code and executing them dynamically.</p>
-                    <div class="key-note">
-                        <h4>Key Concept: The Python Interpreter</h4>
-                        <p>When you trigger Python execution, the engine reads syntax expressions, verifies syntax alignment, and outputs dynamic operations directly to standard output channels.</p>
-                    </div>
-                `,
-                quiz: {
-                    question: "What does the Python Interpreter do?",
-                    options: [
-                        "Compiles all code blocks into permanent binary files before launching",
-                        "Translates and executes code expressions line-by-line",
-                        "Saves memory logs into virtual backup caches",
-                        "Runs local web interfaces automatically"
-                    ],
-                    answer: 1,
-                    explanation: "Correct! Python is an interpreted language, which translates syntax statements into byte-code and processes them instruction-by-instruction."
-                },
-                challenge: {
-                    title: "First print statement",
-                    desc: "Write a statement to print the greeting message: Hello, Python!",
-                    hint: "Use print('Hello, Python!')",
-                    expected: "Hello, Python!",
-                    starter: "print(\"Hello, Python!\")",
-                    solution: "print(\"Hello, Python!\")"
-                }
-            },
-            {
-                id: 2,
-                title: "Python Basics",
-                desc: "Discover system parameters, variables, data formats, and structural comments.",
-                tag: "Module 2",
-                concept: `
-                    <h3>Variables & Names</h3>
-                    <p>A variable is a symbolic handle that references a location in standard memory. You assign variables values using the assignment operator (<code>=</code>).</p>
-                    <div class="visual-block">
-                        <h4>Variable Assignment Example:</h4>
-                        <p><code>username = "Alice"</code><br><code>user_id = 90210</code></p>
-                    </div>
-                    <h3>Data Types</h3>
-                    <ul>
-                        <li><strong>String (str):</strong> String of characters. e.g. <code>"hello"</code></li>
-                        <li><strong>Integer (int):</strong> Real whole numbers. e.g. <code>42</code></li>
-                        <li><strong>Float (float):</strong> Numerical structures with points. e.g. <code>3.14</code></li>
-                        <li><strong>Boolean (bool):</strong> States of truthiness. <code>True</code> or <code>False</code></li>
-                    </ul>
-                `,
-                quiz: {
-                    question: "Which of the following is a invalid Python variable identifier?",
-                    options: [
-                        "user_profile",
-                        "userProfile",
-                        "2_user_profile",
-                        "_userProfile"
-                    ],
-                    answer: 2,
-                    explanation: "Correct! Variable names in Python cannot start with numbers."
-                },
-                challenge: {
-                    title: "Output a variable",
-                    desc: "Declare a variable named age set to the integer 25. Then print age to output.",
-                    hint: "age = 25\\nprint(age)",
-                    expected: "25",
-                    starter: "age = 25\nprint(age)",
-                    solution: "age = 25\nprint(age)"
-                }
-            },
-            {
-                id: 3,
-                title: "Control Flow",
-                desc: "Configure conditions, comparisons, lists of operations, and conditional loops.",
-                tag: "Module 3",
-                concept: `
-                    <h3>Conditional Execution</h3>
-                    <p>Control flow enables computers to evaluate logic boundaries dynamically. Condition structures match boolean states using <code>if</code>, <code>elif</code>, and <code>else</code> keywords.</p>
-                    <div class="visual-block">
-                        <h4>Syntax outline:</h4>
-                        <p><code>if condition:<br>&nbsp;&nbsp;&nbsp;&nbsp;# runs if condition is true<br>else:<br>&nbsp;&nbsp;&nbsp;&nbsp;# runs otherwise</code></p>
-                    </div>
-                    <h3>Loops</h3>
-                    <p>For repetitive calculations, programmers use <code>while</code> loops (conditional looping) and <code>for</code> loops (iterating over a set range or object collection).</p>
-                `,
-                quiz: {
-                    question: "Which statement skips the rest of the current loop iteration and moves to the next loop step?",
-                    options: [
-                        "break",
-                        "continue",
-                        "pass",
-                        "skip"
-                    ],
-                    answer: 1,
-                    explanation: "Correct! The continue keyword halts execution of the current iteration and jumps directly to the next loop cycle."
-                },
-                challenge: {
-                    title: "Loop Iteration",
-                    desc: "Write a for loop that outputs numbers from 0 to 4 using a standard range generator.",
-                    hint: "for i in range(5):\\n  print(i)",
-                    expected: "0\n1\n2\n3\n4",
-                    starter: "for i in range(5):\n  print(i)",
-                    solution: "for i in range(5):\n  print(i)"
-                }
-            },
-            {
-                id: 4,
-                title: "Functions",
-                desc: "Design abstract computational steps using arguments and output returns.",
-                tag: "Module 4",
-                concept: `
-                    <h3>Reusable Blocks</h3>
-                    <p>Functions allow modular, structured design. Declared via the <code>def</code> statement, functions accept parameters, perform operations, and return data structures using the <code>return</code> keyword.</p>
-                    <div class="visual-block">
-                        <h4>Function Definition Example:</h4>
-                        <p><code>def calculate_area(w, h):<br>&nbsp;&nbsp;&nbsp;&nbsp;return w * h</code></p>
-                    </div>
-                `,
-                quiz: {
-                    question: "What keyword specifies a value a function hands back to its caller?",
-                    options: [
-                        "yield",
-                        "output",
-                        "return",
-                        "send"
-                    ],
-                    answer: 2,
-                    explanation: "Correct! The return statement immediately terminates execution of a function and passes back specified parameters."
-                },
-                challenge: {
-                    title: "Custom Function Creation",
-                    desc: "Define a function named greet that returns the string Hi. Call greet and print the result.",
-                    hint: "def greet():\\n  return 'Hi'\\nprint(greet())",
-                    expected: "Hi",
-                    starter: "def greet():\n  return \"Hi\"\nprint(greet())",
-                    solution: "def greet():\n  return \"Hi\"\nprint(greet())"
-                }
-            },
-            {
-                id: 5,
-                title: "Data Structures",
-                desc: "Investigate lists, tuples, dictionaries, and sets to handle collections.",
-                tag: "Module 5",
-                concept: `
-                    <h3>Lists</h3>
-                    <p>Lists are mutable, ordered sequences written as comma-separated values inside square brackets <code>[ ]</code>.</p>
-                    <h3>Dictionaries</h3>
-                    <p>Dictionaries represent key-value mappings configured via curly brackets <code>{ }</code>. They allow O(1) retrieval speed for item identifiers.</p>
-                `,
-                quiz: {
-                    question: "Which of the following structure types is immutable (cannot be changed after allocation)?",
-                    options: [
-                        "List",
-                        "Dictionary",
-                        "Tuple",
-                        "Set"
-                    ],
-                    answer: 2,
-                    explanation: "Correct! Tuples are ordered but immutable sequences in Python."
-                },
-                challenge: {
-                    title: "List manipulations",
-                    desc: "Declare a list named fruits containing 'apple' and 'banana'. Append 'cherry' to the list, then print fruits.",
-                    hint: "fruits = ['apple', 'banana']\\nfruits.append('cherry')\\nprint(fruits)",
-                    expected: '["apple","banana","cherry"]',
-                    starter: "fruits = [\"apple\", \"banana\"]\nfruits.append(\"cherry\")\nprint(fruits)",
-                    solution: "fruits = [\"apple\", \"banana\"]\nfruits.append(\"cherry\")\nprint(fruits)"
-                }
-            },
-            {
-                id: 6,
-                title: "File Handling",
-                desc: "Learn to open, write, append, and read external documents.",
-                tag: "Module 6",
-                concept: `
-                    <h3>Reading and Writing Files</h3>
-                    <p>Python allows simple input/output operations on system text archives using the built-in <code>open()</code> function.</p>
-                    <div class="visual-block">
-                        <h4>Context Manager Structure:</h4>
-                        <p><code>with open("log.txt", "w") as file:<br>&nbsp;&nbsp;&nbsp;&nbsp;file.write("Python is great")</code></p>
-                    </div>
-                `,
-                quiz: {
-                    question: "Which file mode parameter appends data to the end of a file instead of overwriting it?",
-                    options: [
-                        "r",
-                        "w",
-                        "a",
-                        "x"
-                    ],
-                    answer: 2,
-                    explanation: "Correct! The 'a' argument represents append operations, writing inputs directly to the bottom line."
-                },
-                challenge: {
-                    title: "File writing output simulation",
-                    desc: "Simulate file closing. Open a virtual file with open context structure, and print 'File Closed' to screen.",
-                    hint: "print('File Closed')",
-                    expected: "File Closed",
-                    starter: "print(\"File Closed\")",
-                    solution: "print(\"File Closed\")"
-                }
-            },
-            {
-                id: 7,
-                title: "Object Oriented Programming",
-                desc: "Build classes, create objects, configure encapsulation, and explore inheritance rules.",
-                tag: "Module 7",
-                concept: `
-                    <h3>Objects & Classes</h3>
-                    <p>Classes serve as functional blueprints for individual objects. OOP groups logical variables (attributes) and computational steps (methods) under singular class handles.</p>
-                    <div class="visual-block">
-                        <h4>Initializing Classes:</h4>
-                        <p><code>class Person:<br>&nbsp;&nbsp;&nbsp;&nbsp;def __init__(self, name):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.name = name</code></p>
-                    </div>
-                `,
-                quiz: {
-                    question: "What argument represents the active object instance within Python class methods?",
-                    options: [
-                        "this",
-                        "instance",
-                        "self",
-                        "object"
-                    ],
-                    answer: 2,
-                    explanation: "Correct! Python uses 'self' explicitly as the first parameter of instance methods to refer to the current object."
-                },
-                challenge: {
-                    title: "Create a class method",
-                    desc: "Define a class named Dog. Add a speak method that prints Woof!. Instantiate the dog class and run speak.",
-                    hint: "class Dog:\\n  def speak(self):\\n    print('Woof!')\\nd = Dog()\\nd.speak()",
-                    expected: "Woof!",
-                    starter: "class Dog:\n  def speak(self):\n    print(\"Woof!\")\nd = Dog()\nd.speak()",
-                    solution: "class Dog:\n  def speak(self):\n    print(\"Woof!\")\nd = Dog()\nd.speak()"
-                }
-            },
-            {
-                id: 8,
-                title: "Advanced Python",
-                desc: "Discover list comprehensions, decorators, generators, and exception control.",
-                tag: "Module 8",
-                concept: `
-                    <h3>Comprehensions</h3>
-                    <p>Comprehensions offer a compact mechanism to construct new structures from iterable records.</p>
-                    <div class="visual-block">
-                        <h4>List Comprehension Example:</h4>
-                        <p><code>squares = [x*x for x in range(10)]</code></p>
-                    </div>
-                    <h3>Error Handling</h3>
-                    <p>Protect scripts from crash behaviors by matching exceptions using <code>try</code>, <code>except</code>, and <code>finally</code> structures.</p>
-                `,
-                quiz: {
-                    question: "Which keyword combination safely runs script commands and handles potential system runtime errors?",
-                    options: [
-                        "if / else",
-                        "try / except",
-                        "catch / handler",
-                        "guard / error"
-                    ],
-                    answer: 1,
-                    explanation: "Correct! Python monitors operations in try layers, routing any thrown exceptions to matching except statements."
-                },
-                challenge: {
-                    title: "Square calculation comprehension",
-                    desc: "Use list comprehension to square numbers in range 3: [0, 1, 2] and print the generated list.",
-                    hint: "print([x*x for x in range(3)])",
-                    expected: "[0,1,4]",
-                    starter: "print([x*x for x in range(3)])",
-                    solution: "print([x*x for x in range(3)])"
-                }
-            },
-            {
-                id: 9,
-                title: "Databases",
-                desc: "Connect Python to SQLite, execute structured SQL expressions, and handle queries.",
-                tag: "Module 9",
-                concept: `
-                    <h3>Relational Databases</h3>
-                    <p>Relational databases represent records in rigid structures (tables). Python includes native SQLite drivers for simple database interfaces.</p>
-                    <div class="visual-block">
-                        <h4>Connection Structure:</h4>
-                        <p><code>import sqlite3<br>conn = sqlite3.connect("users.db")<br>cursor = conn.cursor()</code></p>
-                    </div>
-                `,
-                quiz: {
-                    question: "Which database component acts as the handle used to execute SQL scripts and traverse database records?",
-                    options: [
-                        "Connector",
-                        "Transporter",
-                        "Cursor",
-                        "Navigator"
-                    ],
-                    answer: 2,
-                    explanation: "Correct! The cursor object facilitates parsing instructions and indexing SQL data cells."
-                },
-                challenge: {
-                    title: "SQL simulation",
-                    desc: "Simulate sqlite3 connectivity by printing 'Connected to DB' to the console.",
-                    hint: "print('Connected to DB')",
-                    expected: "Connected to DB",
-                    starter: "print(\"Connected to DB\")",
-                    solution: "print(\"Connected to DB\")"
-                }
-            },
-            {
-                id: 10,
-                title: "Python Automation",
-                desc: "Configure OS modules, control file directories, and schedule scripts.",
-                tag: "Module 10",
-                concept: `
-                    <h3>System Scripting</h3>
-                    <p>Automation handles tasks like checking files, matching regex records, updating directories, and cleaning up log folders. The built-in <code>os</code> module serves as a primary tool for OS manipulation.</p>
-                `,
-                quiz: {
-                    question: "Which built-in Python module is used to query directory logs, verify paths, and make directories?",
-                    options: [
-                        "sys",
-                        "pathlib",
-                        "os",
-                        "shell"
-                    ],
-                    answer: 2,
-                    explanation: "Correct! The os module provides low-level abstractions to interact directly with the operating system."
-                },
-                challenge: {
-                    title: "Operating system list simulation",
-                    desc: "Simulate calling directory logs. Print a list containing 'index.html' only.",
-                    hint: "print(['index.html'])",
-                    expected: '["index.html"]',
-                    starter: "print([\"index.html\"])",
-                    solution: "print([\"index.html\"])"
-                }
-            },
-            {
-                id: 11,
-                title: "Python Cybersecurity",
-                desc: "Build hashing operations, learn socket connectivity, and review cybersecurity practices.",
-                tag: "Module 11",
-                concept: `
-                    <h3>Cryptographic Operations</h3>
-                    <p>Hashing translates arbitrary text segments into a unique, fixed-size alphanumeric string. In Python, hashing functions are provided by the <code>hashlib</code> library.</p>
-                `,
-                quiz: {
-                    question: "Which hashing type produces a fixed length checksum mapping of inputs that is mathematically impossible to reverse?",
-                    options: [
-                        "AES Encryption",
-                        "One-Way Hashing",
-                        "Base64 Encoding",
-                        "RSA Translation"
-                    ],
-                    answer: 1,
-                    explanation: "Correct! Hashing is a one-way mathematical projection, unlike encryption which is designed to be decrypted with keys."
-                },
-                challenge: {
-                    title: "Hashing validation simulation",
-                    desc: "Simulate completing a hashing action. Print the verification message: Hash Generated.",
-                    hint: "print('Hash Generated')",
-                    expected: "Hash Generated",
-                    starter: "print(\"Hash Generated\")",
-                    solution: "print(\"Hash Generated\")"
-                }
-            },
-            {
-                id: 12,
-                title: "Python Web Development",
-                desc: "Design small web server routing and process REST APIs using Flask.",
-                tag: "Module 12",
-                concept: `
-                    <h3>Web Routing in Flask</h3>
-                    <p>Web servers map HTTP endpoints to local functions. Flask uses decorator annotations to connect URL routes to Python code block handlers.</p>
-                    <div class="visual-block">
-                        <h4>Flask Hello World:</h4>
-                        <p><code>from flask import Flask<br>app = Flask(__name__)<br>@app.route("/")<br>def home(): return "Welcome"</code></p>
-                    </div>
-                `,
-                quiz: {
-                    question: "Which annotation connects a Flask python function to web routing endpoints?",
-                    options: [
-                        "@app.url()",
-                        "@app.route()",
-                        "@app.link()",
-                        "@app.map()"
-                    ],
-                    answer: 1,
-                    explanation: "Correct! The @app.route decorator binds local functions to match HTTP URL requests."
-                },
-                challenge: {
-                    title: "Flask API Output",
-                    desc: "Simulate a Flask view handler. Print 'Welcome' to demonstrate API success.",
-                    hint: "print('Welcome')",
-                    expected: "Welcome",
-                    starter: "print(\"Welcome\")",
-                    solution: "print(\"Welcome\")"
-                }
-            },
-            {
-                id: 13,
-                title: "Full Stack Roadmap",
-                desc: "Examine frontend-backend integration, REST systems, and token security.",
-                tag: "Module 13",
-                concept: `
-                    <h3>SaaS Foundations</h3>
-                    <p>SaaS architectures connect dynamic UI displays (frontend HTML/JS) to backend API handlers (Python/Flask) running database operations.</p>
-                `,
-                quiz: {
-                    question: "What lightweight text format acts as the primary data medium between APIs and Frontends?",
-                    options: [
-                        "CSV",
-                        "XML",
-                        "JSON",
-                        "YAML"
-                    ],
-                    answer: 2,
-                    explanation: "Correct! JSON (JavaScript Object Notation) is the standard format for API data payloads."
-                },
-                challenge: {
-                    title: "SaaS API Response",
-                    desc: "Simulate a JSON response structure. Print the string representation of: {'status': 200}.",
-                    hint: "print(\"{'status': 200}\")",
-                    expected: "{'status': 200}",
-                    starter: "print(\"{'status': 200}\")",
-                    solution: "print(\"{'status': 200}\")"
-                }
-            },
-            {
-                id: 14,
-                title: "Capstone Projects",
-                desc: "Analyze project lifecycles, structured design, and test processes.",
-                tag: "Module 14",
-                concept: `
-                    <h3>Architectural Design</h3>
-                    <p>Constructing projects involves organizing modules into clean structures. The Model-View-Controller (MVC) design pattern is a standard approach to decouple system layers.</p>
-                `,
-                quiz: {
-                    question: "What design pattern isolates database operations from system layouts and web render interfaces?",
-                    options: [
-                        "Singleton",
-                        "Model-View-Controller (MVC)",
-                        "Factory Method",
-                        "Observer Structure"
-                    ],
-                    answer: 1,
-                    explanation: "Correct! MVC separates components into isolated parts: Data model, UI layer, and business logic controllers."
-                },
-                challenge: {
-                    title: "Capstone check",
-                    desc: "Complete project preparation. Print: Project Initialized.",
-                    hint: "print('Project Initialized')",
-                    expected: "Project Initialized",
-                    starter: "print(\"Project Initialized\")",
-                    solution: "print(\"Project Initialized\")"
-                }
-            },
-            {
-                id: 15,
-                title: "Interview Preparation",
-                desc: "Study algorithmic Big O complexities and object design interviews.",
-                tag: "Module 15",
-                concept: `
-                    <h3>Algorithmic analysis</h3>
-                    <p>Interviews test structural problem solving. Time complexity metrics (Big O notation) evaluate how algorithm compute steps scale as inputs grow.</p>
-                    <div class="visual-block">
-                        <h4>Common Big O metrics:</h4>
-                        <p>O(1) &rarr; Constant time<br>O(log N) &rarr; Binary search complexity<br>O(N) &rarr; Linear pass complexity</p>
-                    </div>
-                `,
-                quiz: {
-                    question: "What is the time complexity of locating an item in a sorted array using binary search?",
-                    options: [
-                        "O(1)",
-                        "O(N)",
-                        "O(log N)",
-                        "O(N log N)"
-                    ],
-                    answer: 2,
-                    explanation: "Correct! Binary search continually divides search regions by 50%, resulting in log N steps."
-                },
-                challenge: {
-                    title: "Peak indexing",
-                    desc: "Simulate peak value verification algorithms. Print the string: Peak Found.",
-                    hint: "print('Peak Found')",
-                    expected: "Peak Found",
-                    starter: "print(\"Peak Found\")",
-                    solution: "print(\"Peak Found\")"
-                }
-            }
-        ];
-        /* ==========================================
-           2. CAPSTONE PROJECTS BLUEPRINTS
-           ========================================== */
-        const PROJECT_BLUEPRINTS = [
-            {
-                id: 1,
-                title: "Calculator App",
-                diff: "easy",
-                desc: "Construct a command-line calculator that processes user inputs and evaluates simple mathematical calculations.",
-                unlockModule: 3,
-                tags: ["Control Flow", "Math", "Variables"]
-            },
-            {
-                id: 2,
-                title: "To-Do Application",
-                diff: "easy",
-                desc: "Develop an in-memory application dashboard where users create, complete, list, and filter tasks.",
-                unlockModule: 5,
-                tags: ["Lists", "Methods", "Loops"]
-            },
-            {
-                id: 3,
-                title: "Password Manager",
-                diff: "medium",
-                desc: "Build an encrypted local password storage that encrypts access keys and saves them to a file.",
-                unlockModule: 6,
-                tags: ["File IO", "Cryptography", "OS"]
-            },
-            {
-                id: 4,
-                title: "Student Database",
-                diff: "medium",
-                desc: "Create an object-oriented student profile database managing enrollments, grading modules, and course lists.",
-                unlockModule: 7,
-                tags: ["OOP", "Classes", "Collections"]
-            },
-            {
-                id: 5,
-                title: "Weather Dashboard",
-                diff: "medium",
-                desc: "Fetch real-time weather information from web data sources, extract relevant JSON variables, and display summaries.",
-                unlockModule: 10,
-                tags: ["Web Request", "JSON Parsing", "Exceptions"]
-            },
-            {
-                id: 6,
-                title: "Flask Backend API",
-                diff: "hard",
-                desc: "Implement a RESTful API containing database endpoints, routing actions, and standard HTTP response codes.",
-                unlockModule: 12,
-                tags: ["Flask", "Routing", "HTTP/JSON"]
-            },
-            {
-                id: 7,
-                title: "Blog Database System",
-                diff: "hard",
-                desc: "Establish schema setups and manage CRUD (Create, Read, Update, Delete) blog operations using SQL.",
-                unlockModule: 9,
-                tags: ["SQLite3", "SQL Scripts", "Relational"]
-            },
-            {
-                id: 8,
-                title: "Real Time Chat Application",
-                diff: "hard",
-                desc: "Open server-client socket connections to transport text messages bidirectionally.",
-                unlockModule: 11,
-                tags: ["Sockets", "Networking", "Streams"]
-            },
-            {
-                id: 9,
-                title: "AI Price Tracker",
-                diff: "hard",
-                desc: "Scrape product prices from web pages, parse HTML nodes, and send alerts when a price drop is detected.",
-                unlockModule: 14,
-                tags: ["BeautifulSoup", "Automation", "Email IO"]
-            }
-        ];
-        /* ==========================================
-           3. TECHNICAL INTERVIEW QUESTIONS
-           ========================================== */
-        const INTERVIEW_PREP_DATA = [
-            {
-                category: "Python Basics",
-                questions: [
-                    {
-                        q: "Explain the difference between Lists and Tuples in Python.",
-                        a: "Lists are <strong>mutable</strong> (their contents can be updated after creation) and defined using square brackets <code>[ ]</code>. Tuples are <strong>immutable</strong> (they cannot be changed after creation) and defined using parentheses <code>( )</code>. Tuples are also slightly more memory-efficient."
-                    },
-                    {
-                        q: "What is PEP 8?",
-                        a: "PEP 8 is the official style guide for writing Python code. It outlines formatting rules for indentation (4 spaces), naming conventions (snake_case for functions, PascalCase for classes), imports, and comment styles to maximize readability."
-                    },
-                    {
-                        q: "What are mutable and immutable objects in Python?",
-                        a: "Mutable objects (e.g. Lists, Dictionaries, Sets) can have their value modified after creation. Immutable objects (e.g. Integers, Floats, Strings, Tuples) cannot be changed in place; altering them results in the creation of a new object referencing a new memory location."
-                    }
-                ]
-            },
-            {
-                category: "Functions",
-                questions: [
-                    {
-                        q: "What is the purpose of *args and **kwargs in function definitions?",
-                        a: "<code>*args</code> allows a function to accept any number of positional arguments as a tuple. <code>**kwargs</code> allows a function to accept any number of keyword arguments as a dictionary. This is useful for writing decorators or flexible library wrappers."
-                    },
-                    {
-                        q: "Explain scope resolution in Python (the LEGB rule).",
-                        a: "Python searches variables in a specific order: 1. <strong>Local (L):</strong> variables declared in a function. 2. <strong>Enclosing (E):</strong> variables in nested function closures. 3. <strong>Global (G):</strong> variables declared at module root level. 4. <strong>Built-in (B):</strong> core built-in variables (e.g. <code>len</code>)."
-                    }
-                ]
-            },
-            {
-                category: "OOP Principles",
-                questions: [
-                    {
-                        q: "What is Method Resolution Order (MRO)?",
-                        a: "MRO is the order in which Python searches for inherited attributes or methods when dealing with multiple inheritance. Python uses a C3 Linearization algorithm to determine the lookup order, which can be viewed via the <code>.__mro__</code> attribute."
-                    },
-                    {
-                        q: "Explain the difference between class methods and static methods.",
-                        a: "A class method (decorated with <code>@classmethod</code>) takes the class itself (<code>cls</code>) as its first parameter, allowing it to modify class state. A static method (decorated with <code>@staticmethod</code>) behaves like a normal function, does not receive class or instance parameters, and is bound to the class namespace."
-                    }
-                ]
-            },
-            {
-                category: "Data Structures",
-                questions: [
-                    {
-                        q: "How does a Python dictionary achieve O(1) average lookup complexity?",
-                        a: "Python dictionaries use hash tables. Keys are passed to a hashing function to compute an index in memory. In case of collisions, Python resolves them using open addressing. This allows near-instant, constant time operations for item retrieval."
-                    },
-                    {
-                        q: "What is a Generator and how does it save memory?",
-                        a: "A generator is an iterator function that yields values one at a time using the <code>yield</code> keyword instead of returning a static list. Rather than storing a collection of objects in RAM, generators calculate values dynamically on the fly, saving substantial system memory."
-                    }
-                ]
-            },
-            {
-                category: "SQL / Databases",
-                questions: [
-                    {
-                        q: "What is SQL Injection and how can Python database drivers prevent it?",
-                        a: "SQL Injection occurs when database query strings are concatenated directly with unvalidated user inputs. Python prevents this by using parameterized queries. E.g. passing parameters as arguments to <code>cursor.execute(\"SELECT * FROM users WHERE name = ?\", (user_name,))</code> ensures inputs are escaped and evaluated as literal values."
-                    }
-                ]
-            },
-            {
-                category: "Flask / APIs",
-                questions: [
-                    {
-                        q: "What is the difference between Sessions and Cookies in web applications?",
-                        a: "Cookies are small text datasets stored on the client side, which can be modified by users. Sessions are stored securely on the backend server, with only a session ID string stored as a cookie on the client side to match requests."
-                    }
-                ]
-            }
-        ];
-        /* ==========================================
-           4. XP & ACHIEVEMENT BADGE SYSTEM DEFINITION
-           ========================================== */
-        const BADGES = [
-            { id: "first_lesson", title: "First Step", desc: "Complete your first lesson module", icon: "svg-check" },
-            { id: "quiz_master", title: "Quiz Master", desc: "Complete 3 mini-quizzes successfully", icon: "svg-award" },
-            { id: "challenge_solver", title: "Challenge Solver", desc: "Solve 3 coding challenges", icon: "svg-code" },
-            { id: "oop_expert", title: "OOP Expert", desc: "Complete Module 7 (Object Oriented Programming)", icon: "svg-target" },
-            { id: "database_explorer", title: "DB Explorer", desc: "Complete Module 9 (Databases)", icon: "svg-database" },
-            { id: "automation_wizard", title: "OS Wizard", desc: "Complete Module 10 (Automation)", icon: "svg-shield" },
-            { id: "cyber_learner", title: "Cyber Shield", desc: "Complete Module 11 (Cybersecurity)", icon: "svg-lock" },
-            { id: "flask_dev", title: "Flask Developer", desc: "Complete Module 12 (Web Development)", icon: "svg-globe" },
-            { id: "fullstack_hero", title: "Full Stack Hero", desc: "Complete all modules in the learning roadmap", icon: "svg-hero" }
-        ];
-        const LEVEL_TITLES = [
-            { minXP: 0, title: "Python Beginner", levelNum: 1 },
-            { minXP: 100, title: "Python Explorer", levelNum: 2 },
-            { minXP: 300, title: "Python Apprentice", levelNum: 3 },
-            { minXP: 700, title: "Python Developer", levelNum: 4 },
-            { minXP: 1500, title: "Python Engineer", levelNum: 5 },
-            { minXP: 3000, title: "Full Stack Hero", levelNum: 6 }
-        ];
-        /* ==========================================
-           5. APP STATE & LOCAL STORAGE HANDLER
-           ========================================== */
-        let state = {
-            xp: 0,
-            level: 1,
-            completedLessons: [], // list of module ids completed
-            completedQuizzes: [], // list of module ids completed
-            completedChallenges: [], // list of module ids completed
-            completedProjects: [], // list of project ids completed
-            badges: [], // list of badge ids unlocked
-            notes: [], // study notes array
-            theme: "dark"
+        // --- 1. Initialize Editors (CodeMirror) ---
+        const editorOptions = {
+            theme: 'material-darker',
+            lineNumbers: true,
+            autoCloseBrackets: true,
+            autoCloseTags: true,
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            lineWrapping: true
         };
-        function loadState() {
-            const saved = localStorage.getItem("pylearn_user_state");
+
+        const htmlEditor = CodeMirror.fromTextArea(document.getElementById('editor-html'), {
+            ...editorOptions, mode: 'xml'
+        });
+        const cssEditor = CodeMirror.fromTextArea(document.getElementById('editor-css'), {
+            ...editorOptions, mode: 'css'
+        });
+        const jsEditor = CodeMirror.fromTextArea(document.getElementById('editor-js'), {
+            ...editorOptions, mode: 'javascript'
+        });
+
+        // Load Default Content
+        htmlEditor.setValue(`<div class="hero">\n  <h1>CodeForge Studio</h1>\n  <p>Build advanced graphics and modern UIs.</p>\n  <canvas id="particles"></canvas>\n</div>`);
+        cssEditor.setValue(`.hero {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  height: 100vh;\n  background: #111;\n  color: #fff;\n  font-family: sans-serif;\n}\ncanvas {\n  position: absolute;\n  top: 0; left: 0;\n  width: 100%; height: 100%;\n  pointer-events: none;\n}`);
+        jsEditor.setValue(`// Particle System Demo\nconst ctx = document.getElementById('particles').getContext('2d');\nconsole.log("Canvas initialized successfully!");`);
+
+        // --- 2. Tab Switching Logic ---
+        function switchTab(lang) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.editor-wrapper').forEach(e => e.classList.remove('active'));
+            
+            event.currentTarget.classList.add('active');
+            document.getElementById(`wrap-${lang}`).classList.add('active');
+            
+            // Refresh CodeMirror to fix layout bugs when hidden
+            if(lang === 'html') htmlEditor.refresh();
+            if(lang === 'css') cssEditor.refresh();
+            if(lang === 'js') jsEditor.refresh();
+        }
+
+        // --- 3. Preview Execution Logic ---
+        let timeout;
+        function setupAutoRun() {
+            htmlEditor.on('change', debounceRun);
+            cssEditor.on('change', debounceRun);
+            jsEditor.on('change', debounceRun);
+        }
+
+        function debounceRun() {
+            if (document.getElementById('autoRun').checked) {
+                clearTimeout(timeout);
+                timeout = setTimeout(runCode, 800);
+            }
+        }
+
+        function runCode() {
+            const iframe = document.getElementById('preview-frame');
+            const html = htmlEditor.getValue();
+            const css = cssEditor.getValue();
+            const js = jsEditor.getValue();
+
+            // Script injected to capture console.log inside the iframe
+            const consoleCaptureScript = `
+                <script>
+                    const originalConsole = {
+                        log: console.log,
+                        warn: console.warn,
+                        error: console.error
+                    };
+                    
+                    function postConsoleMsg(type, args) {
+                        const message = Array.from(args).map(arg => 
+                            typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+                        ).join(' ');
+                        window.parent.postMessage({ source: 'codeforge', type: type, message: message }, '*');
+                    }
+
+                    console.log = function(...args) { postConsoleMsg('log', args); originalConsole.log.apply(console, args); };
+                    console.warn = function(...args) { postConsoleMsg('warn', args); originalConsole.warn.apply(console, args); };
+                    console.error = function(...args) { postConsoleMsg('error', args); originalConsole.error.apply(console, args); };
+                    
+                    window.onerror = function(message, source, lineno, colno, error) {
+                        postConsoleMsg('error', [\`\${message} at line \${lineno}\`]);
+                        return false;
+                    };
+                <\/script>
+            `;
+
+            const combinedSource = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    ${consoleCaptureScript}
+                    <style>${css}</style>
+                </head>
+                <body>
+                    ${html}
+                    <script>${js}<\/script>
+                </body>
+                </html>
+            `;
+
+            iframe.srcdoc = combinedSource;
+        }
+
+        // --- 4. Console Interception ---
+        const consoleOutput = document.getElementById('consoleOutput');
+        
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.source === 'codeforge') {
+                const div = document.createElement('div');
+                div.className = \`log-entry log-\${e.data.type}\`;
+                
+                const time = new Date().toLocaleTimeString([], {hour12:false});
+                div.innerText = \`[\${time}] \${e.data.message}\`;
+                
+                consoleOutput.appendChild(div);
+                consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            }
+        });
+
+        function clearConsole() {
+            consoleOutput.innerHTML = '';
+        }
+
+        // --- 5. Splitter Drag Logic ---
+        const resizer = document.getElementById('resizer');
+        const leftPanel = document.getElementById('leftPanel');
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            document.body.style.cursor = 'col-resize';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const containerWidth = document.body.clientWidth;
+            const newLeftWidth = (e.clientX / containerWidth) * 100;
+            if (newLeftWidth > 20 && newLeftWidth < 80) {
+                leftPanel.style.flex = \`0 0 \${newLeftWidth}%\`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.body.style.cursor = 'default';
+        });
+
+        // --- 6. Device Toggles ---
+        function setDevice(type) {
+            document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            const iframe = document.getElementById('preview-frame');
+            const sizeLabel = document.getElementById('previewSize');
+            
+            if (type === 'mobile') {
+                iframe.style.width = '375px';
+                iframe.style.height = '812px';
+                sizeLabel.innerText = 'Mobile (375x812)';
+            } else if (type === 'tablet') {
+                iframe.style.width = '768px';
+                iframe.style.height = '1024px';
+                sizeLabel.innerText = 'Tablet (768x1024)';
+            } else {
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                sizeLabel.innerText = 'Responsive';
+            }
+        }
+
+        // --- 7. Save / Export features ---
+        function saveProject() {
+            const project = {
+                html: htmlEditor.getValue(),
+                css: cssEditor.getValue(),
+                js: jsEditor.getValue()
+            };
+            localStorage.setItem('codeforge_project', JSON.stringify(project));
+            alert("Project saved locally!");
+        }
+
+        function loadProject() {
+            const saved = localStorage.getItem('codeforge_project');
             if (saved) {
-                try {
-                    state = { ...state, ...JSON.parse(saved) };
-                } catch(e) {
-                    console.error("Failed to restore progress logs", e);
-                }
+                const project = JSON.parse(saved);
+                htmlEditor.setValue(project.html);
+                cssEditor.setValue(project.css);
+                jsEditor.setValue(project.js);
             }
         }
-        function saveState() {
-            localStorage.setItem("pylearn_user_state", JSON.stringify(state));
-        }
-        /* ==========================================
-           6. SIMULATED PYTHON CODE INTERPRETER
-           ========================================== */
-        function runSimulatedPython(code) {
-            let outputLines = [];
-            let variables = {};
+
+        function exportProject() {
+            const html = htmlEditor.getValue();
+            const css = cssEditor.getValue();
+            const js = jsEditor.getValue();
             
-            function evaluateExpression(expr) {
-                expr = expr.trim();
-                // Match string literals
-                if ((expr.startsWith('"') && expr.endsWith('"')) || (expr.startsWith("'") && expr.endsWith("'"))) {
-                    return expr.slice(1, -1);
-                }
-                // Match raw lists
-                if (expr.startsWith('[') && expr.endsWith(']')) {
-                    try {
-                        return JSON.parse(expr.replace(/'/g, '"'));
-                    } catch(e) {
-                        return expr;
-                    }
-                }
-                // Match floats and ints
-                if (!isNaN(expr) && expr !== '') {
-                    return Number(expr);
-                }
-                // Match variable reference
-                if (variables.hasOwnProperty(expr)) {
-                    return variables[expr];
-                }
-                
-                // Try evaluation in a safe JS subset
-                let resolvedExpr = expr;
-                let sortedKeys = Object.keys(variables).sort((a,b) => b.length - a.length);
-                for (let key of sortedKeys) {
-                    let re = new RegExp('\\b' + key + '\\b', 'g');
-                    let val = variables[key];
-                    if (typeof val === 'string') val = `"${val}"`;
-                    else if (typeof val === 'object') val = JSON.stringify(val);
-                    resolvedExpr = resolvedExpr.replace(re, val);
-                }
-                try {
-                    if (/^[a-zA-Z0-9\s\+\-\*\/\%\(\)\,\.\"\'\[\]\{\}\:]*$/.test(resolvedExpr)) {
-                        resolvedExpr = resolvedExpr.replace(/\bTrue\b/g, 'true')
-                                                   .replace(/\bFalse\b/g, 'false')
-                                                   .replace(/\band\b/g, '&&')
-                                                   .replace(/\bor\b/g, '||')
-                                                   .replace(/\bnot\b/g, '!');
-                        let fn = new Function('return ' + resolvedExpr);
-                        return fn();
-                    }
-                } catch(e) {}
-                return expr;
-            }
-            try {
-                let lines = code.split('\n');
-                for (let i = 0; i < lines.length; i++) {
-                    let line = lines[i].trim();
-                    if (line === '' || line.startsWith('#')) continue;
-                    
-                    // print() syntax
-                    let printMatch = line.match(/^print\((.*)\)$/);
-                    if (printMatch) {
-                        let expr = printMatch[1].trim();
-                        let val = evaluateExpression(expr);
-                        if (typeof val === 'object') {
-                            outputLines.push(JSON.stringify(val));
-                        } else {
-                            outputLines.push(String(val));
-                        }
-                        continue;
-                    }
-                    
-                    // Variable assignment: x = 5
-                    let assignMatch = line.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.*)$/);
-                    if (assignMatch) {
-                        let varName = assignMatch[1];
-                        let expr = assignMatch[2].trim();
-                        variables[varName] = evaluateExpression(expr);
-                        continue;
-                    }
-                    
-                    // range() loops
-                    let forRangeMatch = line.match(/^for\s+([a-zA-Z_][a-zA-Z0-9_]*)\s+in\s+range\((.*)\)\s*:/);
-                    if (forRangeMatch) {
-                        let loopVar = forRangeMatch[1];
-                        let rangeExpr = forRangeMatch[2].trim();
-                        let limit = evaluateExpression(rangeExpr);
-                        
-                        let loopLines = [];
-                        let j = i + 1;
-                        while (j < lines.length) {
-                            let nextLine = lines[j];
-                            if (nextLine.startsWith(' ') || nextLine.startsWith('\t')) {
-                                loopLines.push(nextLine.trim());
-                                j++;
-                            } else if (nextLine.trim() === '') {
-                                j++;
-                            } else {
-                                break;
-                            }
-                        }
-                        i = j - 1;
-                        
-                        let count = Number(limit);
-                        if (!isNaN(count)) {
-                            for (let step = 0; step < count; step++) {
-                                variables[loopVar] = step;
-                                for (let lLine of loopLines) {
-                                    let pMatch = lLine.match(/^print\((.*)\)$/);
-                                    if (pMatch) {
-                                        let expr = pMatch[1].trim();
-                                        let val = evaluateExpression(expr);
-                                        outputLines.push(typeof val === 'object' ? JSON.stringify(val) : String(val));
-                                    }
-                                    let aMatch = lLine.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.*)$/);
-                                    if (aMatch) {
-                                        let varName = aMatch[1];
-                                        let expr = aMatch[2].trim();
-                                        variables[varName] = evaluateExpression(expr);
-                                    }
-                                }
-                            }
-                        }
-                        continue;
-                    }
-                    // array/list iterator loop
-                    let forItemMatch = line.match(/^for\s+([a-zA-Z_][a-zA-Z0-9_]*)\s+in\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*:/);
-                    if (forItemMatch) {
-                        let loopVar = forItemMatch[1];
-                        let listVar = forItemMatch[2];
-                        let listVal = variables[listVar];
-                        
-                        if (Array.isArray(listVal)) {
-                            let loopLines = [];
-                            let j = i + 1;
-                            while (j < lines.length) {
-                                let nextLine = lines[j];
-                                if (nextLine.startsWith(' ') || nextLine.startsWith('\t')) {
-                                    loopLines.push(nextLine.trim());
-                                    j++;
-                                } else if (nextLine.trim() === '') {
-                                    j++;
-                                } else {
-                                    break;
-                                }
-                            }
-                            i = j - 1;
-                            
-                            for (let item of listVal) {
-                                variables[loopVar] = item;
-                                for (let lLine of loopLines) {
-                                    let pMatch = lLine.match(/^print\((.*)\)$/);
-                                    if (pMatch) {
-                                        let expr = pMatch[1].trim();
-                                        let val = evaluateExpression(expr);
-                                        outputLines.push(typeof val === 'object' ? JSON.stringify(val) : String(val));
-                                    }
-                                    let aMatch = lLine.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.*)$/);
-                                    if (aMatch) {
-                                        let varName = aMatch[1];
-                                        let expr = aMatch[2].trim();
-                                        variables[varName] = evaluateExpression(expr);
-                                    }
-                                }
-                            }
-                        }
-                        continue;
-                    }
-                    // if statements
-                    let ifMatch = line.match(/^if\s+(.*)\s*:/);
-                    if (ifMatch) {
-                        let condition = ifMatch[1].trim();
-                        let condVal = evaluateExpression(condition);
-                        
-                        let ifLines = [];
-                        let j = i + 1;
-                        while (j < lines.length) {
-                            let nextLine = lines[j];
-                            if (nextLine.startsWith(' ') || nextLine.startsWith('\t')) {
-                                ifLines.push(nextLine.trim());
-                                j++;
-                            } else if (nextLine.trim() === '') {
-                                j++;
-                            } else {
-                                break;
-                            }
-                        }
-                        i = j - 1;
-                        
-                        if (condVal === true || condVal === 'true' || condVal > 0) {
-                            for (let lLine of ifLines) {
-                                let pMatch = lLine.match(/^print\((.*)\)$/);
-                                if (pMatch) {
-                                    let expr = pMatch[1].trim();
-                                    let val = evaluateExpression(expr);
-                                    outputLines.push(typeof val === 'object' ? JSON.stringify(val) : String(val));
-                                }
-                                let aMatch = lLine.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.*)$/);
-                                if (aMatch) {
-                                    let varName = aMatch[1];
-                                    let expr = aMatch[2].trim();
-                                    variables[varName] = evaluateExpression(expr);
-                                }
-                            }
-                        }
-                        continue;
-                    }
-                    
-                    // list append methods
-                    let appendMatch = line.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\.append\((.*)\)$/);
-                    if (appendMatch) {
-                        let listName = appendMatch[1];
-                        let valExpr = appendMatch[2].trim();
-                        if (variables[listName] && Array.isArray(variables[listName])) {
-                            variables[listName].push(evaluateExpression(valExpr));
-                        }
-                        continue;
-                    }
-                }
-            } catch(err) {
-                outputLines.push("SyntaxError: " + err.message);
-            }
+            const content = `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Exported Project</title>\n<style>\n${css}\n</style>\n</head>\n<body>\n${html}\n<script>\n${js}\n<\/script>\n</body>\n</html>`;
             
-            return outputLines.join('\n');
-        }
-        /* ==========================================
-           7. SYSTEM LAYOUT NAVIGATION HANDLER
-           ========================================== */
-        const NAV_ITEMS = document.querySelectorAll(".nav-item");
-        const VIEW_SECTIONS = document.querySelectorAll(".view-section");
-        NAV_ITEMS.forEach(item => {
-            item.addEventListener("click", () => {
-                const targetView = item.getAttribute("data-view");
-                
-                NAV_ITEMS.forEach(n => n.classList.remove("active"));
-                item.classList.add("active");
-                
-                VIEW_SECTIONS.forEach(section => {
-                    section.classList.remove("active");
-                    if (section.id === `view-${targetView}`) {
-                        section.classList.add("active");
-                    }
-                });
-                
-                if (targetView === "dashboard") {
-                    updateDashboardView();
-                } else if (targetView === "roadmap") {
-                    renderRoadmapFlow();
-                } else if (targetView === "projects") {
-                    renderProjectsGrid();
-                }
-            });
-        });
-        /* ==========================================
-           8. DASHBOARD & GAMIFICATION ENGINE
-           ========================================== */
-        function getLevelInfo(xp) {
-            let current = LEVEL_TITLES[0];
-            for (let i = 0; i < LEVEL_TITLES.length; i++) {
-                if (xp >= LEVEL_TITLES[i].minXP) {
-                    current = LEVEL_TITLES[i];
-                }
-            }
-            return current;
-        }
-        function checkLevelUp(oldXP, newXP) {
-            const oldLevel = getLevelInfo(oldXP).levelNum;
-            const newLevelInfo = getLevelInfo(newXP);
-            if (newLevelInfo.levelNum > oldLevel) {
-                triggerLevelUpModal(newLevelInfo);
-            }
-        }
-        function addXP(amount, eventSourceElement = null) {
-            const oldXP = state.xp;
-            state.xp += amount;
-            
-            // Check badges on XP thresholds
-            checkBadgeTriggers();
-            
-            // Handle level up validations
-            checkLevelUp(oldXP, state.xp);
-            
-            // Save modified progress logs
-            saveState();
-            
-            // Render interface updates
-            updateDashboardView();
-            renderRoadmapFlow();
-            
-            // Float XP notification
-            if (eventSourceElement) {
-                createFloatingXPEffect(amount, eventSourceElement);
-            }
-        }
-        function createFloatingXPEffect(amount, element) {
-            const rect = element.getBoundingClientRect();
-            const floater = document.createElement("div");
-            floater.className = "xp-float";
-            floater.innerText = `+${amount} XP`;
-            floater.style.left = `${rect.left + window.scrollX + (rect.width/2)}px`;
-            floater.style.top = `${rect.top + window.scrollY - 10}px`;
-            document.body.appendChild(floater);
-            
-            setTimeout(() => {
-                floater.remove();
-            }, 1200);
-        }
-        function triggerLevelUpModal(levelInfo) {
-            document.getElementById("levelUpTitle").innerText = "Level Unlocked!";
-            document.getElementById("levelUpDesc").innerText = `Congratulations! You have reached Level ${levelInfo.levelNum}: ${levelInfo.title}`;
-            const popup = document.getElementById("levelupPopup");
-            popup.classList.add("active");
-            
-            // Trigger local audio click or simple animation
-            createConfettiParticleSystem();
-        }
-        function createConfettiParticleSystem() {
-            // Pure CSS/JS Confetti
-            for(let i=0; i<30; i++) {
-                const con = document.createElement("div");
-                con.style.position = "fixed";
-                con.style.width = "8px";
-                con.style.height = "8px";
-                con.style.background = ["#6366f1", "#a855f7", "#ec4899", "#10b981", "#f59e0b"][Math.floor(Math.random()*5)];
-                con.style.borderRadius = "50%";
-                con.style.left = "50%";
-                con.style.top = "50%";
-                con.style.zIndex = "400";
-                con.style.pointerEvents = "none";
-                document.body.appendChild(con);
-                
-                const angle = Math.random() * Math.PI * 2;
-                const distance = 50 + Math.random() * 150;
-                const destX = Math.cos(angle) * distance;
-                const destY = Math.sin(angle) * distance;
-                
-                con.animate([
-                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-                    { transform: `translate(${destX}px, ${destY}px) scale(0)`, opacity: 0 }
-                ], {
-                    duration: 1000 + Math.random()*800,
-                    easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)',
-                    fill: 'forwards'
-                });
-                
-                setTimeout(() => con.remove(), 2000);
-            }
-        }
-        document.getElementById("btnClaimReward").addEventListener("click", () => {
-            document.getElementById("levelupPopup").classList.remove("active");
-        });
-        function checkBadgeTriggers() {
-            let newlyUnlocked = false;
-            function unlock(badgeId) {
-                if (!state.badges.includes(badgeId)) {
-                    state.badges.push(badgeId);
-                    newlyUnlocked = true;
-                }
-            }
-            // Evaluation checklist
-            if (state.completedLessons.length >= 1) unlock("first_lesson");
-            if (state.completedQuizzes.length >= 3) unlock("quiz_master");
-            if (state.completedChallenges.length >= 3) unlock("challenge_solver");
-            if (state.completedLessons.includes(7)) unlock("oop_expert");
-            if (state.completedLessons.includes(9)) unlock("database_explorer");
-            if (state.completedLessons.includes(10)) unlock("automation_wizard");
-            if (state.completedLessons.includes(11)) unlock("cyber_learner");
-            if (state.completedLessons.includes(12)) unlock("flask_dev");
-            if (state.completedLessons.length === ROADMAP_MODULES.length) unlock("fullstack_hero");
-            if (newlyUnlocked) {
-                saveState();
-            }
-        }
-        function updateDashboardView() {
-            const levelInfo = getLevelInfo(state.xp);
-            state.level = levelInfo.levelNum;
-            
-            // Header stats
-            document.getElementById("headerXPCount").innerText = `${state.xp} XP`;
-            document.getElementById("sidebarLevel").innerText = levelInfo.title;
-            document.getElementById("sidebarXP").innerText = `${state.xp} XP`;
-            
-            // Welcome msg
-            document.getElementById("dashboardWelcome").innerText = `Welcome back, ${levelInfo.title}!`;
-            
-            // Core Dashboard cards
-            document.getElementById("dashboardXP").innerText = state.xp;
-            document.getElementById("dashboardLessons").innerText = `${state.completedLessons.length}/${ROADMAP_MODULES.length}`;
-            document.getElementById("dashboardChallenges").innerText = state.completedChallenges.length;
-            document.getElementById("dashboardLevel").innerText = `Level ${levelInfo.levelNum}`;
-            
-            // Update SVG Radial breakdown
-            const pct = Math.round((state.completedLessons.length / ROADMAP_MODULES.length) * 100);
-            document.getElementById("radialPercentText").innerText = `${pct}%`;
-            
-            // Circle offset: dasharray: 565.48. Offset matching completion percentage.
-            const strokeOffset = 565.48 - (565.48 * (pct / 100));
-            document.getElementById("roadmapProgressBar").style.strokeDashoffset = strokeOffset;
-            
-            // Populate Achievements
-            renderAchievementsGrid();
-        }
-        // Returns visual matching SVG path definitions locally for standard styling
-        function getBadgeSvgPath(iconType) {
-            switch(iconType) {
-                case "svg-check": 
-                    return `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke-linecap="round" stroke-linejoin="round"/><polyline points="22 4 12 14.01 9 11.01" stroke-linecap="round" stroke-linejoin="round"/>`;
-                case "svg-award": 
-                    return `<circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>`;
-                case "svg-code": 
-                    return `<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>`;
-                case "svg-target": 
-                    return `<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>`;
-                case "svg-database": 
-                    return `<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/>`;
-                case "svg-shield": 
-                    return `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>`;
-                case "svg-lock": 
-                    return `<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>`;
-                case "svg-globe": 
-                    return `<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>`;
-                default: 
-                    return `<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>`;
-            }
-        }
-        function renderAchievementsGrid() {
-            const grid = document.getElementById("achievementsGrid");
-            grid.innerHTML = "";
-            BADGES.forEach(badge => {
-                const unlocked = state.badges.includes(badge.id);
-                const item = document.createElement("div");
-                item.className = `badge-item ${unlocked ? 'unlocked' : ''}`;
-                item.title = badge.desc;
-                
-                item.innerHTML = `
-                    <div class="badge-icon">
-                        <svg viewBox="0 0 24 24">
-                            ${getBadgeSvgPath(badge.icon)}
-                        </svg>
-                    </div>
-                    <span class="badge-title">${badge.title}</span>
-                `;
-                grid.appendChild(item);
-            });
-        }
-        /* ==========================================
-           9. ROADMAP & LESSON RENDERER
-           ========================================== */
-        let activeModule = null;
-        function renderRoadmapFlow() {
-            const flow = document.getElementById("roadmapFlow");
-            flow.innerHTML = "";
-            
-            // Set timeline line progress percentage
-            const completedCount = state.completedLessons.length;
-            const percent = (completedCount / ROADMAP_MODULES.length) * 100;
-            document.getElementById("roadmapLineProgress").style.height = `${percent}%`;
-            ROADMAP_MODULES.forEach((mod, idx) => {
-                const node = document.createElement("div");
-                const completed = state.completedLessons.includes(mod.id);
-                
-                // Determine active node (first incomplete module)
-                let activeNodeClass = "";
-                const priorModulesCompleted = ROADMAP_MODULES.slice(0, idx).every(m => state.completedLessons.includes(m.id));
-                if (!completed && priorModulesCompleted) {
-                    activeNodeClass = "active-node";
-                }
-                node.className = `roadmap-module ${completed ? 'completed' : ''} ${activeNodeClass}`;
-                node.innerHTML = `
-                    <div class="roadmap-dot"></div>
-                    <div class="roadmap-card ${completed ? 'completed' : ''}" onclick="launchLessonOverlay(${mod.id})">
-                        <span class="module-number">${mod.tag}</span>
-                        <h3 class="module-title">${mod.title}</h3>
-                        <p class="module-desc">${mod.desc}</p>
-                    </div>
-                `;
-                flow.appendChild(node);
-            });
-        }
-        /* ==========================================
-           10. INTERACTIVE LESSON ACTIONS
-           ========================================== */
-        const overlay = document.getElementById("lessonOverlay");
-        const materials = document.getElementById("lessonMaterials");
-        const closeBtn = document.getElementById("btnCloseLesson");
-        // Quiz elements inside Module Detail
-        const quizQ = document.getElementById("quizQuestion");
-        const quizOpts = document.getElementById("quizOptions");
-        const quizExpl = document.getElementById("quizExplanation");
-        // Challenge elements inside Module Detail
-        const challengeTitle = document.getElementById("challengeTitle");
-        const challengeDesc = document.getElementById("challengeDescription");
-        const challengeHint = document.getElementById("challengeHint");
-        const challengeEditor = document.getElementById("challengeTextarea");
-        const challengeConsole = document.getElementById("challengeConsole");
-        const runChallBtn = document.getElementById("btnRunChallenge");
-        const solutionBtn = document.getElementById("btnRevealSolution");
-        const solutionTracker = document.getElementById("challengeUnlockTracker");
-        function launchLessonOverlay(moduleId) {
-            activeModule = ROADMAP_MODULES.find(m => m.id === moduleId);
-            if (!activeModule) return;
-            document.getElementById("lessonModuleTag").innerText = activeModule.tag;
-            document.getElementById("lessonModuleTitle").innerText = activeModule.title;
-            
-            // Set Concept reading materials
-            materials.innerHTML = activeModule.concept;
-            
-            // Load interactive mini quiz
-            loadModuleQuiz();
-            
-            // Load coding challenge
-            loadModuleChallenge();
-            overlay.style.display = "block";
-            document.body.style.overflow = "hidden"; // lock page scroll
-        }
-        closeBtn.addEventListener("click", () => {
-            overlay.style.display = "none";
-            document.body.style.overflow = "auto";
-            activeModule = null;
-        });
-        // Interactive Quiz setup
-        let selectedOptionIdx = null;
-        function loadModuleQuiz() {
-            quizExpl.style.display = "none";
-            quizExpl.innerText = "";
-            selectedOptionIdx = null;
-            const q = activeModule.quiz;
-            quizQ.innerText = q.question;
-            
-            quizOpts.innerHTML = "";
-            q.options.forEach((opt, idx) => {
-                const btn = document.createElement("button");
-                btn.className = "option-btn";
-                btn.innerText = opt;
-                btn.addEventListener("click", () => selectQuizOption(idx, btn));
-                quizOpts.appendChild(btn);
-            });
-            
-            // Highlight if already completed
-            if (state.completedQuizzes.includes(activeModule.id)) {
-                // Preselect correct option
-                const btns = quizOpts.querySelectorAll(".option-btn");
-                btns[q.answer - 1].classList.add("correct");
-                quizExpl.style.display = "block";
-                quizExpl.innerText = "Quiz Completed! " + q.explanation;
-            }
-        }
-        function selectQuizOption(idx, btnElement) {
-            if (state.completedQuizzes.includes(activeModule.id)) return; // Done
-            const btns = quizOpts.querySelectorAll(".option-btn");
-            btns.forEach(b => b.classList.remove("selected"));
-            
-            selectedOptionIdx = idx + 1;
-            btnElement.classList.add("selected");
-            
-            // Instantly evaluate
-            const q = activeModule.quiz;
-            if (selectedOptionIdx === q.answer) {
-                btnElement.classList.remove("selected");
-                btnElement.classList.add("correct");
-                
-                quizExpl.style.display = "block";
-                quizExpl.style.color = "var(--success)";
-                quizExpl.innerText = q.explanation;
-                
-                state.completedQuizzes.push(activeModule.id);
-                saveState();
-                addXP(20, btnElement);
-            } else {
-                btnElement.classList.remove("selected");
-                btnElement.classList.add("wrong");
-                
-                quizExpl.style.display = "block";
-                quizExpl.style.color = "var(--danger)";
-                quizExpl.innerText = "Incorrect. Try selecting another answer.";
-            }
-        }
-        // Coding challenge setup
-        function loadModuleChallenge() {
-            const chall = activeModule.challenge;
-            challengeTitle.innerText = chall.title;
-            challengeDesc.innerText = chall.desc;
-            challengeHint.innerText = `Hint: ${chall.hint}`;
-            challengeEditor.value = chall.starter;
-            challengeConsole.innerText = ">>> Hit 'Run & Validate' to execute program code.";
-            solutionTracker.innerText = "Solution Hidden";
-            solutionTracker.style.color = "var(--text-muted)";
-            if (state.completedChallenges.includes(activeModule.id)) {
-                challengeConsole.innerText = ">>> Success! Challenge Completed. Expected Output received.";
-                challengeConsole.style.color = "#a7f3d0";
-            }
-        }
-        runChallBtn.addEventListener("click", (e) => {
-            if (!activeModule) return;
-            const code = challengeEditor.value;
-            challengeConsole.innerText = ">>> Running code...\n";
-            
-            // Execute simulated python
-            const output = runSimulatedPython(code);
-            challengeConsole.innerText += output;
-            const expected = activeModule.challenge.expected;
-            
-            // Check if outputs match expected results (ignoring whitespace and casing)
-            const cleanOutput = output.trim().replace(/\s+/g, '').toLowerCase();
-            const cleanExpected = expected.trim().replace(/\s+/g, '').toLowerCase();
-            
-            if (cleanOutput === cleanExpected) {
-                challengeConsole.style.color = "#a7f3d0";
-                challengeConsole.innerText += "\n\n>>> Verification Succeeded! +50 XP Earned.";
-                
-                if (!state.completedChallenges.includes(activeModule.id)) {
-                    state.completedChallenges.push(activeModule.id);
-                    // Complete lesson module as well if both are done
-                    completeModuleLesson(activeModule.id);
-                    saveState();
-                    addXP(50, e.target);
-                }
-            } else {
-                challengeConsole.style.color = "#fecdd3";
-                challengeConsole.innerText += `\n\n>>> Verification Failed. Output did not match expected result:\nExpected: ${expected}`;
-            }
-        });
-        solutionBtn.addEventListener("click", () => {
-            if (!activeModule) return;
-            challengeEditor.value = activeModule.challenge.solution;
-            solutionTracker.innerText = "Solution Displayed";
-            solutionTracker.style.color = "var(--warning)";
-        });
-        function completeModuleLesson(moduleId) {
-            if (!state.completedLessons.includes(moduleId)) {
-                state.completedLessons.push(moduleId);
-                addXP(10, document.getElementById("btnCloseLesson"));
-            }
-        }
-        /* ==========================================
-           11. PLAYGROUND ENGINE
-           ========================================== */
-        const playgroundExamples = [
-            {
-                name: "Hello World",
-                code: `# Output simple messages to console\nprint("Hello, World!")`
-            },
-            {
-                name: "Variables and Numbers",
-                code: `# Configure variables and make simple additions\nx = 12\ny = 8\nsum_val = x + y\nprint(sum_val)`
-            },
-            {
-                name: "For Loops",
-                code: `# Iterates over number sequences\nfor i in range(5):\n    print(i)`
-            },
-            {
-                name: "Lists & Array Appends",
-                code: `# Populate lists dynamically\nnames = ["Alice", "Bob"]\nnames.append("Charlie")\nprint(names)`
-            },
-            {
-                name: "If Conditions",
-                code: `# Dynamic code branch checks\nx = 42\nif x == 42:\n    print("Match Success")`
-            }
-        ];
-        const plList = document.getElementById("playgroundExampleList");
-        const plEditor = document.getElementById("playgroundTextarea");
-        const plConsole = document.getElementById("playgroundConsole");
-        const plRun = document.getElementById("btnPlaygroundRun");
-        const plReset = document.getElementById("btnPlaygroundReset");
-        function setupPlayground() {
-            plList.innerHTML = "";
-            playgroundExamples.forEach(ex => {
-                const btn = document.createElement("button");
-                btn.className = "example-item";
-                btn.innerText = ex.name;
-                btn.addEventListener("click", () => {
-                    plEditor.value = ex.code;
-                    plConsole.innerText = ">>> Loaded example code. Click Run!";
-                    plConsole.style.color = "#34d399";
-                });
-                plList.appendChild(btn);
-            });
-            plEditor.value = playgroundExamples[0].code;
-        }
-        plRun.addEventListener("click", () => {
-            const code = plEditor.value;
-            plConsole.innerText = ">>> Running simulated Python environment...\n";
-            const output = runSimulatedPython(code);
-            plConsole.innerText += output || ">>> System returned 0 output lines.";
-        });
-        plReset.addEventListener("click", () => {
-            plEditor.value = "";
-            plConsole.innerText = ">>> Code cleared. Write print('something') to test.";
-        });
-        /* ==========================================
-           12. PROJECTS BLUEPRINTS ENGINE
-           ========================================== */
-        function renderProjectsGrid() {
-            const grid = document.getElementById("projectsGrid");
-            grid.innerHTML = "";
-            PROJECT_BLUEPRINTS.forEach(proj => {
-                const locked = state.completedLessons.length < proj.unlockModule;
-                const card = document.createElement("div");
-                card.className = `project-card ${locked ? 'locked' : ''}`;
-                
-                let reqTitle = "Module Locked";
-                const targetMod = ROADMAP_MODULES.find(m => m.id === proj.unlockModule);
-                if (targetMod) reqTitle = targetMod.title;
-                card.innerHTML = `
-                    ${locked ? `
-                        <div class="project-lock-badge">
-                            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                            Locked
-                        </div>
-                    ` : ''}
-                    <span class="project-diff ${proj.diff}">${proj.diff}</span>
-                    <h3 class="project-title">${proj.title}</h3>
-                    <p class="project-desc">${proj.desc}</p>
-                    
-                    <div class="project-tags">
-                        ${proj.tags.map(t => `<span class="project-tag">${t}</span>`).join('')}
-                    </div>
-                    ${locked ? `
-                        <span class="project-unlock-req">Unlocks after completing: ${reqTitle}</span>
-                    ` : `
-                        <button class="btn btn-primary" onclick="completeProject(${proj.id}, this)">
-                            Complete Project (+100 XP)
-                        </button>
-                    `}
-                `;
-                grid.appendChild(card);
-            });
-        }
-        function completeProject(projId, btnElement) {
-            if (state.completedProjects.includes(projId)) {
-                alert("You have already claimed reward XP for this capstone project blueprint!");
-                return;
-            }
-            state.completedProjects.push(projId);
-            saveState();
-            addXP(100, btnElement);
-            renderProjectsGrid();
-        }
-        /* ==========================================
-           13. INTERVIEW PREP MANAGER
-           ========================================== */
-        function renderInterviewPrep() {
-            const categoriesContainer = document.getElementById("interviewCategories");
-            categoriesContainer.innerHTML = "";
-            INTERVIEW_PREP_DATA.forEach((cat, idx) => {
-                const btn = document.createElement("button");
-                btn.className = `category-tab ${idx === 0 ? 'active' : ''}`;
-                btn.innerHTML = `
-                    <span>${cat.category}</span>
-                    <span style="font-size:0.75rem; background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:10px;">
-                        ${cat.questions.length}
-                    </span>
-                `;
-                btn.addEventListener("click", () => {
-                    const tabs = categoriesContainer.querySelectorAll(".category-tab");
-                    tabs.forEach(t => t.classList.remove("active"));
-                    btn.classList.add("active");
-                    renderInterviewQuestions(cat.questions);
-                });
-                categoriesContainer.appendChild(btn);
-            });
-            // Load initial category questions
-            renderInterviewQuestions(INTERVIEW_PREP_DATA[0].questions);
-        }
-        function renderInterviewQuestions(questions) {
-            const container = document.getElementById("interviewQuestionContainer");
-            container.innerHTML = "";
-            questions.forEach(q => {
-                const card = document.createElement("div");
-                card.className = "question-card";
-                card.innerHTML = `
-                    <div class="question-text">${q.q}</div>
-                    <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Interview Answer</button>
-                    <div class="answer-panel">
-                        ${q.a}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-        function toggleAnswer(btn) {
-            const panel = btn.nextElementSibling;
-            if (panel.classList.contains("visible")) {
-                panel.classList.remove("visible");
-                btn.innerText = "Reveal Interview Answer";
-            } else {
-                panel.classList.add("visible");
-                btn.innerText = "Hide Answer";
-            }
-        }
-        /* ==========================================
-           14. STUDY NOTES ENGINE
-           ========================================== */
-        const noteTitleInput = document.getElementById("noteTitle");
-        const noteTopicSelect = document.getElementById("noteTopic");
-        const noteContentInput = document.getElementById("noteContent");
-        const btnSaveNote = document.getElementById("btnSaveNote");
-        const notesList = document.getElementById("notesList");
-        btnSaveNote.addEventListener("click", () => {
-            const title = noteTitleInput.value.trim();
-            const topic = noteTopicSelect.value;
-            const content = noteContentInput.value.trim();
-            if (!title || !content) {
-                alert("Please write a title and content for your note!");
-                return;
-            }
-            const newNote = {
-                id: Date.now(),
-                title,
-                topic,
-                content
-            };
-            state.notes.push(newNote);
-            saveState();
-            renderNotesList();
-            // Clear inputs
-            noteTitleInput.value = "";
-            noteContentInput.value = "";
-        });
-        function renderNotesList() {
-            notesList.innerHTML = "";
-            if (state.notes.length === 0) {
-                notesList.innerHTML = `<div style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding: 40px 0;">No saved study notes. Write one on the left panel!</div>`;
-                return;
-            }
-            state.notes.slice().reverse().forEach(note => {
-                const card = document.createElement("div");
-                card.className = "note-card";
-                card.innerHTML = `
-                    <span class="note-tag">${note.topic}</span>
-                    <h4 class="note-title">${note.title}</h4>
-                    <p class="note-body">${note.content}</p>
-                    <div class="note-actions">
-                        <button class="note-btn delete" onclick="deleteNote(${note.id})">Delete Note</button>
-                    </div>
-                `;
-                notesList.appendChild(card);
-            });
-        }
-        function deleteNote(noteId) {
-            state.notes = state.notes.filter(n => n.id !== noteId);
-            saveState();
-            renderNotesList();
-        }
-        /* ==========================================
-           15. GLOBAL SEARCH ENGINE
-           ========================================== */
-        const globalSearch = document.getElementById("globalSearch");
-        const searchResults = document.getElementById("searchResults");
-        globalSearch.addEventListener("input", () => {
-            const query = globalSearch.value.trim().toLowerCase();
-            if (!query) {
-                searchResults.style.display = "none";
-                return;
-            }
-            searchResults.innerHTML = "";
-            let matches = [];
-            // 1. Search Roadmap Modules
-            ROADMAP_MODULES.forEach(mod => {
-                if (mod.title.toLowerCase().includes(query) || mod.desc.toLowerCase().includes(query)) {
-                    matches.push({ title: mod.title, type: "Roadmap Module", action: () => launchLessonOverlay(mod.id) });
-                }
-            });
-            // 2. Search Capstone Projects
-            PROJECT_BLUEPRINTS.forEach(proj => {
-                if (proj.title.toLowerCase().includes(query) || proj.desc.toLowerCase().includes(query)) {
-                    matches.push({ title: proj.title, type: "Project", action: () => {
-                        document.querySelector('[data-view="projects"]').click();
-                    }});
-                }
-            });
-            // 3. Search Interview Categories
-            INTERVIEW_PREP_DATA.forEach(cat => {
-                cat.questions.forEach(q => {
-                    if (q.q.toLowerCase().includes(query) || q.a.toLowerCase().includes(query)) {
-                        matches.push({ title: q.q, type: "Interview Question", action: () => {
-                            document.querySelector('[data-view="interview"]').click();
-                        }});
-                    }
-                });
-            });
-            if (matches.length === 0) {
-                searchResults.innerHTML = `<div style="padding:12px; font-size:0.85rem; color:var(--text-muted);">No records found matching query</div>`;
-            } else {
-                matches.slice(0, 8).forEach(match => {
-                    const div = document.createElement("div");
-                    div.className = "search-result-item";
-                    div.innerHTML = `
-                        <div class="search-result-title">${match.title}</div>
-                        <div class="search-result-type">${match.type}</div>
-                    `;
-                    div.addEventListener("click", () => {
-                        match.action();
-                        globalSearch.value = "";
-                        searchResults.style.display = "none";
-                    });
-                    searchResults.appendChild(div);
-                });
-            }
-            searchResults.style.display = "block";
-        });
-        // Close search overlays when clicking outside
-        document.addEventListener("click", (e) => {
-            if (!e.target.closest(".search-container")) {
-                searchResults.style.display = "none";
-            }
-        });
-        /* ==========================================
-           16. SETTINGS & SYSTEM UTILITIES
-           ========================================== */
-        const themeSwitch = document.getElementById("themeSwitch");
-        const btnExport = document.getElementById("btnExportProgress");
-        const btnImport = document.getElementById("btnImportProgress");
-        const importFileInput = document.getElementById("importFile");
-        const btnReset = document.getElementById("btnResetProgress");
-        // Theme controller
-        themeSwitch.addEventListener("change", () => {
-            const val = themeSwitch.checked ? "dark" : "light";
-            document.documentElement.setAttribute("data-theme", val);
-            state.theme = val;
-            saveState();
-        });
-        document.getElementById("themeToggler").addEventListener("click", () => {
-            themeSwitch.checked = !themeSwitch.checked;
-            themeSwitch.dispatchEvent(new Event("change"));
-        });
-        function applySystemTheme() {
-            document.documentElement.setAttribute("data-theme", state.theme);
-            themeSwitch.checked = (state.theme === "dark");
-        }
-        // Export config
-        btnExport.addEventListener("click", () => {
-            const text = JSON.stringify(state, null, 4);
-            const blob = new Blob([text], { type: "application/json" });
+            const blob = new Blob([content], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
+            const a = document.createElement('a');
             a.href = url;
-            a.download = `pylearn_backup_${Date.now()}.json`;
-            document.body.appendChild(a);
+            a.download = 'project.html';
             a.click();
-            document.body.removeChild(a);
             URL.revokeObjectURL(url);
-        });
-        // Import config
-        btnImport.addEventListener("click", () => {
-            importFileInput.click();
-        });
-        importFileInput.addEventListener("change", (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const parsed = JSON.parse(evt.target.result);
-                    if (parsed && typeof parsed === "object" && parsed.hasOwnProperty("xp")) {
-                        state = { ...state, ...parsed };
-                        saveState();
-                        applySystemTheme();
-                        updateDashboardView();
-                        renderRoadmapFlow();
-                        renderNotesList();
-                        alert("Platform configuration restored successfully!");
-                    } else {
-                        alert("Invalid parameters detected in JSON file.");
-                    }
-                } catch(err) {
-                    alert("Failed to parse configurations file.");
-                }
-            };
-            reader.readAsText(file);
-        });
-        // Clear progress
-        btnReset.addEventListener("click", () => {
-            if (confirm("Are you sure you want to delete all learning metrics, notebook entries, XP rewards, and completed badges? This action cannot be reversed!")) {
-                localStorage.removeItem("pylearn_user_state");
-                state = {
-                    xp: 0,
-                    level: 1,
-                    completedLessons: [],
-                    completedQuizzes: [],
-                    completedChallenges: [],
-                    completedProjects: [],
-                    badges: [],
-                    notes: [],
-                    theme: "dark"
-                };
-                saveState();
-                applySystemTheme();
-                updateDashboardView();
-                renderRoadmapFlow();
-                renderNotesList();
-                alert("All progress has been reset.");
-            }
-        });
-        /* ==========================================
-           17. INITIALIZATION RUN
-           ========================================== */
-        window.addEventListener("DOMContentLoaded", () => {
-            loadState();
-            applySystemTheme();
-            updateDashboardView();
-            renderRoadmapFlow();
-            setupPlayground();
-            renderInterviewPrep();
-            renderNotesList();
-        });
+        }
+
+        // Initialize
+        loadProject();
+        setupAutoRun();
+        runCode(); // Initial run
+
     </script>
 </body>
 </html>
