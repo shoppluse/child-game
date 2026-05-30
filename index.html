@@ -3,566 +3,1497 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeForge Studio</title>
+    <meta name="description" content="CodeForge Studio - High-performance browser-based IDE for HTML, CSS, and JavaScript.">
+    <title>CodeForge Studio: High-Performance Frontend Playground</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/fold/foldgutter.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/dialog/dialog.min.css">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <!-- JSZip Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- Monaco Editor Loader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
     <style>
+        /* ==========================================
+           1. CORE DESIGN SYSTEM & THEMES
+           ========================================== */
         :root {
-            --bg-dark: #121212;
-            --bg-panel: #1e1e1e;
-            --bg-header: #252526;
-            --text-main: #cccccc;
-            --text-muted: #858585;
-            --accent: #007acc;
-            --accent-hover: #005f9e;
-            --border: #333333;
-            --danger: #f48771;
-            --success: #89d185;
-            --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            /* Theme: Midnight Slate (Default) */
+            --bg-app: #0b0c10;
+            --bg-sidebar: #0f111a;
+            --bg-panel: #141824;
+            --bg-input: #0a0c10;
+            --bg-active: #1d2336;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(99, 102, 241, 0.2);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            /* Gradients */
+            --gradient-accent: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            --gradient-sidebar: linear-gradient(180deg, #0f111a 0%, #08090e 100%);
+            
+            /* Accent Colors */
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.35);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
+            /* Dimensions */
+            --sidebar-width: 60px;
+            --control-panel-width: 250px;
+            --header-height: 48px;
+            --tabs-height: 36px;
+            --transition-speed: 0.25s;
         }
-
+        [data-theme="light"] {
+            /* Theme: Ivory Plain */
+            --bg-app: #f1f3f7;
+            --bg-sidebar: #ffffff;
+            --bg-panel: #fcfdfe;
+            --bg-input: #ffffff;
+            --bg-active: #e2e8f0;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --border-glow: rgba(99, 102, 241, 0.1);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --primary-glow: rgba(99, 102, 241, 0.15);
+        }
+        /* ==========================================
+           2. BASE RESET & INITIALIZATION
+           ========================================== */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: var(--font-ui);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            min-height: 100vh;
             overflow: hidden;
-        }
-
-        /* Top Navigation Navbar */
-        .navbar {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--bg-header);
-            padding: 0.5rem 1rem;
-            border-bottom: 1px solid var(--border);
-            height: 50px;
+            transition: background-color var(--transition-speed);
         }
-
-        .brand {
-            font-size: 1.2rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #fff;
-        }
-
-        .brand i { color: var(--accent); }
-
-        .toolbar-group {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        .btn {
-            background-color: var(--bg-panel);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            padding: 0.4rem 0.8rem;
-            border-radius: 4px;
+        button {
             cursor: pointer;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            transition: all 0.2s ease;
-        }
-
-        .btn:hover {
-            background-color: #2a2d2e;
-            border-color: #454545;
-        }
-
-        .btn.primary {
-            background-color: var(--accent);
-            border-color: var(--accent);
-            color: #fff;
-        }
-
-        .btn.primary:hover {
-            background-color: var(--accent-hover);
-        }
-
-        .device-toggles {
-            display: flex;
-            background: var(--bg-panel);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .device-btn {
-            background: transparent;
             border: none;
-            color: var(--text-muted);
-            padding: 0.4rem 0.8rem;
-            cursor: pointer;
+            background: none;
+            color: inherit;
+            font-family: inherit;
         }
-
-        .device-btn.active {
-            background: var(--border);
-            color: #fff;
+        input, select, textarea {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-family: inherit;
+            outline: none;
+            border-radius: 6px;
+            transition: border-color var(--transition-speed);
         }
-
-        /* Main Workspace */
-        .workspace {
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+        }
+        /* Scrollbar aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-app);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+        /* ==========================================
+           3. IDE LAYOUT WRAPPERS
+           ========================================== */
+        .ide-container {
             display: flex;
-            flex: 1;
-            height: calc(100vh - 50px);
+            width: 100vw;
+            height: 100vh;
             overflow: hidden;
-        }
-
-        /* Left Panel - Preview */
-        .panel-preview {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: #000;
             position: relative;
         }
-
-        .preview-header {
-            background-color: var(--bg-header);
-            padding: 0.4rem 1rem;
-            font-size: 0.85rem;
+        /* Sidebar Action icons strip */
+        .action-sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            z-index: 10;
         }
-
-        .iframe-container {
-            flex: 1;
+        .sidebar-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--gradient-accent);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(circle, #2a2a2a 0%, #121212 100%);
-            overflow: auto;
-            padding: 1rem;
+            box-shadow: 0 0 15px var(--primary-glow);
+            margin-bottom: 24px;
         }
-
-        iframe {
-            background-color: #fff;
-            border: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: width 0.3s, height 0.3s;
-            width: 100%;
-            height: 100%;
+        .sidebar-logo svg {
+            width: 20px;
+            height: 20px;
+            stroke: white;
+            fill: none;
+            stroke-width: 2.5;
         }
-
-        /* Console Panel */
-        .console-panel {
-            height: 200px;
-            background-color: var(--bg-panel);
-            border-top: 1px solid var(--border);
+        .sidebar-nav {
             display: flex;
             flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
         }
-
-        .console-header {
-            padding: 0.3rem 1rem;
-            background-color: var(--bg-header);
-            font-size: 0.8rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .console-output {
-            flex: 1;
-            padding: 0.5rem;
-            overflow-y: auto;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.85rem;
-        }
-
-        .log-entry { margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid #333; }
-        .log-error { color: var(--danger); }
-        .log-warn { color: #cca700; }
-        
-        /* Resizer */
-        .resizer {
-            width: 6px;
-            background-color: var(--bg-header);
-            cursor: col-resize;
-            border-left: 1px solid var(--border);
-            border-right: 1px solid var(--border);
-            z-index: 10;
-        }
-        .resizer:hover, .resizer:active {
-            background-color: var(--accent);
-        }
-
-        /* Right Panel - Code Editor */
-        .panel-editor {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--bg-panel);
-            width: 50%;
-        }
-
-        .tabs {
-            display: flex;
-            background-color: var(--bg-header);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .tab {
-            padding: 0.6rem 1.2rem;
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            border-right: 1px solid var(--border);
-            border-bottom: 2px solid transparent;
+        .sidebar-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-
-        .tab:hover { color: var(--text-main); }
-        .tab.active {
-            color: #fff;
-            background-color: var(--bg-panel);
-            border-bottom-color: var(--accent);
-        }
-
-        .tab-icon.html { color: #e34c26; }
-        .tab-icon.css { color: #264de4; }
-        .tab-icon.js { color: #f0db4f; }
-
-        .editor-container {
-            flex: 1;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
-
-        .editor-wrapper {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            display: none;
+        .sidebar-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
         }
-
-        .editor-wrapper.active { display: block; }
-
-        /* CodeMirror Overrides */
-        .CodeMirror {
+        .sidebar-btn:hover,
+        .sidebar-btn.active {
+            color: var(--text-primary);
+            background: var(--bg-active);
+        }
+        .sidebar-btn.active {
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.05);
+        }
+        .sidebar-btn[title]::after {
+            content: attr(title);
+            position: absolute;
+            left: calc(var(--sidebar-width) - 8px);
+            background: #1e293b;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+        .sidebar-btn:hover::after {
+            opacity: 1;
+        }
+        /* Sidebar Expansion Control Drawer Panel */
+        .drawer-panel {
+            width: var(--control-panel-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 9;
+            transition: width var(--transition-speed) ease;
+        }
+        .drawer-panel.collapsed {
+            width: 0;
+            border-right: none;
+        }
+        .drawer-header {
+            height: var(--header-height);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+        .drawer-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-primary);
+        }
+        .drawer-content {
+            flex-grow: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+        /* Project List items */
+        .project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .project-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            border-radius: 8px;
+            transition: border-color 0.2s ease;
+            cursor: pointer;
+        }
+        .project-item:hover, .project-item.active {
+            border-color: var(--primary);
+        }
+        .project-item.active {
+            background: var(--bg-active);
+        }
+        .project-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 130px;
+        }
+        .project-date {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .project-item-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .project-action-btn {
+            color: var(--text-muted);
+            transition: color 0.2s ease;
+        }
+        .project-action-btn:hover {
+            color: var(--danger);
+        }
+        /* Snapshots History list */
+        .snapshot-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .snapshot-item {
+            padding: 8px 12px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .snapshot-item:hover {
+            border-color: var(--primary);
+        }
+        /* Workspace Core Splits */
+        .workspace-split {
+            flex-grow: 1;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        .split-pane {
             height: 100%;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 14px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        #pane-preview {
+            background: var(--bg-app);
+            flex-grow: 1;
+        }
+        #pane-editor {
+            background: var(--bg-panel);
+            width: 50%;
+        }
+        /* Split Panel Resizer Divider */
+        .split-resizer {
+            width: 6px;
+            background: var(--bg-app);
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            cursor: col-resize;
+            transition: background 0.2s ease;
+            z-index: 5;
+            position: relative;
+        }
+        .split-resizer:hover, .split-resizer.dragging {
+            background: var(--primary);
+        }
+        /* Header control panel bars */
+        .panel-header {
+            height: var(--header-height);
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-sidebar);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+        /* Editor Tabs block */
+        .editor-tabs-bar {
+            display: flex;
+            height: var(--tabs-height);
+            background: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .editor-tab {
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-right: 1px solid var(--border-color);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .editor-tab.active {
+            color: var(--text-primary);
+            background: var(--bg-panel);
+        }
+        .editor-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+        }
+        .editor-tab-icon {
+            width: 14px;
+            height: 14px;
+        }
+        .editor-tab-icon.html { color: #e34c26; }
+        .editor-tab-icon.css { color: #264de4; }
+        .editor-tab-icon.js { color: #f7df1e; }
+        /* The container Monaco binds to */
+        .editor-editor-workspace {
+            flex-grow: 1;
+            width: 100%;
+            background: var(--bg-panel);
+            position: relative;
+            overflow: hidden;
+        }
+        /* Live Preview container & responsive frames */
+        .preview-workspace-wrapper {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow: auto;
+            background: var(--bg-app);
+            position: relative;
+        }
+        .preview-viewport-frame {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        /* Device styles overlays */
+        .preview-viewport-frame.device-mobile { width: 375px; height: 667px; }
+        .preview-viewport-frame.device-tablet { width: 768px; height: 1024px; }
+        .preview-viewport-frame.device-laptop { width: 1024px; height: 768px; }
+        .preview-viewport-frame.device-desktop { width: 100%; height: 100%; }
+        
+        .preview-viewport-frame.orientation-landscape {
+            transform: rotate(-90deg);
+            transform-origin: center center;
+        }
+        .sandbox-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #ffffff;
+        }
+        /* Header controls layout */
+        .header-btn-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-action {
+            height: 32px;
+            padding: 0 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .btn-action.primary {
+            background: var(--gradient-accent);
+            color: white;
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+        .btn-action.secondary {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        .btn-action.secondary:hover {
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+        }
+        .btn-action svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+        /* ==========================================
+           4. INTEGRATED CONSOLE DRAWER
+           ========================================== */
+        .console-drawer-panel {
+            height: 180px;
+            background: var(--bg-sidebar);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            z-index: 6;
+            transition: height var(--transition-speed) ease;
+        }
+        .console-drawer-panel.collapsed {
+            height: 32px;
+        }
+        .console-header {
+            height: 32px;
+            background: #08090d;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        .console-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .console-log-list {
+            flex-grow: 1;
+            padding: 12px 16px;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .console-log-item {
+            padding: 4px 8px;
+            border-radius: 4px;
+            line-height: 1.4;
+            border-left: 3px solid transparent;
+            word-break: break-all;
+        }
+        .console-log-item.log {
+            color: var(--text-primary);
+            border-left-color: var(--text-muted);
+        }
+        .console-log-item.warn {
+            color: #fef08a;
+            background: rgba(254, 240, 138, 0.05);
+            border-left-color: var(--warning);
+        }
+        .console-log-item.error {
+            color: #fca5a5;
+            background: rgba(252, 165, 165, 0.05);
+            border-left-color: var(--danger);
+        }
+        /* ==========================================
+           5. MODAL SYSTEM OVERLAYS
+           ========================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(7, 8, 13, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 460px;
+            padding: 28px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        .modal-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        .modal-input {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        /* View Layout Toggles class */
+        .presentation-mode #pane-editor,
+        .presentation-mode .split-resizer {
+            display: none !important;
+        }
+        .editor-fullscreen #pane-preview,
+        .editor-fullscreen .split-resizer {
+            display: none !important;
+        }
+        .editor-fullscreen #pane-editor {
+            width: 100% !important;
         }
     </style>
 </head>
 <body>
-
-    <nav class="navbar">
-        <div class="brand">
-            <i class="fa-solid fa-fire-flame-curved"></i> CodeForge Studio
-        </div>
-        
-        <div class="toolbar-group">
-            <div class="device-toggles">
-                <button class="device-btn active" onclick="setDevice('desktop')" title="Desktop"><i class="fa-solid fa-desktop"></i></button>
-                <button class="device-btn" onclick="setDevice('tablet')" title="Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
-                <button class="device-btn" onclick="setDevice('mobile')" title="Mobile"><i class="fa-solid fa-mobile-screen"></i></button>
-            </div>
-        </div>
-
-        <div class="toolbar-group">
-            <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
-                <input type="checkbox" id="autoRun" checked> Auto Run
-            </label>
-            <button class="btn" onclick="saveProject()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
-            <button class="btn" onclick="exportProject()"><i class="fa-solid fa-download"></i> Export</button>
-            <button class="btn primary" onclick="runCode()"><i class="fa-solid fa-play"></i> Run</button>
-        </div>
-    </nav>
-
-    <div class="workspace">
-        
-        <div class="panel-preview" id="leftPanel">
-            <div class="preview-header">
-                <span><i class="fa-solid fa-eye"></i> Live Output</span>
-                <span id="previewSize">Responsive</span>
+    <div class="ide-container">
+        <!-- ==========================================
+           A. ACTION SIDEBAR ICONS
+           ========================================== -->
+        <aside class="action-sidebar">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
             </div>
             
-            <div class="iframe-container">
-                <iframe id="preview-frame" sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin allow-popups allow-forms"></iframe>
-            </div>
-
-            <div class="console-panel">
-                <div class="console-header">
-                    <span><i class="fa-solid fa-terminal"></i> Console</span>
-                    <button style="background:none; border:none; color:var(--text-muted); cursor:pointer;" onclick="clearConsole()"><i class="fa-solid fa-ban"></i></button>
-                </div>
-                <div class="console-output" id="consoleOutput"></div>
-            </div>
-        </div>
-
-        <div class="resizer" id="resizer"></div>
-
-        <div class="panel-editor" id="rightPanel">
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('html')"><i class="fa-brands fa-html5 tab-icon html"></i> index.html</div>
-                <div class="tab" onclick="switchTab('css')"><i class="fa-brands fa-css3-alt tab-icon css"></i> style.css</div>
-                <div class="tab" onclick="switchTab('js')"><i class="fa-brands fa-js tab-icon js"></i> script.js</div>
+            <div class="sidebar-nav">
+                <button class="sidebar-btn active" data-drawer="projects" title="Project Manager">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                </button>
+                <button class="sidebar-btn" data-drawer="history" title="Version Snapshots">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </button>
+                <button class="sidebar-btn" data-drawer="export" title="Export Blueprints">
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                </button>
+                <button class="sidebar-btn" id="btnThemeToggle" title="Theme Mode Toggle">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </button>
+                <button class="sidebar-btn" id="btnShortcutModalTrigger" title="Keyboard Shortcuts">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
+                </button>
             </div>
             
-            <div class="editor-container">
-                <div class="editor-wrapper active" id="wrap-html">
-                    <textarea id="editor-html"></textarea>
+            <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; transform: rotate(-90deg); margin-top: 24px;">
+                V1.0
+            </div>
+        </aside>
+        <!-- ==========================================
+           B. EXPANSION CABINET/DRAWER
+           ========================================== -->
+        <section class="drawer-panel" id="drawerPanel">
+            <!-- Project management cabinet tab -->
+            <div class="drawer-section active" id="drawer-projects">
+                <div class="drawer-header">
+                    <span class="drawer-title">Projects</span>
+                    <button class="project-action-btn" id="btnCreateProject" title="Create Project">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
                 </div>
-                <div class="editor-wrapper" id="wrap-css">
-                    <textarea id="editor-css"></textarea>
-                </div>
-                <div class="editor-wrapper" id="wrap-js">
-                    <textarea id="editor-js"></textarea>
+                <div class="drawer-content">
+                    <div class="project-list" id="projectListContainer">
+                        <!-- Loaded dynamically -->
+                    </div>
                 </div>
             </div>
-        </div>
-
+            <!-- Version History snapshots tab -->
+            <div class="drawer-section" id="drawer-history" style="display: none;">
+                <div class="drawer-header">
+                    <span class="drawer-title">History Snapshots</span>
+                    <button class="project-action-btn" id="btnCreateSnapshot" title="Create Snapshot">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    </button>
+                </div>
+                <div class="drawer-content">
+                    <div class="snapshot-list" id="snapshotListContainer">
+                        <!-- Dynamic list of code versions -->
+                    </div>
+                </div>
+            </div>
+            <!-- Export file managers -->
+            <div class="drawer-section" id="drawer-export" style="display: none;">
+                <div class="drawer-header">
+                    <span class="drawer-title">Export Pack</span>
+                </div>
+                <div class="drawer-content" style="display: flex; flex-direction: column; gap: 12px;">
+                    <button class="btn-action secondary" id="btnExportZIP" style="width: 100%;">
+                        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Download Source ZIP
+                    </button>
+                    <button class="btn-action secondary" id="btnExportHTML" style="width: 100%;">
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline></svg>
+                        Export Single HTML
+                    </button>
+                    <div style="border-top:1px solid var(--border-color); padding-top:12px; margin-top:8px;">
+                        <span class="drawer-title" style="font-size:0.75rem; margin-bottom:8px; display:block;">Import Project JSON</span>
+                        <input type="file" id="importFileProject" style="display:none;" accept=".json">
+                        <button class="btn-action secondary" id="btnImportProject" style="width: 100%;">Import Config</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ==========================================
+           C. SPLIT WORKSPACE
+           ========================================== -->
+        <main class="workspace-split" id="workspaceSplit">
+            <!-- 1. LIVE PREVIEW (LEFT SIDE) -->
+            <section class="split-pane" id="pane-preview">
+                <div class="panel-header">
+                    <div class="header-btn-row">
+                        <!-- Emulation views dropdown selection -->
+                        <select id="selectDeviceMode" style="padding: 4px 8px; font-size: 0.8rem;">
+                            <option value="desktop">Desktop Preview</option>
+                            <option value="laptop">Laptop view (1024px)</option>
+                            <option value="tablet">Tablet mode (768px)</option>
+                            <option value="mobile">Mobile size (375px)</option>
+                        </select>
+                        <button class="btn-action secondary" id="btnOrientationToggle" title="Toggle Orientation">
+                            Orientation
+                        </button>
+                    </div>
+                    
+                    <div class="header-btn-row">
+                        <button class="btn-action secondary" id="btnPresentationToggle" title="Presentation Mode (Hide Editor)">
+                            Presentation Mode
+                        </button>
+                        <button class="btn-action secondary" id="btnFullscreenPreview" title="Fullscreen Preview Only">
+                            Fullscreen
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Frame holder -->
+                <div class="preview-workspace-wrapper">
+                    <div class="preview-viewport-frame device-desktop" id="previewViewportFrame">
+                        <iframe class="sandbox-iframe" id="sandboxIframe" sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin"></iframe>
+                    </div>
+                </div>
+            </section>
+            <!-- Resizer partition bar -->
+            <div class="split-resizer" id="splitResizer"></div>
+            <!-- 2. CODE WORKSPACE (RIGHT SIDE) -->
+            <section class="split-pane" id="pane-editor">
+                <!-- Header Control Row -->
+                <div class="panel-header">
+                    <div class="header-btn-row">
+                        <label style="font-size:0.75rem; color:var(--text-secondary); display:flex; align-items:center; gap:6px;">
+                            <input type="checkbox" id="checkAutoRun" checked>
+                            Auto Run
+                        </label>
+                        <label style="font-size:0.75rem; color:var(--text-secondary); display:flex; align-items:center; gap:6px; margin-left:12px;">
+                            <input type="checkbox" id="checkAutoSave" checked>
+                            Auto Save
+                        </label>
+                    </div>
+                    
+                    <div class="header-btn-row">
+                        <button class="btn-action secondary" id="btnFormatCode" title="Beautify document styles">Format</button>
+                        <button class="btn-action secondary" id="btnMinifyCode" title="Compress script parameters">Minify</button>
+                        <button class="btn-action primary" id="btnRunCode" title="Run Code (Ctrl + Enter)">
+                            <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            Run
+                        </button>
+                    </div>
+                </div>
+                <!-- Tabs line -->
+                <div class="editor-tabs-bar">
+                    <div class="editor-tab active" data-tab="html">
+                        <span class="editor-tab-icon html">&lt;/&gt;</span>
+                        index.html
+                    </div>
+                    <div class="editor-tab" data-tab="css">
+                        <span class="editor-tab-icon css">#</span>
+                        style.css
+                    </div>
+                    <div class="editor-tab" data-tab="js">
+                        <span class="editor-tab-icon js">{}</span>
+                        script.js
+                    </div>
+                </div>
+                <!-- Monaco Workspace Area -->
+                <div class="editor-editor-workspace" id="monacoEditorContainer"></div>
+                <!-- Bottom log Console Tray -->
+                <div class="console-drawer-panel collapsed" id="consoleDrawer">
+                    <div class="console-header" id="btnConsoleToggle">
+                        <span class="console-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                            Console Output log
+                        </span>
+                        <div style="display:flex; gap:8px;">
+                            <button class="project-action-btn" id="btnClearConsole" style="font-size:0.7rem; font-weight:700;">Clear</button>
+                            <span style="font-size:0.75rem; color:var(--text-muted);" id="consoleChevron">&#9650;</span>
+                        </div>
+                    </div>
+                    <div class="console-log-list" id="consoleLogList">
+                        <!-- Streamed console messages -->
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closetag.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/fold/foldcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/fold/foldgutter.min.js"></script>
-
+    <!-- ==========================================
+       D. DIALOG MODAL SYSTEM
+       ========================================== -->
+    <!-- Create / Edit project modal -->
+    <div class="modal-overlay" id="modalProjectName">
+        <div class="modal-card">
+            <h3 class="modal-title" id="projectNameModalTitle">New Project Configuration</h3>
+            <p class="modal-desc">Configure a name identifier for this creative playground space.</p>
+            <input type="text" class="modal-input" id="inputProjectName" placeholder="Project Name..." value="Untitled Project">
+            <div class="modal-actions">
+                <button class="btn-action secondary" id="btnCancelProjectModal">Cancel</button>
+                <button class="btn-action primary" id="btnConfirmProjectModal">Confirm</button>
+            </div>
+        </div>
+    </div>
+    <!-- Keyboard Shortcuts helper modal -->
+    <div class="modal-overlay" id="modalShortcuts">
+        <div class="modal-card" style="max-width:550px;">
+            <h3 class="modal-title">Keyboard IDE Shortcuts</h3>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:24px; font-size:0.85rem; color:var(--text-secondary);">
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding-bottom:6px;">
+                    <span>Run code inside Sandbox</span>
+                    <strong style="color:var(--text-primary);">Ctrl + Enter / Cmd + Enter</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding-bottom:6px;">
+                    <span>Format Document</span>
+                    <strong style="color:var(--text-primary);">Shift + Alt + F</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding-bottom:6px;">
+                    <span>Toggle File tabs</span>
+                    <strong style="color:var(--text-primary);">Ctrl + 1 (HTML), Ctrl + 2 (CSS), Ctrl + 3 (JS)</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding-bottom:6px;">
+                    <span>Save Project Snapshot</span>
+                    <strong style="color:var(--text-primary);">Ctrl + S / Cmd + S</strong>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-action primary" id="btnCloseShortcutsModal" style="margin:0 auto;">Close Options</button>
+            </div>
+        </div>
+    </div>
+    <!-- ==========================================
+       E. IDE CONTROLLERS LOGIC
+       ========================================== */ -->
     <script>
-        // --- 1. Initialize Editors (CodeMirror) ---
-        const editorOptions = {
-            theme: 'material-darker',
-            lineNumbers: true,
-            autoCloseBrackets: true,
-            autoCloseTags: true,
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-            lineWrapping: true
+        /* ==========================================
+           1. SIDEBAR EXPANSION UTILS
+           ========================================== */
+        const sidebarButtons = document.querySelectorAll(".sidebar-btn[data-drawer]");
+        const drawerPanel = document.getElementById("drawerPanel");
+        const drawerSections = document.querySelectorAll(".drawer-section");
+        sidebarButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const target = btn.getAttribute("data-drawer");
+                // Toggle drawer panel collapsed state
+                if (btn.classList.contains("active") && !drawerPanel.classList.contains("collapsed")) {
+                    drawerPanel.classList.add("collapsed");
+                    btn.classList.remove("active");
+                } else {
+                    drawerPanel.classList.remove("collapsed");
+                    sidebarButtons.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    // Toggle drawer section display
+                    drawerSections.forEach(section => {
+                        section.style.display = "none";
+                        if (section.id === `drawer-${target}`) {
+                            section.style.display = "block";
+                        }
+                    });
+                }
+                
+                // Trigger Monaco layout update to fit new widths
+                setTimeout(() => {
+                    if (window.editor) window.editor.layout();
+                }, 300);
+            });
+        });
+        /* ==========================================
+           2. SPLIT RESIZER DRAG CONTROLLER
+           ========================================== */
+        const splitResizer = document.getElementById("splitResizer");
+        const panePreview = document.getElementById("pane-preview");
+        const paneEditor = document.getElementById("pane-editor");
+        const workspaceSplit = document.getElementById("workspaceSplit");
+        let isDraggingSplit = false;
+        splitResizer.addEventListener("mousedown", (e) => {
+            isDraggingSplit = true;
+            splitResizer.classList.add("dragging");
+            // Disable select & pointer actions on iframe to avoid focus capture during drags
+            document.getElementById("sandboxIframe").style.pointerEvents = "none";
+        });
+        document.addEventListener("mousemove", (e) => {
+            if (!isDraggingSplit) return;
+            
+            const totalWidth = workspaceSplit.getBoundingClientRect().width;
+            let leftPaneWidth = e.clientX - workspaceSplit.getBoundingClientRect().left;
+            // Restrict panels dimensions
+            if (leftPaneWidth < 200) leftPaneWidth = 200;
+            if (leftPaneWidth > totalWidth - 250) leftPaneWidth = totalWidth - 250;
+            const leftPct = (leftPaneWidth / totalWidth) * 100;
+            panePreview.style.width = `${leftPct}%`;
+            paneEditor.style.width = `${100 - leftPct}%`;
+            
+            if (window.editor) window.editor.layout();
+        });
+        document.addEventListener("mouseup", () => {
+            if (isDraggingSplit) {
+                isDraggingSplit = false;
+                splitResizer.classList.remove("dragging");
+                document.getElementById("sandboxIframe").style.pointerEvents = "auto";
+            }
+        });
+        /* ==========================================
+           3. STORAGE ENGINE & PROJECTS SERIALIZATION
+           ========================================== */
+        let state = {
+            projects: {}, // mapping id -> { name, html, css, js, snapshots: [], updated }
+            activeId: null
         };
-
-        const htmlEditor = CodeMirror.fromTextArea(document.getElementById('editor-html'), {
-            ...editorOptions, mode: 'xml'
-        });
-        const cssEditor = CodeMirror.fromTextArea(document.getElementById('editor-css'), {
-            ...editorOptions, mode: 'css'
-        });
-        const jsEditor = CodeMirror.fromTextArea(document.getElementById('editor-js'), {
-            ...editorOptions, mode: 'javascript'
-        });
-
-        // Load Default Content
-        htmlEditor.setValue(`<div class="hero">\n  <h1>CodeForge Studio</h1>\n  <p>Build advanced graphics and modern UIs.</p>\n  <canvas id="particles"></canvas>\n</div>`);
-        cssEditor.setValue(`.hero {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  height: 100vh;\n  background: #111;\n  color: #fff;\n  font-family: sans-serif;\n}\ncanvas {\n  position: absolute;\n  top: 0; left: 0;\n  width: 100%; height: 100%;\n  pointer-events: none;\n}`);
-        jsEditor.setValue(`// Particle System Demo\nconst ctx = document.getElementById('particles').getContext('2d');\nconsole.log("Canvas initialized successfully!");`);
-
-        // --- 2. Tab Switching Logic ---
-        function switchTab(lang) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.editor-wrapper').forEach(e => e.classList.remove('active'));
-            
-            event.currentTarget.classList.add('active');
-            document.getElementById(`wrap-${lang}`).classList.add('active');
-            
-            // Refresh CodeMirror to fix layout bugs when hidden
-            if(lang === 'html') htmlEditor.refresh();
-            if(lang === 'css') cssEditor.refresh();
-            if(lang === 'js') jsEditor.refresh();
-        }
-
-        // --- 3. Preview Execution Logic ---
-        let timeout;
-        function setupAutoRun() {
-            htmlEditor.on('change', debounceRun);
-            cssEditor.on('change', debounceRun);
-            jsEditor.on('change', debounceRun);
-        }
-
-        function debounceRun() {
-            if (document.getElementById('autoRun').checked) {
-                clearTimeout(timeout);
-                timeout = setTimeout(runCode, 800);
-            }
-        }
-
-        function runCode() {
-            const iframe = document.getElementById('preview-frame');
-            const html = htmlEditor.getValue();
-            const css = cssEditor.getValue();
-            const js = jsEditor.getValue();
-
-            // Script injected to capture console.log inside the iframe
-            const consoleCaptureScript = `
-                <script>
-                    const originalConsole = {
-                        log: console.log,
-                        warn: console.warn,
-                        error: console.error
-                    };
-                    
-                    function postConsoleMsg(type, args) {
-                        const message = Array.from(args).map(arg => 
-                            typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
-                        ).join(' ');
-                        window.parent.postMessage({ source: 'codeforge', type: type, message: message }, '*');
-                    }
-
-                    console.log = function(...args) { postConsoleMsg('log', args); originalConsole.log.apply(console, args); };
-                    console.warn = function(...args) { postConsoleMsg('warn', args); originalConsole.warn.apply(console, args); };
-                    console.error = function(...args) { postConsoleMsg('error', args); originalConsole.error.apply(console, args); };
-                    
-                    window.onerror = function(message, source, lineno, colno, error) {
-                        postConsoleMsg('error', [\`\${message} at line \${lineno}\`]);
-                        return false;
-                    };
-                <\/script>
-            `;
-
-            const combinedSource = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    ${consoleCaptureScript}
-                    <style>${css}</style>
-                </head>
-                <body>
-                    ${html}
-                    <script>${js}<\/script>
-                </body>
-                </html>
-            `;
-
-            iframe.srcdoc = combinedSource;
-        }
-
-        // --- 4. Console Interception ---
-        const consoleOutput = document.getElementById('consoleOutput');
+        const STARTER_HTML = `<!-- HTML Sandbox Core -->\n<div class="canvas-wrap">\n  <h1>CodeForge Studio</h1>\n  <p>Ready to build high-end frontend structures.</p>\n  <button id="action-btn">Launch Animation</button>\n</div>\n\n<canvas id="anim-canvas"></canvas>`;
         
-        window.addEventListener('message', (e) => {
-            if (e.data && e.data.source === 'codeforge') {
-                const div = document.createElement('div');
-                div.className = \`log-entry log-\${e.data.type}\`;
-                
-                const time = new Date().toLocaleTimeString([], {hour12:false});
-                div.innerText = \`[\${time}] \${e.data.message}\`;
-                
-                consoleOutput.appendChild(div);
-                consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        const STARTER_CSS = `/* Premium Dark Canvas Stylings */\nbody {\n  margin: 0;\n  padding: 0;\n  background: #0f1015;\n  color: #ffffff;\n  font-family: 'Inter', sans-serif;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 100vh;\n  overflow: hidden;\n}\n\n.canvas-wrap {\n  text-align: center;\n  z-index: 10;\n  background: rgba(15, 17, 26, 0.7);\n  padding: 30px;\n  border-radius: 16px;\n  border: 1px solid rgba(255,255,255,0.08);\n  backdrop-filter: blur(10px);\n}\n\nh1 {\n  margin: 0 0 10px;\n  font-size: 2.2rem;\n  letter-spacing: -1px;\n  background: linear-gradient(135deg, #6366f1, #d946ef);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n}\n\nbutton {\n  background: #6366f1;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: 0.2s;\n}\n\nbutton:hover {\n  background: #4f46e5;\n  transform: translateY(-2px);\n}\n\ncanvas {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n}`;
+        const STARTER_JS = `// Particle Animation Engine\nconst canvas = document.getElementById("anim-canvas");\nconst ctx = canvas.getContext("2d");\n\nlet width = canvas.width = window.innerWidth;\nlet height = canvas.height = window.innerHeight;\n\nwindow.addEventListener("resize", () => {\n  width = canvas.width = window.innerWidth;\n  height = canvas.height = window.innerHeight;\n});\n\nconst particles = [];\n\nclass Particle {\n  constructor() {\n    this.x = Math.random() * width;\n    this.y = Math.random() * height;\n    this.size = Math.random() * 3 + 1;\n    this.speedX = Math.random() * 1 - 0.5;\n    this.speedY = Math.random() * 1 - 0.5;\n  }\n  update() {\n    this.x += this.speedX;\n    this.y += this.speedY;\n    if (this.x < 0 || this.x > width) this.speedX *= -1;\n    if (this.y < 0 || this.y > height) this.speedY *= -1;\n  }\n  draw() {\n    ctx.fillStyle = "rgba(99, 102, 241, 0.4)";\n    ctx.beginPath();\n    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);\n    ctx.fill();\n  }\n}\n\nfor(let i=0; i<80; i++) {\n  particles.push(new Particle());\n}\n\nfunction loop() {\n  ctx.clearRect(0, 0, width, height);\n  particles.forEach(p => {\n    p.update();\n    p.draw();\n  });\n  requestAnimationFrame(loop);\n}\n\nloop();\n\n// Action trigger log\ndocument.getElementById("action-btn").addEventListener("click", () => {\n  console.log("Animation Trigger Button clicked!");\n});`;
+        function loadStateFromStorage() {
+            const raw = localStorage.getItem("codeforge_studio_state");
+            if (raw) {
+                try {
+                    state = JSON.parse(raw);
+                } catch(e) {
+                    console.error("Storage corrupted, rebuilding state logs.");
+                }
             }
-        });
-
-        function clearConsole() {
-            consoleOutput.innerHTML = '';
-        }
-
-        // --- 5. Splitter Drag Logic ---
-        const resizer = document.getElementById('resizer');
-        const leftPanel = document.getElementById('leftPanel');
-        let isResizing = false;
-
-        resizer.addEventListener('mousedown', (e) => {
-            isResizing = true;
-            document.body.style.cursor = 'col-resize';
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isResizing) return;
-            const containerWidth = document.body.clientWidth;
-            const newLeftWidth = (e.clientX / containerWidth) * 100;
-            if (newLeftWidth > 20 && newLeftWidth < 80) {
-                leftPanel.style.flex = \`0 0 \${newLeftWidth}%\`;
-            }
-        });
-
-        document.addEventListener('mouseup', () => {
-            isResizing = false;
-            document.body.style.cursor = 'default';
-        });
-
-        // --- 6. Device Toggles ---
-        function setDevice(type) {
-            document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
-            event.currentTarget.classList.add('active');
             
-            const iframe = document.getElementById('preview-frame');
-            const sizeLabel = document.getElementById('previewSize');
-            
-            if (type === 'mobile') {
-                iframe.style.width = '375px';
-                iframe.style.height = '812px';
-                sizeLabel.innerText = 'Mobile (375x812)';
-            } else if (type === 'tablet') {
-                iframe.style.width = '768px';
-                iframe.style.height = '1024px';
-                sizeLabel.innerText = 'Tablet (768x1024)';
-            } else {
-                iframe.style.width = '100%';
-                iframe.style.height = '100%';
-                sizeLabel.innerText = 'Responsive';
+            // Build fallback templates if empty list
+            if (!state.projects || Object.keys(state.projects).length === 0) {
+                const initId = "proj_" + Date.now();
+                state.projects = {
+                    [initId]: {
+                        name: "Demo Particle System",
+                        html: STARTER_HTML,
+                        css: STARTER_CSS,
+                        js: STARTER_JS,
+                        snapshots: [],
+                        updated: Date.now()
+                    }
+                };
+                state.activeId = initId;
+                saveStateToStorage();
             }
         }
-
-        // --- 7. Save / Export features ---
-        function saveProject() {
-            const project = {
-                html: htmlEditor.getValue(),
-                css: cssEditor.getValue(),
-                js: jsEditor.getValue()
+        function saveStateToStorage() {
+            localStorage.setItem("codeforge_studio_state", JSON.stringify(state));
+        }
+        /* ==========================================
+           4. MONACO EDITOR & TAB CONFIGURATIONS
+           ========================================== */
+        let htmlModel, cssModel, jsModel;
+        let activeFileTab = "html";
+        function startMonacoEditor() {
+            require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
+            require(['vs/editor/editor.main'], () => {
+                const activeProj = state.projects[state.activeId];
+                // Create distinct models
+                htmlModel = monaco.editor.createModel(activeProj.html, 'html');
+                cssModel = monaco.editor.createModel(activeProj.css, 'css');
+                jsModel = monaco.editor.createModel(activeProj.js, 'javascript');
+                // Initialize editor
+                window.editor = monaco.editor.create(document.getElementById("monacoEditorContainer"), {
+                    model: htmlModel,
+                    theme: 'vs-dark',
+                    automaticLayout: true,
+                    fontSize: 14,
+                    fontFamily: "'Fira Code', Consolas, monospace",
+                    tabSize: 2,
+                    lineNumbers: 'on',
+                    minimap: { enabled: false },
+                    bracketPairColorization: { enabled: true },
+                    autoClosingBrackets: 'always',
+                    autoClosingTags: true,
+                    folding: true,
+                    wordWrap: 'on'
+                });
+                // Debounced triggers for Auto Run
+                let runDebounce;
+                window.editor.onDidChangeModelContent(() => {
+                    // Update active model parameters inside state
+                    const codeVal = window.editor.getValue();
+                    const activeP = state.projects[state.activeId];
+                    if (activeFileTab === "html") activeP.html = codeVal;
+                    else if (activeFileTab === "css") activeP.css = codeVal;
+                    else if (activeFileTab === "js") activeP.js = codeVal;
+                    
+                    activeP.updated = Date.now();
+                    
+                    if (document.getElementById("checkAutoSave").checked) {
+                        saveStateToStorage();
+                    }
+                    if (document.getElementById("checkAutoRun").checked) {
+                        clearTimeout(runDebounce);
+                        runDebounce = setTimeout(triggerLivePreviewBuild, 800);
+                    }
+                });
+                // Setup tabs keyboard shortcuts
+                window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+                    triggerLivePreviewBuild();
+                });
+                window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+                    createSnapshotFromState();
+                });
+                // Render Initial Layout
+                triggerLivePreviewBuild();
+            });
+        }
+        // Tab switching engine
+        const editorTabs = document.querySelectorAll(".editor-tab");
+        editorTabs.forEach(tab => {
+            tab.addEventListener("click", () => {
+                const tabName = tab.getAttribute("data-tab");
+                if (tabName === activeFileTab || !window.editor) return;
+                editorTabs.forEach(t => t.classList.remove("active"));
+                tab.classList.add("active");
+                activeFileTab = tabName;
+                // Set Monaco Model
+                if (tabName === "html") window.editor.setModel(htmlModel);
+                else if (tabName === "css") window.editor.setModel(cssModel);
+                else if (tabName === "js") window.editor.setModel(jsModel);
+            });
+        });
+        /* ==========================================
+           5. SANDBOX PREVIEW & CONSOLE PIPELINE
+           ========================================== */
+        const consoleLogList = document.getElementById("consoleLogList");
+        window.addEventListener("message", (e) => {
+            const data = e.data;
+            if (data && data.type === 'console') {
+                logMessageToDrawer(data.logType, data.message);
+            }
+        });
+        function logMessageToDrawer(type, message) {
+            const item = document.createElement("div");
+            item.className = `console-log-item ${type}`;
+            
+            let timeStr = new Date().toLocaleTimeString().split(' ')[0];
+            item.innerHTML = `<span style="color: var(--text-muted); font-size: 0.7rem; margin-right: 6px;">[${timeStr}]</span> ${message}`;
+            
+            consoleLogList.appendChild(item);
+            consoleLogList.scrollTop = consoleLogList.scrollHeight; // Scroll to bottom
+            
+            // Auto expand console tray if it returns an error
+            if (type === 'error' && document.getElementById("consoleDrawer").classList.contains("collapsed")) {
+                toggleConsoleDrawer();
+            }
+        }
+        function triggerLivePreviewBuild() {
+            if (!htmlModel) return;
+            const html = htmlModel.getValue();
+            const css = cssModel.getValue();
+            const js = jsModel.getValue();
+            // Construct preview doc string
+            const srcDoc = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Preview Frame</title>
+    <style>
+        ${css}
+    </style>
+</head>
+<body>
+    ${html}
+    
+    <!-- Console Capture Wrapper -->
+    <script>
+        (function() {
+            const _log = console.log;
+            const _warn = console.warn;
+            const _error = console.error;
+            function send(type, args) {
+                window.parent.postMessage({
+                    type: 'console',
+                    logType: type,
+                    message: args.map(arg => {
+                        if (arg === null) return 'null';
+                        if (arg === undefined) return 'undefined';
+                        if (typeof arg === 'object') {
+                            try { return JSON.stringify(arg); } catch(e) { return String(arg); }
+                        }
+                        return String(arg);
+                    }).join(' ')
+                }, '*');
+            }
+            console.log = (...args) => {
+                _log(...args);
+                send('log', args);
             };
-            localStorage.setItem('codeforge_project', JSON.stringify(project));
-            alert("Project saved locally!");
+            console.warn = (...args) => {
+                _warn(...args);
+                send('warn', args);
+            };
+            console.error = (...args) => {
+                _error(...args);
+                send('error', args);
+            };
+            
+            window.onerror = (msg, url, line) => {
+                send('error', [msg + " (line " + line + ")"]);
+            };
+        })();
+    </script>
+    <script>
+        try {
+            ${js}
+        } catch(err) {
+            console.error(err.message);
         }
-
-        function loadProject() {
-            const saved = localStorage.getItem('codeforge_project');
-            if (saved) {
-                const project = JSON.parse(saved);
-                htmlEditor.setValue(project.html);
-                cssEditor.setValue(project.css);
-                jsEditor.setValue(project.js);
+    </script>
+</body>
+</html>
+            `;
+            const iframe = document.getElementById("sandboxIframe");
+            iframe.srcdoc = srcDoc;
+        }
+        document.getElementById("btnRunCode").addEventListener("click", () => {
+            triggerLivePreviewBuild();
+            logMessageToDrawer("log", "Execution Triggered manually.");
+        });
+        /* ==========================================
+           6. CONSOLE EXPANSION UTILS
+           ========================================== */
+        const consoleDrawer = document.getElementById("consoleDrawer");
+        const btnConsoleToggle = document.getElementById("btnConsoleToggle");
+        const consoleChevron = document.getElementById("consoleChevron");
+        function toggleConsoleDrawer() {
+            if (consoleDrawer.classList.contains("collapsed")) {
+                consoleDrawer.classList.remove("collapsed");
+                consoleChevron.innerHTML = "&#9660;";
+            } else {
+                consoleDrawer.classList.add("collapsed");
+                consoleChevron.innerHTML = "&#9650;";
+            }
+            setTimeout(() => {
+                if (window.editor) window.editor.layout();
+            }, 300);
+        }
+        btnConsoleToggle.addEventListener("click", (e) => {
+            if (e.target.closest("#btnClearConsole")) return; // skip clear clicks
+            toggleConsoleDrawer();
+        });
+        document.getElementById("btnClearConsole").addEventListener("click", () => {
+            consoleLogList.innerHTML = "";
+        });
+        /* ==========================================
+           7. SIDEBAR PANELS ACTIONS CONTROLLERS
+           ========================================== */
+        const projectListContainer = document.getElementById("projectListContainer");
+        // Render projects selection list
+        function renderProjectsList() {
+            projectListContainer.innerHTML = "";
+            Object.keys(state.projects).forEach(id => {
+                const proj = state.projects[id];
+                const active = (id === state.activeId);
+                const item = document.createElement("div");
+                item.className = `project-item ${active ? 'active' : ''}`;
+                item.addEventListener("click", (e) => {
+                    if (e.target.closest(".project-action-btn")) return; // Skip actions
+                    loadActiveProjectWorkspace(id);
+                });
+                item.innerHTML = `
+                    <div>
+                        <div class="project-name">${proj.name}</div>
+                        <div class="project-date">Updated: ${new Date(proj.updated).toLocaleDateString()}</div>
+                    </div>
+                    <div class="project-item-actions">
+                        <button class="project-action-btn" onclick="triggerDuplicateProject('${id}')" title="Duplicate Project">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </button>
+                        <button class="project-action-btn" onclick="triggerDeleteProject('${id}')" title="Delete Project" style="color: var(--danger);">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                    </div>
+                `;
+                projectListContainer.appendChild(item);
+            });
+        }
+        // Active project loads
+        function loadActiveProjectWorkspace(id) {
+            state.activeId = id;
+            saveStateToStorage();
+            
+            const activeProj = state.projects[id];
+            
+            // Set Monaco Models values
+            if (htmlModel) htmlModel.setValue(activeProj.html);
+            if (cssModel) cssModel.setValue(activeProj.css);
+            if (jsModel) jsModel.setValue(activeProj.js);
+            renderProjectsList();
+            renderSnapshotsList();
+            triggerLivePreviewBuild();
+            
+            logMessageToDrawer("log", `Project Loaded: ${activeProj.name}`);
+        }
+        // Project Creation modal
+        const modalProjectName = document.getElementById("modalProjectName");
+        const inputProjectName = document.getElementById("inputProjectName");
+        let projectModalCallback = null;
+        document.getElementById("btnCreateProject").addEventListener("click", () => {
+            document.getElementById("projectNameModalTitle").innerText = "New Project Configuration";
+            inputProjectName.value = "Untitled Project";
+            modalProjectName.classList.add("active");
+            
+            projectModalCallback = (name) => {
+                const newId = "proj_" + Date.now();
+                state.projects[newId] = {
+                    name: name || "New Project",
+                    html: `<!-- New ${name} Core -->\n<h1>Welcome to ${name}</h1>`,
+                    css: `/* Page designs */\nbody { background: #000; color: #fff; }`,
+                    js: `// Scripts\nconsole.log("Ready!");`,
+                    snapshots: [],
+                    updated: Date.now()
+                };
+                loadActiveProjectWorkspace(newId);
+            };
+        });
+        document.getElementById("btnCancelProjectModal").addEventListener("click", () => {
+            modalProjectName.classList.remove("active");
+        });
+        document.getElementById("btnConfirmProjectModal").addEventListener("click", () => {
+            const name = inputProjectName.value.trim();
+            if (projectModalCallback) projectModalCallback(name);
+            modalProjectName.classList.remove("active");
+        });
+        function triggerDuplicateProject(id) {
+            const src = state.projects[id];
+            const dupId = "proj_" + Date.now();
+            state.projects[dupId] = {
+                name: `${src.name} (Copy)`,
+                html: src.html,
+                css: src.css,
+                js: src.js,
+                snapshots: [],
+                updated: Date.now()
+            };
+            saveStateToStorage();
+            renderProjectsList();
+            logMessageToDrawer("log", `Project Duplicated.`);
+        }
+        function triggerDeleteProject(id) {
+            if (Object.keys(state.projects).length <= 1) {
+                alert("Cannot delete the only remaining project workspace!");
+                return;
+            }
+            if (confirm("Are you sure you want to delete this project? This action cannot be reversed!")) {
+                delete state.projects[id];
+                if (state.activeId === id) {
+                    state.activeId = Object.keys(state.projects)[0];
+                }
+                loadActiveProjectWorkspace(state.activeId);
             }
         }
-
-        function exportProject() {
-            const html = htmlEditor.getValue();
-            const css = cssEditor.getValue();
-            const js = jsEditor.getValue();
-            
-            const content = `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Exported Project</title>\n<style>\n${css}\n</style>\n</head>\n<body>\n${html}\n<script>\n${js}\n<\/script>\n</body>\n</html>`;
-            
-            const blob = new Blob([content], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'project.html';
-            a.click();
-            URL.revokeObjectURL(url);
+        /* ==========================================
+           8. SNAPSHOTS VERSION CONTROL ENGINE
+           ========================================== */
+        const snapshotListContainer = document.getElementById("snapshotListContainer");
+        function renderSnapshotsList() {
+            snapshotListContainer.innerHTML = "";
+            const activeProj = state.projects[state.activeId];
+            if (!activeProj.snapshots || activeProj.snapshots.length === 0) {
+                snapshotListContainer.innerHTML = `<div style="font-size:0.75rem; color:var(--text-muted); text-align:center; padding:20px 0;">No snapshots found. Click '+' above to create a version snapshot.</div>`;
+                return;
+            }
+            activeProj.snapshots.slice().reverse().forEach((snap, index) => {
+                const item = document.createElement("div");
+                item.className = "snapshot-item";
+                item.innerHTML = `
+                    <div>
+                        <strong>Version ${activeProj.snapshots.length - index}</strong>
+                        <div style="font-size:0.65rem; color:var(--text-muted);">${new Date(snap.timestamp).toLocaleTimeString()}</div>
+                    </div>
+                    <button class="project-action-btn" onclick="restoreSnapshotState(${activeProj.snapshots.length - 1 - index})" style="color:var(--primary); font-weight:600;">Restore</button>
+                `;
+                snapshotListContainer.appendChild(item);
+            });
         }
-
-        // Initialize
-        loadProject();
-        setupAutoRun();
-        runCode(); // Initial run
-
+        function createSnapshotFromState() {
+            const activeProj = state.projects[state.activeId];
+            if (!activeProj.snapshots) activeProj.snapshots = [];
+            const newSnap = {
+                timestamp: Date.now(),
+                html: htmlModel.getValue(),
+                css: cssModel.getValue(),
+                js: jsModel.getValue()
+            };
+            activeProj.snapshots.push(newSnap);
+            saveStateToStorage();
+            renderSnapshotsList();
+            logMessageToDrawer("log", "Version Snapshot captured successfully.");
+        }
+        document.getElementById("btnCreateSnapshot").addEventListener("click", () => {
+            createSnapshotFromState();
+        });
+        window.restoreSnapshotState = function(index) {
+            const activeProj = state.projects[state.activeId];
+            const snap = activeProj.snapshots[index];
+            if (!snap) return;
+            if (confirm("Restore workspace variables to this version snapshot? Unsaved current progress may be overwritten.")) {
+                htmlModel.setValue(snap.html);
+                cssModel.setValue(snap.css);
+                jsModel.setValue(snap.js);
+                triggerLivePreviewBuild();
+                logMessageToDrawer("log", `Restored to Snapshot timestamp: ${new Date(snap.timestamp).toLocaleTimeString()}`);
+            }
+        };
+        /* ==========================================
+           9. PROJECT IMPORT / EXPORT ENGINES
+           ========================================== */
+        const fileInputProject = document.getElementById("importFileProject");
+        document.getElementById("btnImportProject").addEventListener("click", () => {
+            fileInputProject.click();
+        });
+        fileInputProject.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const parsed = JSON.parse(evt.target.result);
+                    if (parsed && parsed.html !== undefined && parsed.css !== undefined) {
+                        const newId = "proj_" + Date.now();
+                        state.projects[newId] = {
+                            name: parsed.name || "Imported Project",
+                            html: parsed.html,
+                            css: parsed.css,
+                            js: parsed.js || "",
+                            snapshots: [],
+                            updated: Date.now()
+                        };
+                        loadActiveProjectWorkspace(newId);
+                        alert("Project imported successfully!");
+                    } else {
+                        alert("Invalid JSON format detected.");
+                    }
+                } catch(err) {
+                    alert("Failed to parse project configuration JSON.");
+                }
+            };
+            reader.readAsText(file);
+        });
+        // Export as self-contained HTML file
+        document.getElementById("btnExportHTML").addEventListener("click", () => {
+            const activeProj = state.projects[state.activeId];
+            const doc = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${activeProj.name}</title>
+    <style>
+        ${activeProj.css}
+    </style>
+</head>
+<body>
+    ${activeProj.html}
+    <script>
+        ${activeProj.js}
+    </script>
+</body>
+</html>`;
+            const blob = new Blob([doc], { type: "text/html" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${activeProj.name.replace(/\s+/g, '_').toLowerCase()}_export.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+        // Export as complete zip containing index.html, style.css, and script.js
+        document.getElementById("btnExportZIP").addEventListener("click", () => {
+            const activeProj = state.projects[state.activeId];
+            const zip = new JSZip();
+            // Link stylesheet and script source inside packaged html
+            const doc = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${activeProj.name}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    ${activeProj.html}
+    <script src="script.js"></script>
+</body>
+</html>`;
+            zip.file("index.html", doc);
+            zip.file("style.css", activeProj.css);
+            zip.file("script.js", activeProj.js);
+            zip.generateAsync({ type: "blob" }).then((content) => {
+                const url = URL.createObjectURL(content);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `${activeProj.name.replace(/\s+/g, '_').toLowerCase()}_package.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        });
+        /* ==========================================
+           10. LAYOUT & VIEWPORT DEVICES MODE SELECTORS
+           ========================================== */
+        const selectDeviceMode = document.getElementById("selectDeviceMode");
+        const previewViewportFrame = document.getElementById("previewViewportFrame");
+        selectDeviceMode.addEventListener("change", () => {
+            const mode = selectDeviceMode.value;
+            
+            // Remove previous device viewport styles
+            previewViewportFrame.className = "preview-viewport-frame";
+            previewViewportFrame.classList.add(`device-${mode}`);
+        });
+        document.getElementById("btnOrientationToggle").addEventListener("click", () => {
+            previewViewportFrame.classList.toggle("orientation-landscape");
+        });
+        // Presentation Mode (Hides editor completely)
+        document.getElementById("btnPresentationToggle").addEventListener("click", () => {
+            document.body.classList.toggle("presentation-mode");
+            if (window.editor) window.editor.layout();
+        });
+        // Fullscreen preview toggling
+        document.getElementById("btnFullscreenPreview").addEventListener("click", () => {
+            const iframeWrap = document.getElementById("pane-preview");
+            if (!document.fullscreenElement) {
+                iframeWrap.requestFullscreen().catch(err => {
+                    alert(`Error enabling fullscreen mode: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+        /* ==========================================
+           11. COMPRESSION / FORMAT AND UTILITIES
+           ========================================== */
+        // Format Document using Monaco's native formatter
+        document.getElementById("btnFormatCode").addEventListener("click", () => {
+            if (window.editor) {
+                window.editor.getAction('editor.action.formatDocument').run();
+                logMessageToDrawer("log", "Document Formatted.");
+            }
+        });
+        // Compress Document logic
+        document.getElementById("btnMinifyCode").addEventListener("click", () => {
+            if (!window.editor) return;
+            const code = window.editor.getValue();
+            
+            // Simple compression (Removes comments and consolidates spaces)
+            let minified = code
+                .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '$1') // remove comments
+                .replace(/\s+/g, ' ') // collapse spacing
+                .trim();
+            window.editor.setValue(minified);
+            logMessageToDrawer("log", "Document Minified. Spaces collapsed.");
+        });
+        // Theme controllers
+        const btnThemeToggle = document.getElementById("btnThemeToggle");
+        btnThemeToggle.addEventListener("click", () => {
+            const isDark = document.body.getAttribute("data-theme") !== "light";
+            const newTheme = isDark ? "light" : "dark";
+            
+            document.body.setAttribute("data-theme", newTheme);
+            if (window.editor) {
+                monaco.editor.setTheme(newTheme === "dark" ? 'vs-dark' : 'vs');
+            }
+        });
+        // Keyboard Shortcuts Modal Toggle
+        const modalShortcuts = document.getElementById("modalShortcuts");
+        document.getElementById("btnShortcutModalTrigger").addEventListener("click", () => {
+            modalShortcuts.classList.add("active");
+        });
+        document.getElementById("btnCloseShortcutsModal").addEventListener("click", () => {
+            modalShortcuts.classList.remove("active");
+        });
+        /* ==========================================
+           12. INITIALIZATION LOOPS
+           ========================================== */
+        window.addEventListener("DOMContentLoaded", () => {
+            loadStateFromStorage();
+            renderProjectsList();
+            renderSnapshotsList();
+            startMonacoEditor();
+        });
     </script>
 </body>
 </html>
