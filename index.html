@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="CodeForge Studio - High-performance browser-based IDE for HTML, CSS, and JavaScript.">
     <title>CodeForge Studio: High-Performance Frontend Playground</title>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- JSZip Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <!-- Monaco Editor Loader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
     <style>
         /* ==========================================
@@ -618,9 +615,6 @@
 </head>
 <body>
     <div class="ide-container">
-        <!-- ==========================================
-           A. ACTION SIDEBAR ICONS
-           ========================================== -->
         <aside class="action-sidebar">
             <div class="sidebar-logo">
                 <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
@@ -648,11 +642,7 @@
                 V1.0
             </div>
         </aside>
-        <!-- ==========================================
-           B. EXPANSION CABINET/DRAWER
-           ========================================== -->
         <section class="drawer-panel" id="drawerPanel">
-            <!-- Project management cabinet tab -->
             <div class="drawer-section active" id="drawer-projects">
                 <div class="drawer-header">
                     <span class="drawer-title">Projects</span>
@@ -662,11 +652,9 @@
                 </div>
                 <div class="drawer-content">
                     <div class="project-list" id="projectListContainer">
-                        <!-- Loaded dynamically -->
-                    </div>
+                        </div>
                 </div>
             </div>
-            <!-- Version History snapshots tab -->
             <div class="drawer-section" id="drawer-history" style="display: none;">
                 <div class="drawer-header">
                     <span class="drawer-title">History Snapshots</span>
@@ -676,11 +664,9 @@
                 </div>
                 <div class="drawer-content">
                     <div class="snapshot-list" id="snapshotListContainer">
-                        <!-- Dynamic list of code versions -->
-                    </div>
+                        </div>
                 </div>
             </div>
-            <!-- Export file managers -->
             <div class="drawer-section" id="drawer-export" style="display: none;">
                 <div class="drawer-header">
                     <span class="drawer-title">Export Pack</span>
@@ -702,15 +688,10 @@
                 </div>
             </div>
         </section>
-        <!-- ==========================================
-           C. SPLIT WORKSPACE
-           ========================================== -->
         <main class="workspace-split" id="workspaceSplit">
-            <!-- 1. LIVE PREVIEW (LEFT SIDE) -->
             <section class="split-pane" id="pane-preview">
                 <div class="panel-header">
                     <div class="header-btn-row">
-                        <!-- Emulation views dropdown selection -->
                         <select id="selectDeviceMode" style="padding: 4px 8px; font-size: 0.8rem;">
                             <option value="desktop">Desktop Preview</option>
                             <option value="laptop">Laptop view (1024px)</option>
@@ -732,18 +713,14 @@
                     </div>
                 </div>
                 
-                <!-- Frame holder -->
                 <div class="preview-workspace-wrapper">
                     <div class="preview-viewport-frame device-desktop" id="previewViewportFrame">
                         <iframe class="sandbox-iframe" id="sandboxIframe" sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin"></iframe>
                     </div>
                 </div>
             </section>
-            <!-- Resizer partition bar -->
             <div class="split-resizer" id="splitResizer"></div>
-            <!-- 2. CODE WORKSPACE (RIGHT SIDE) -->
             <section class="split-pane" id="pane-editor">
-                <!-- Header Control Row -->
                 <div class="panel-header">
                     <div class="header-btn-row">
                         <label style="font-size:0.75rem; color:var(--text-secondary); display:flex; align-items:center; gap:6px;">
@@ -765,7 +742,6 @@
                         </button>
                     </div>
                 </div>
-                <!-- Tabs line -->
                 <div class="editor-tabs-bar">
                     <div class="editor-tab active" data-tab="html">
                         <span class="editor-tab-icon html">&lt;/&gt;</span>
@@ -780,9 +756,7 @@
                         script.js
                     </div>
                 </div>
-                <!-- Monaco Workspace Area -->
                 <div class="editor-editor-workspace" id="monacoEditorContainer"></div>
-                <!-- Bottom log Console Tray -->
                 <div class="console-drawer-panel collapsed" id="consoleDrawer">
                     <div class="console-header" id="btnConsoleToggle">
                         <span class="console-title">
@@ -795,16 +769,11 @@
                         </div>
                     </div>
                     <div class="console-log-list" id="consoleLogList">
-                        <!-- Streamed console messages -->
-                    </div>
+                        </div>
                 </div>
             </section>
         </main>
     </div>
-    <!-- ==========================================
-       D. DIALOG MODAL SYSTEM
-       ========================================== -->
-    <!-- Create / Edit project modal -->
     <div class="modal-overlay" id="modalProjectName">
         <div class="modal-card">
             <h3 class="modal-title" id="projectNameModalTitle">New Project Configuration</h3>
@@ -816,7 +785,6 @@
             </div>
         </div>
     </div>
-    <!-- Keyboard Shortcuts helper modal -->
     <div class="modal-overlay" id="modalShortcuts">
         <div class="modal-card" style="max-width:550px;">
             <h3 class="modal-title">Keyboard IDE Shortcuts</h3>
@@ -843,10 +811,21 @@
             </div>
         </div>
     </div>
-    <!-- ==========================================
-       E. IDE CONTROLLERS LOGIC
-       ========================================== */ -->
     <script>
+        /* ==========================================
+           0. MONACO WORKER PROXY (FIXED CDN ISSUE)
+           ========================================== */
+        window.MonacoEnvironment = {
+            getWorkerUrl: function(workerId, label) {
+                return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+                    self.MonacoEnvironment = {
+                        baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/'
+                    };
+                    importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/base/worker/workerMain.js');`
+                )}`;
+            }
+        };
+
         /* ==========================================
            1. SIDEBAR EXPANSION UTILS
            ========================================== */
@@ -921,7 +900,7 @@
             projects: {}, // mapping id -> { name, html, css, js, snapshots: [], updated }
             activeId: null
         };
-        const STARTER_HTML = `<!-- HTML Sandbox Core -->\n<div class="canvas-wrap">\n  <h1>CodeForge Studio</h1>\n  <p>Ready to build high-end frontend structures.</p>\n  <button id="action-btn">Launch Animation</button>\n</div>\n\n<canvas id="anim-canvas"></canvas>`;
+        const STARTER_HTML = `\n<div class="canvas-wrap">\n  <h1>CodeForge Studio</h1>\n  <p>Ready to build high-end frontend structures.</p>\n  <button id="action-btn">Launch Animation</button>\n</div>\n\n<canvas id="anim-canvas"></canvas>`;
         
         const STARTER_CSS = `/* Premium Dark Canvas Stylings */\nbody {\n  margin: 0;\n  padding: 0;\n  background: #0f1015;\n  color: #ffffff;\n  font-family: 'Inter', sans-serif;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 100vh;\n  overflow: hidden;\n}\n\n.canvas-wrap {\n  text-align: center;\n  z-index: 10;\n  background: rgba(15, 17, 26, 0.7);\n  padding: 30px;\n  border-radius: 16px;\n  border: 1px solid rgba(255,255,255,0.08);\n  backdrop-filter: blur(10px);\n}\n\nh1 {\n  margin: 0 0 10px;\n  font-size: 2.2rem;\n  letter-spacing: -1px;\n  background: linear-gradient(135deg, #6366f1, #d946ef);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n}\n\nbutton {\n  background: #6366f1;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: 0.2s;\n}\n\nbutton:hover {\n  background: #4f46e5;\n  transform: translateY(-2px);\n}\n\ncanvas {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n}`;
         const STARTER_JS = `// Particle Animation Engine\nconst canvas = document.getElementById("anim-canvas");\nconst ctx = canvas.getContext("2d");\n\nlet width = canvas.width = window.innerWidth;\nlet height = canvas.height = window.innerHeight;\n\nwindow.addEventListener("resize", () => {\n  width = canvas.width = window.innerWidth;\n  height = canvas.height = window.innerHeight;\n});\n\nconst particles = [];\n\nclass Particle {\n  constructor() {\n    this.x = Math.random() * width;\n    this.y = Math.random() * height;\n    this.size = Math.random() * 3 + 1;\n    this.speedX = Math.random() * 1 - 0.5;\n    this.speedY = Math.random() * 1 - 0.5;\n  }\n  update() {\n    this.x += this.speedX;\n    this.y += this.speedY;\n    if (this.x < 0 || this.x > width) this.speedX *= -1;\n    if (this.y < 0 || this.y > height) this.speedY *= -1;\n  }\n  draw() {\n    ctx.fillStyle = "rgba(99, 102, 241, 0.4)";\n    ctx.beginPath();\n    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);\n    ctx.fill();\n  }\n}\n\nfor(let i=0; i<80; i++) {\n  particles.push(new Particle());\n}\n\nfunction loop() {\n  ctx.clearRect(0, 0, width, height);\n  particles.forEach(p => {\n    p.update();\n    p.draw();\n  });\n  requestAnimationFrame(loop);\n}\n\nloop();\n\n// Action trigger log\ndocument.getElementById("action-btn").addEventListener("click", () => {\n  console.log("Animation Trigger Button clicked!");\n});`;
@@ -1074,7 +1053,6 @@
 <body>
     ${html}
     
-    <!-- Console Capture Wrapper -->
     <script>
         (function() {
             const _log = console.log;
@@ -1111,14 +1089,14 @@
                 send('error', [msg + " (line " + line + ")"]);
             };
         })();
-    </script>
+    <\/script>
     <script>
         try {
             ${js}
         } catch(err) {
             console.error(err.message);
         }
-    </script>
+    <\/script>
 </body>
 </html>
             `;
@@ -1217,7 +1195,7 @@
                 const newId = "proj_" + Date.now();
                 state.projects[newId] = {
                     name: name || "New Project",
-                    html: `<!-- New ${name} Core -->\n<h1>Welcome to ${name}</h1>`,
+                    html: `\n<h1>Welcome to ${name}</h1>`,
                     css: `/* Page designs */\nbody { background: #000; color: #fff; }`,
                     js: `// Scripts\nconsole.log("Ready!");`,
                     snapshots: [],
@@ -1367,7 +1345,7 @@
     ${activeProj.html}
     <script>
         ${activeProj.js}
-    </script>
+    <\/script>
 </body>
 </html>`;
             const blob = new Blob([doc], { type: "text/html" });
@@ -1395,7 +1373,7 @@
 </head>
 <body>
     ${activeProj.html}
-    <script src="script.js"></script>
+    <script src="script.js"><\/script>
 </body>
 </html>`;
             zip.file("index.html", doc);
