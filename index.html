@@ -321,11 +321,11 @@
         }
         #pane-preview {
             background: var(--bg-app);
-            flex-grow: 1;
+            width: 50%;
         }
         #pane-editor {
             background: var(--bg-panel);
-            width: 50%;
+            flex-grow: 1; /* Now it's flexed by default */
         }
         /* Split Panel Resizer Divider */
         .split-resizer {
@@ -689,37 +689,7 @@
             </div>
         </section>
         <main class="workspace-split" id="workspaceSplit">
-            <section class="split-pane" id="pane-preview">
-                <div class="panel-header">
-                    <div class="header-btn-row">
-                        <select id="selectDeviceMode" style="padding: 4px 8px; font-size: 0.8rem;">
-                            <option value="desktop">Desktop Preview</option>
-                            <option value="laptop">Laptop view (1024px)</option>
-                            <option value="tablet">Tablet mode (768px)</option>
-                            <option value="mobile">Mobile size (375px)</option>
-                        </select>
-                        <button class="btn-action secondary" id="btnOrientationToggle" title="Toggle Orientation">
-                            Orientation
-                        </button>
-                    </div>
-                    
-                    <div class="header-btn-row">
-                        <button class="btn-action secondary" id="btnPresentationToggle" title="Presentation Mode (Hide Editor)">
-                            Presentation Mode
-                        </button>
-                        <button class="btn-action secondary" id="btnFullscreenPreview" title="Fullscreen Preview Only">
-                            Fullscreen
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="preview-workspace-wrapper">
-                    <div class="preview-viewport-frame device-desktop" id="previewViewportFrame">
-                        <iframe class="sandbox-iframe" id="sandboxIframe" sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin"></iframe>
-                    </div>
-                </div>
-            </section>
-            <div class="split-resizer" id="splitResizer"></div>
+            
             <section class="split-pane" id="pane-editor">
                 <div class="panel-header">
                     <div class="header-btn-row">
@@ -770,6 +740,39 @@
                     </div>
                     <div class="console-log-list" id="consoleLogList">
                         </div>
+                </div>
+            </section>
+
+            <div class="split-resizer" id="splitResizer"></div>
+
+            <section class="split-pane" id="pane-preview">
+                <div class="panel-header">
+                    <div class="header-btn-row">
+                        <select id="selectDeviceMode" style="padding: 4px 8px; font-size: 0.8rem;">
+                            <option value="desktop">Desktop Preview</option>
+                            <option value="laptop">Laptop view (1024px)</option>
+                            <option value="tablet">Tablet mode (768px)</option>
+                            <option value="mobile">Mobile size (375px)</option>
+                        </select>
+                        <button class="btn-action secondary" id="btnOrientationToggle" title="Toggle Orientation">
+                            Orientation
+                        </button>
+                    </div>
+                    
+                    <div class="header-btn-row">
+                        <button class="btn-action secondary" id="btnPresentationToggle" title="Presentation Mode (Hide Editor)">
+                            Presentation Mode
+                        </button>
+                        <button class="btn-action secondary" id="btnFullscreenPreview" title="Fullscreen Preview Only">
+                            Fullscreen
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="preview-workspace-wrapper">
+                    <div class="preview-viewport-frame device-desktop" id="previewViewportFrame">
+                        <iframe class="sandbox-iframe" id="sandboxIframe" sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin"></iframe>
+                    </div>
                 </div>
             </section>
         </main>
@@ -859,7 +862,7 @@
             });
         });
         /* ==========================================
-           2. SPLIT RESIZER DRAG CONTROLLER
+           2. SPLIT RESIZER DRAG CONTROLLER (UPDATED FOR SWAPPED LAYOUT)
            ========================================== */
         const splitResizer = document.getElementById("splitResizer");
         const panePreview = document.getElementById("pane-preview");
@@ -881,8 +884,10 @@
             if (leftPaneWidth < 200) leftPaneWidth = 200;
             if (leftPaneWidth > totalWidth - 250) leftPaneWidth = totalWidth - 250;
             const leftPct = (leftPaneWidth / totalWidth) * 100;
-            panePreview.style.width = `${leftPct}%`;
-            paneEditor.style.width = `${100 - leftPct}%`;
+            
+            // Apply widths based on the new reversed layout
+            paneEditor.style.width = `${leftPct}%`;
+            panePreview.style.width = `${100 - leftPct}%`;
             
             if (window.editor) window.editor.layout();
         });
