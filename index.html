@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
     <style>
@@ -16,7 +15,6 @@
            1. CORE DESIGN SYSTEM & THEMES
            ========================================== */
         :root {
-            /* Theme: Midnight Slate (Default) */
             --bg-app: #0b0c10;
             --bg-sidebar: #0f111a;
             --bg-panel: #141824;
@@ -27,26 +25,21 @@
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
-            /* Gradients */
             --gradient-accent: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
             --gradient-sidebar: linear-gradient(180deg, #0f111a 0%, #08090e 100%);
-            
-            /* Accent Colors */
             --primary: #6366f1;
             --primary-glow: rgba(99, 102, 241, 0.35);
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
             --info: #06b6d4;
-            /* Dimensions */
             --sidebar-width: 60px;
-            --control-panel-width: 250px;
+            --control-panel-width: 260px;
             --header-height: 48px;
             --tabs-height: 36px;
             --transition-speed: 0.25s;
         }
         [data-theme="light"] {
-            /* Theme: Ivory Plain */
             --bg-app: #f1f3f7;
             --bg-sidebar: #ffffff;
             --bg-panel: #fcfdfe;
@@ -62,11 +55,7 @@
         /* ==========================================
            2. BASE RESET & INITIALIZATION
            ========================================== */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-app);
@@ -76,13 +65,7 @@
             display: flex;
             transition: background-color var(--transition-speed);
         }
-        button {
-            cursor: pointer;
-            border: none;
-            background: none;
-            color: inherit;
-            font-family: inherit;
-        }
+        button { cursor: pointer; border: none; background: none; color: inherit; font-family: inherit; }
         input, select, textarea {
             background: var(--bg-input);
             border: 1px solid var(--border-color);
@@ -92,35 +75,17 @@
             border-radius: 6px;
             transition: border-color var(--transition-speed);
         }
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--primary);
-        }
-        /* Scrollbar aesthetics */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-app);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
-        }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-app); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
         /* ==========================================
            3. IDE LAYOUT WRAPPERS
            ========================================== */
-        .ide-container {
-            display: flex;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
-        /* Sidebar Action icons strip */
+        .ide-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; }
+
         .action-sidebar {
             width: var(--sidebar-width);
             background: var(--bg-sidebar);
@@ -133,1350 +98,1512 @@
             z-index: 10;
         }
         .sidebar-logo {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+            width: 36px; height: 36px; border-radius: 10px;
             background: var(--gradient-accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             box-shadow: 0 0 15px var(--primary-glow);
             margin-bottom: 24px;
         }
-        .sidebar-logo svg {
-            width: 20px;
-            height: 20px;
-            stroke: white;
-            fill: none;
-            stroke-width: 2.5;
-        }
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            flex-grow: 1;
-        }
+        .sidebar-logo svg { width: 20px; height: 20px; stroke: white; fill: none; stroke-width: 2.5; }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 12px; flex-grow: 1; }
         .sidebar-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 44px; height: 44px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
             color: var(--text-secondary);
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
-        .sidebar-btn svg {
-            width: 22px;
-            height: 22px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-        }
-        .sidebar-btn:hover,
-        .sidebar-btn.active {
-            color: var(--text-primary);
-            background: var(--bg-active);
-        }
-        .sidebar-btn.active {
-            border: 1px solid rgba(99, 102, 241, 0.25);
-            box-shadow: 0 0 10px rgba(99, 102, 241, 0.05);
-        }
+        .sidebar-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
+        .sidebar-btn:hover, .sidebar-btn.active { color: var(--text-primary); background: var(--bg-active); }
+        .sidebar-btn.active { border: 1px solid rgba(99, 102, 241, 0.25); box-shadow: 0 0 10px rgba(99, 102, 241, 0.05); }
         .sidebar-btn[title]::after {
             content: attr(title);
             position: absolute;
             left: calc(var(--sidebar-width) - 8px);
-            background: #1e293b;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
+            background: #1e293b; color: white;
+            padding: 4px 8px; border-radius: 4px;
+            font-size: 0.75rem; white-space: nowrap;
+            opacity: 0; pointer-events: none;
             transition: opacity 0.2s ease;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             z-index: 100;
         }
-        .sidebar-btn:hover::after {
-            opacity: 1;
-        }
-        /* Sidebar Expansion Control Drawer Panel */
+        .sidebar-btn:hover::after { opacity: 1; }
+
         .drawer-panel {
             width: var(--control-panel-width);
             background: var(--bg-sidebar);
             border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 9;
+            display: flex; flex-direction: column;
+            overflow: hidden; z-index: 9;
             transition: width var(--transition-speed) ease;
         }
-        .drawer-panel.collapsed {
-            width: 0;
-            border-right: none;
-        }
+        .drawer-panel.collapsed { width: 0; border-right: none; }
         .drawer-header {
             height: var(--header-height);
             border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; flex-shrink: 0;
         }
-        .drawer-title {
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-primary);
-        }
-        .drawer-content {
-            flex-grow: 1;
-            padding: 16px;
-            overflow-y: auto;
-        }
-        /* Project List items */
-        .project-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .drawer-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-primary); }
+        .drawer-content { flex-grow: 1; padding: 16px; overflow-y: auto; }
+
+        .project-list { display: flex; flex-direction: column; gap: 8px; }
         .project-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            padding: 10px 12px;
-            border-radius: 8px;
-            transition: border-color 0.2s ease;
-            cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--bg-panel); border: 1px solid var(--border-color);
+            padding: 10px 12px; border-radius: 8px;
+            transition: border-color 0.2s ease; cursor: pointer;
         }
-        .project-item:hover, .project-item.active {
-            border-color: var(--primary);
-        }
-        .project-item.active {
-            background: var(--bg-active);
-        }
-        .project-name {
-            font-size: 0.85rem;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 130px;
-        }
-        .project-date {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-        .project-item-actions {
-            display: flex;
-            gap: 6px;
-        }
-        .project-action-btn {
-            color: var(--text-muted);
-            transition: color 0.2s ease;
-        }
-        .project-action-btn:hover {
-            color: var(--danger);
-        }
-        /* Snapshots History list */
-        .snapshot-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 12px;
-        }
+        .project-item:hover, .project-item.active { border-color: var(--primary); }
+        .project-item.active { background: var(--bg-active); }
+        .project-name { font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+        .project-date { font-size: 0.7rem; color: var(--text-muted); }
+        .project-item-actions { display: flex; gap: 6px; }
+        .project-action-btn { color: var(--text-muted); transition: color 0.2s ease; }
+        .project-action-btn:hover { color: var(--danger); }
+
+        .snapshot-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
         .snapshot-item {
-            padding: 8px 12px;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 0.75rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
+            padding: 8px 12px; background: var(--bg-panel);
+            border: 1px solid var(--border-color); border-radius: 6px;
+            font-size: 0.75rem; display: flex; justify-content: space-between;
+            align-items: center; cursor: pointer;
         }
-        .snapshot-item:hover {
-            border-color: var(--primary);
-        }
-        /* Workspace Core Splits */
-        .workspace-split {
-            flex-grow: 1;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
-        .split-pane {
-            height: 100%;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-        #pane-preview {
-            background: var(--bg-app);
-            width: 50%;
-        }
-        #pane-editor {
-            background: var(--bg-panel);
-            flex-grow: 1; /* Now it's flexed by default */
-        }
-        /* Split Panel Resizer Divider */
+        .snapshot-item:hover { border-color: var(--primary); }
+
+        .workspace-split { flex-grow: 1; display: flex; height: 100vh; overflow: hidden; position: relative; }
+        .split-pane { height: 100%; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+        #pane-preview { background: var(--bg-app); width: 50%; }
+        #pane-editor { background: var(--bg-panel); flex-grow: 1; }
+
         .split-resizer {
-            width: 6px;
-            background: var(--bg-app);
+            width: 6px; background: var(--bg-app);
             border-left: 1px solid var(--border-color);
             border-right: 1px solid var(--border-color);
-            cursor: col-resize;
-            transition: background 0.2s ease;
-            z-index: 5;
-            position: relative;
+            cursor: col-resize; transition: background 0.2s ease;
+            z-index: 5; position: relative;
         }
-        .split-resizer:hover, .split-resizer.dragging {
-            background: var(--primary);
-        }
-        /* Header control panel bars */
+        .split-resizer:hover, .split-resizer.dragging { background: var(--primary); }
+
         .panel-header {
-            height: var(--header-height);
-            border-bottom: 1px solid var(--border-color);
+            height: var(--header-height); border-bottom: 1px solid var(--border-color);
             background: var(--bg-sidebar);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; flex-shrink: 0;
         }
-        /* Editor Tabs block */
         .editor-tabs-bar {
-            display: flex;
-            height: var(--tabs-height);
+            display: flex; height: var(--tabs-height);
             background: var(--bg-sidebar);
             border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
         }
         .editor-tab {
-            padding: 0 20px;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            padding: 0 20px; height: 100%;
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.8rem; font-weight: 600;
             color: var(--text-secondary);
             border-right: 1px solid var(--border-color);
-            position: relative;
-            cursor: pointer;
+            position: relative; cursor: pointer;
             transition: all 0.2s ease;
         }
-        .editor-tab.active {
-            color: var(--text-primary);
-            background: var(--bg-panel);
-        }
+        .editor-tab.active { color: var(--text-primary); background: var(--bg-panel); }
         .editor-tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--primary);
+            content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+            height: 2px; background: var(--primary);
         }
-        .editor-tab-icon {
-            width: 14px;
-            height: 14px;
-        }
+        .editor-tab-icon { width: 14px; height: 14px; }
         .editor-tab-icon.html { color: #e34c26; }
         .editor-tab-icon.css { color: #264de4; }
         .editor-tab-icon.js { color: #f7df1e; }
-        /* The container Monaco binds to */
-        .editor-editor-workspace {
-            flex-grow: 1;
-            width: 100%;
-            background: var(--bg-panel);
-            position: relative;
-            overflow: hidden;
-        }
-        /* Live Preview container & responsive frames */
+
+        .editor-editor-workspace { flex-grow: 1; width: 100%; background: var(--bg-panel); position: relative; overflow: hidden; }
+
         .preview-workspace-wrapper {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            overflow: auto;
-            background: var(--bg-app);
-            position: relative;
+            flex-grow: 1; display: flex; align-items: center; justify-content: center;
+            padding: 24px; overflow: auto; background: var(--bg-app); position: relative;
         }
         .preview-viewport-frame {
-            width: 100%;
-            height: 100%;
-            background: white;
-            border-radius: 12px;
+            width: 100%; height: 100%; background: white; border-radius: 12px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            overflow: hidden; display: flex; flex-direction: column;
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
-        /* Device styles overlays */
         .preview-viewport-frame.device-mobile { width: 375px; height: 667px; }
         .preview-viewport-frame.device-tablet { width: 768px; height: 1024px; }
         .preview-viewport-frame.device-laptop { width: 1024px; height: 768px; }
         .preview-viewport-frame.device-desktop { width: 100%; height: 100%; }
-        
-        .preview-viewport-frame.orientation-landscape {
-            transform: rotate(-90deg);
-            transform-origin: center center;
-        }
-        .sandbox-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: #ffffff;
-        }
-        /* Header controls layout */
-        .header-btn-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .preview-viewport-frame.orientation-landscape { transform: rotate(-90deg); transform-origin: center center; }
+        .sandbox-iframe { width: 100%; height: 100%; border: none; background: #ffffff; }
+
+        .header-btn-row { display: flex; align-items: center; gap: 8px; }
         .btn-action {
-            height: 32px;
-            padding: 0 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            height: 32px; padding: 0 12px; border-radius: 6px;
+            font-size: 0.8rem; font-weight: 600;
+            display: flex; align-items: center; gap: 6px;
             transition: all 0.2s ease;
         }
-        .btn-action.primary {
-            background: var(--gradient-accent);
-            color: white;
-            box-shadow: 0 4px 12px var(--primary-glow);
-        }
+        .btn-action.primary { background: var(--gradient-accent); color: white; box-shadow: 0 4px 12px var(--primary-glow); }
         .btn-action.secondary {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
+            background: var(--bg-input); border: 1px solid var(--border-color);
             color: var(--text-secondary);
         }
-        .btn-action.secondary:hover {
-            color: var(--text-primary);
-            border-color: var(--text-secondary);
-        }
-        .btn-action svg {
-            width: 16px;
-            height: 16px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-        }
+        .btn-action.secondary:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+        .btn-action svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
         /* ==========================================
            4. INTEGRATED CONSOLE DRAWER
            ========================================== */
         .console-drawer-panel {
-            height: 180px;
-            background: var(--bg-sidebar);
+            height: 180px; background: var(--bg-sidebar);
             border-top: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            z-index: 6;
-            transition: height var(--transition-speed) ease;
+            display: flex; flex-direction: column;
+            z-index: 6; transition: height var(--transition-speed) ease;
+            flex-shrink: 0;
         }
-        .console-drawer-panel.collapsed {
-            height: 32px;
-        }
+        .console-drawer-panel.collapsed { height: 32px; }
         .console-header {
-            height: 32px;
-            background: #08090d;
+            height: 32px; background: #08090d;
             border-bottom: 1px solid var(--border-color);
             padding: 0 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; flex-shrink: 0;
         }
-        .console-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+        .console-title { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
         .console-log-list {
-            flex-grow: 1;
-            padding: 12px 16px;
-            overflow-y: auto;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.8rem;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+            flex-grow: 1; padding: 12px 16px; overflow-y: auto;
+            font-family: 'Fira Code', monospace; font-size: 0.8rem;
+            display: flex; flex-direction: column; gap: 6px;
         }
-        .console-log-item {
-            padding: 4px 8px;
-            border-radius: 4px;
-            line-height: 1.4;
-            border-left: 3px solid transparent;
-            word-break: break-all;
-        }
-        .console-log-item.log {
-            color: var(--text-primary);
-            border-left-color: var(--text-muted);
-        }
-        .console-log-item.warn {
-            color: #fef08a;
-            background: rgba(254, 240, 138, 0.05);
-            border-left-color: var(--warning);
-        }
-        .console-log-item.error {
-            color: #fca5a5;
-            background: rgba(252, 165, 165, 0.05);
-            border-left-color: var(--danger);
-        }
+        .console-log-item { padding: 4px 8px; border-radius: 4px; line-height: 1.4; border-left: 3px solid transparent; word-break: break-all; }
+        .console-log-item.log { color: var(--text-primary); border-left-color: var(--text-muted); }
+        .console-log-item.warn { color: #fef08a; background: rgba(254, 240, 138, 0.05); border-left-color: var(--warning); }
+        .console-log-item.error { color: #fca5a5; background: rgba(252, 165, 165, 0.05); border-left-color: var(--danger); }
+
         /* ==========================================
            5. MODAL SYSTEM OVERLAYS
            ========================================== */
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(7, 8, 13, 0.85);
             backdrop-filter: blur(8px);
-            z-index: 500;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            z-index: 500; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease;
         }
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
+        .modal-overlay.active { display: flex; opacity: 1; }
         .modal-card {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            width: 90%;
-            max-width: 460px;
-            padding: 28px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            background: var(--bg-panel); border: 1px solid var(--border-color);
+            border-radius: 16px; width: 90%; max-width: 460px;
+            padding: 28px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
             transform: scale(0.9);
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .modal-overlay.active .modal-card {
-            transform: scale(1);
-        }
-        .modal-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-        .modal-desc {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-        }
-        .modal-input {
-            width: 100%;
-            padding: 10px 14px;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-        }
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-        }
-        /* View Layout Toggles class */
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; color: var(--text-primary); }
+        .modal-desc { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; }
+        .modal-input { width: 100%; padding: 10px 14px; font-size: 0.9rem; margin-bottom: 20px; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 12px; }
+
+        /* Presentation / Fullscreen view toggles */
         .presentation-mode #pane-editor,
-        .presentation-mode .split-resizer {
-            display: none !important;
-        }
+        .presentation-mode .split-resizer { display: none !important; }
         .editor-fullscreen #pane-preview,
-        .editor-fullscreen .split-resizer {
-            display: none !important;
+        .editor-fullscreen .split-resizer { display: none !important; }
+        .editor-fullscreen #pane-editor { width: 100% !important; }
+
+        /* ==========================================
+           6. CDN MANAGER PANEL STYLES
+           ========================================== */
+        .cdn-list { display: flex; flex-direction: column; gap: 8px; }
+        .cdn-item {
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--bg-panel); border: 1px solid var(--border-color);
+            padding: 8px 10px; border-radius: 8px; gap: 8px;
         }
-        .editor-fullscreen #pane-editor {
-            width: 100% !important;
+        .cdn-item-url {
+            font-size: 0.72rem; color: var(--text-secondary);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            flex-grow: 1; font-family: 'Fira Code', monospace;
         }
+        .cdn-item-type {
+            font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .cdn-item-type.script { background: rgba(247, 223, 30, 0.1); color: #f7df1e; }
+        .cdn-item-type.stylesheet { background: rgba(38, 77, 228, 0.15); color: #7c9fff; }
+        .cdn-add-row { display: flex; gap: 8px; margin-top: 12px; }
+        .cdn-add-input { flex-grow: 1; padding: 8px 10px; font-size: 0.78rem; font-family: 'Fira Code', monospace; }
+        .cdn-presets { margin-top: 12px; }
+        .cdn-presets-title { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .cdn-preset-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .cdn-preset-chip {
+            font-size: 0.72rem; padding: 4px 10px; border-radius: 20px;
+            background: var(--bg-active); border: 1px solid var(--border-color);
+            color: var(--text-secondary); cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .cdn-preset-chip:hover { border-color: var(--primary); color: var(--text-primary); }
+        .cdn-preset-chip.added { border-color: var(--success); color: var(--success); }
+
+        /* ==========================================
+           7. TEMPLATES SECTION STYLES
+           ========================================== */
+        .template-grid { display: flex; flex-direction: column; gap: 8px; }
+        .template-card {
+            background: var(--bg-panel); border: 1px solid var(--border-color);
+            border-radius: 8px; padding: 12px; cursor: pointer;
+            transition: all 0.2s ease; position: relative; overflow: hidden;
+        }
+        .template-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 3px; height: 100%; background: var(--gradient-accent);
+            opacity: 0; transition: opacity 0.2s ease;
+        }
+        .template-card:hover { border-color: var(--primary); }
+        .template-card:hover::before { opacity: 1; }
+        .template-card-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }
+        .template-card-desc { font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; }
+        .template-card-tags { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+        .template-tag {
+            font-size: 0.65rem; padding: 2px 6px; border-radius: 4px;
+            background: var(--bg-active); color: var(--text-muted);
+        }
+
+        /* ==========================================
+           8. COMMAND PALETTE STYLES
+           ========================================== */
+        .command-palette-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(7, 8, 13, 0.75);
+            backdrop-filter: blur(12px);
+            z-index: 900; display: none; align-items: flex-start; justify-content: center;
+            padding-top: 15vh;
+            opacity: 0; transition: opacity 0.2s ease;
+        }
+        .command-palette-overlay.active { display: flex; opacity: 1; }
+        .command-palette-box {
+            background: var(--bg-panel); border: 1px solid var(--border-color);
+            border-radius: 14px; width: 90%; max-width: 580px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(99,102,241,0.15);
+            overflow: hidden;
+            transform: translateY(-12px) scale(0.97);
+            transition: transform 0.2s cubic-bezier(0.34, 1.4, 0.64, 1);
+        }
+        .command-palette-overlay.active .command-palette-box { transform: translateY(0) scale(1); }
+        .command-palette-search-row {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 18px; border-bottom: 1px solid var(--border-color);
+        }
+        .command-palette-search-row svg { width: 18px; height: 18px; stroke: var(--text-muted); fill: none; stroke-width: 2; flex-shrink: 0; }
+        .command-palette-input {
+            flex-grow: 1; background: transparent; border: none; border-radius: 0;
+            font-size: 1rem; color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+        .command-palette-input::placeholder { color: var(--text-muted); }
+        .command-palette-input:focus { border: none; box-shadow: none; }
+        .command-palette-results { max-height: 340px; overflow-y: auto; padding: 8px; }
+        .command-palette-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 12px; border-radius: 8px; cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .command-palette-item:hover, .command-palette-item.selected {
+            background: var(--bg-active);
+        }
+        .command-palette-item-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: var(--bg-app); display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .command-palette-item-icon svg { width: 16px; height: 16px; stroke: var(--primary); fill: none; stroke-width: 2; }
+        .command-palette-item-label { font-size: 0.88rem; font-weight: 600; }
+        .command-palette-item-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 1px; }
+        .command-palette-item-kbd {
+            margin-left: auto; flex-shrink: 0;
+            font-size: 0.7rem; padding: 3px 7px; border-radius: 4px;
+            background: var(--bg-app); border: 1px solid var(--border-color);
+            color: var(--text-muted); font-family: 'Fira Code', monospace;
+        }
+        .command-palette-section-label {
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.8px; color: var(--text-muted);
+            padding: 8px 12px 4px; margin-top: 4px;
+        }
+        .command-palette-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 8px 18px;
+            display: flex; gap: 16px; align-items: center;
+        }
+        .command-palette-hint { font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+        .command-palette-hint kbd {
+            padding: 2px 5px; border-radius: 3px;
+            background: var(--bg-app); border: 1px solid var(--border-color);
+            font-size: 0.68rem; font-family: 'Fira Code', monospace;
+        }
+        .command-palette-empty { text-align: center; padding: 32px; color: var(--text-muted); font-size: 0.85rem; }
     </style>
 </head>
 <body>
-    <div class="ide-container">
-        <aside class="action-sidebar">
-            <div class="sidebar-logo">
-                <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+<div class="ide-container">
+    <!-- SIDEBAR -->
+    <aside class="action-sidebar">
+        <div class="sidebar-logo">
+            <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+        </div>
+        <div class="sidebar-nav">
+            <button class="sidebar-btn active" data-drawer="projects" title="Project Manager">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+            </button>
+            <button class="sidebar-btn" data-drawer="templates" title="Project Templates">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </button>
+            <button class="sidebar-btn" data-drawer="cdn" title="CDN Library Manager">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            </button>
+            <button class="sidebar-btn" data-drawer="history" title="Version Snapshots">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </button>
+            <button class="sidebar-btn" data-drawer="export" title="Export Blueprints">
+                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            </button>
+            <button class="sidebar-btn" id="btnThemeToggle" title="Theme Mode Toggle">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </button>
+            <button class="sidebar-btn" id="btnCommandPalette" title="Command Palette (Ctrl+Shift+P)">
+                <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+            </button>
+            <button class="sidebar-btn" id="btnShortcutModalTrigger" title="Keyboard Shortcuts">
+                <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
+            </button>
+        </div>
+        <div style="font-size:0.65rem;color:var(--text-muted);font-weight:700;transform:rotate(-90deg);margin-top:24px;">V2.0</div>
+    </aside>
+
+    <!-- DRAWER PANEL -->
+    <section class="drawer-panel" id="drawerPanel">
+        <!-- Projects -->
+        <div class="drawer-section" id="drawer-projects" style="display:flex;flex-direction:column;height:100%;">
+            <div class="drawer-header">
+                <span class="drawer-title">Projects</span>
+                <button class="project-action-btn" id="btnCreateProject" title="Create Project">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
             </div>
-            
-            <div class="sidebar-nav">
-                <button class="sidebar-btn active" data-drawer="projects" title="Project Manager">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+            <div class="drawer-content">
+                <div class="project-list" id="projectListContainer"></div>
+            </div>
+        </div>
+
+        <!-- Templates -->
+        <div class="drawer-section" id="drawer-templates" style="display:none;flex-direction:column;height:100%;">
+            <div class="drawer-header">
+                <span class="drawer-title">Templates</span>
+            </div>
+            <div class="drawer-content">
+                <div class="template-grid" id="templateGrid"></div>
+            </div>
+        </div>
+
+        <!-- CDN Manager -->
+        <div class="drawer-section" id="drawer-cdn" style="display:none;flex-direction:column;height:100%;">
+            <div class="drawer-header">
+                <span class="drawer-title">CDN Libraries</span>
+            </div>
+            <div class="drawer-content">
+                <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">
+                    Paste CDN URLs below. Scripts &amp; stylesheets are injected into the preview on every Run.
+                </div>
+                <div class="cdn-list" id="cdnList"></div>
+                <div class="cdn-add-row">
+                    <input type="text" class="cdn-add-input" id="cdnUrlInput" placeholder="https://cdn.example.com/lib.js">
+                    <button class="btn-action secondary" id="btnAddCdn" style="flex-shrink:0;padding:0 10px;">Add</button>
+                </div>
+                <div class="cdn-presets">
+                    <div class="cdn-presets-title">Quick Add Presets</div>
+                    <div class="cdn-preset-chips" id="cdnPresetChips"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Snapshots -->
+        <div class="drawer-section" id="drawer-history" style="display:none;flex-direction:column;height:100%;">
+            <div class="drawer-header">
+                <span class="drawer-title">History Snapshots</span>
+                <button class="project-action-btn" id="btnCreateSnapshot" title="Create Snapshot">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
                 </button>
-                <button class="sidebar-btn" data-drawer="history" title="Version Snapshots">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                </button>
-                <button class="sidebar-btn" data-drawer="export" title="Export Blueprints">
+            </div>
+            <div class="drawer-content">
+                <div class="snapshot-list" id="snapshotListContainer"></div>
+            </div>
+        </div>
+
+        <!-- Export -->
+        <div class="drawer-section" id="drawer-export" style="display:none;flex-direction:column;height:100%;">
+            <div class="drawer-header">
+                <span class="drawer-title">Export Pack</span>
+            </div>
+            <div class="drawer-content" style="display:flex;flex-direction:column;gap:12px;">
+                <button class="btn-action secondary" id="btnExportZIP" style="width:100%;">
                     <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Download Source ZIP
                 </button>
-                <button class="sidebar-btn" id="btnThemeToggle" title="Theme Mode Toggle">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                <button class="btn-action secondary" id="btnExportHTML" style="width:100%;">
+                    <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline></svg>
+                    Export Single HTML
                 </button>
-                <button class="sidebar-btn" id="btnShortcutModalTrigger" title="Keyboard Shortcuts">
-                    <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
-                </button>
-            </div>
-            
-            <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; transform: rotate(-90deg); margin-top: 24px;">
-                V1.0
-            </div>
-        </aside>
-        <section class="drawer-panel" id="drawerPanel">
-            <div class="drawer-section active" id="drawer-projects">
-                <div class="drawer-header">
-                    <span class="drawer-title">Projects</span>
-                    <button class="project-action-btn" id="btnCreateProject" title="Create Project">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    </button>
-                </div>
-                <div class="drawer-content">
-                    <div class="project-list" id="projectListContainer">
-                        </div>
+                <div style="border-top:1px solid var(--border-color);padding-top:12px;margin-top:8px;">
+                    <span class="drawer-title" style="font-size:0.75rem;margin-bottom:8px;display:block;">Import Project JSON</span>
+                    <input type="file" id="importFileProject" style="display:none;" accept=".json">
+                    <button class="btn-action secondary" id="btnImportProject" style="width:100%;">Import Config</button>
                 </div>
             </div>
-            <div class="drawer-section" id="drawer-history" style="display: none;">
-                <div class="drawer-header">
-                    <span class="drawer-title">History Snapshots</span>
-                    <button class="project-action-btn" id="btnCreateSnapshot" title="Create Snapshot">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                    </button>
+        </div>
+    </section>
+
+    <!-- MAIN WORKSPACE -->
+    <main class="workspace-split" id="workspaceSplit">
+        <section class="split-pane" id="pane-editor">
+            <div class="panel-header">
+                <div class="header-btn-row">
+                    <label style="font-size:0.75rem;color:var(--text-secondary);display:flex;align-items:center;gap:6px;">
+                        <input type="checkbox" id="checkAutoRun" checked> Auto Run
+                    </label>
+                    <label style="font-size:0.75rem;color:var(--text-secondary);display:flex;align-items:center;gap:6px;margin-left:12px;">
+                        <input type="checkbox" id="checkAutoSave" checked> Auto Save
+                    </label>
                 </div>
-                <div class="drawer-content">
-                    <div class="snapshot-list" id="snapshotListContainer">
-                        </div>
+                <div class="header-btn-row">
+                    <button class="btn-action secondary" id="btnFormatCode" title="Beautify (Shift+Alt+F)">Format</button>
+                    <button class="btn-action secondary" id="btnMinifyCode" title="Compress">Minify</button>
+                    <button class="btn-action primary" id="btnRunCode" title="Run (Ctrl+Enter)">
+                        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        Run
+                    </button>
                 </div>
             </div>
-            <div class="drawer-section" id="drawer-export" style="display: none;">
-                <div class="drawer-header">
-                    <span class="drawer-title">Export Pack</span>
-                </div>
-                <div class="drawer-content" style="display: flex; flex-direction: column; gap: 12px;">
-                    <button class="btn-action secondary" id="btnExportZIP" style="width: 100%;">
-                        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                        Download Source ZIP
-                    </button>
-                    <button class="btn-action secondary" id="btnExportHTML" style="width: 100%;">
-                        <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline></svg>
-                        Export Single HTML
-                    </button>
-                    <div style="border-top:1px solid var(--border-color); padding-top:12px; margin-top:8px;">
-                        <span class="drawer-title" style="font-size:0.75rem; margin-bottom:8px; display:block;">Import Project JSON</span>
-                        <input type="file" id="importFileProject" style="display:none;" accept=".json">
-                        <button class="btn-action secondary" id="btnImportProject" style="width: 100%;">Import Config</button>
+            <div class="editor-tabs-bar">
+                <div class="editor-tab active" data-tab="html"><span class="editor-tab-icon html">&lt;/&gt;</span>index.html</div>
+                <div class="editor-tab" data-tab="css"><span class="editor-tab-icon css">#</span>style.css</div>
+                <div class="editor-tab" data-tab="js"><span class="editor-tab-icon js">{}</span>script.js</div>
+            </div>
+            <div class="editor-editor-workspace" id="monacoEditorContainer"></div>
+            <div class="console-drawer-panel collapsed" id="consoleDrawer">
+                <div class="console-header" id="btnConsoleToggle">
+                    <span class="console-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                        Console Output
+                    </span>
+                    <div style="display:flex;gap:8px;">
+                        <button class="project-action-btn" id="btnClearConsole" style="font-size:0.7rem;font-weight:700;">Clear</button>
+                        <span style="font-size:0.75rem;color:var(--text-muted);" id="consoleChevron">&#9650;</span>
                     </div>
+                </div>
+                <div class="console-log-list" id="consoleLogList"></div>
+            </div>
+        </section>
+
+        <div class="split-resizer" id="splitResizer"></div>
+
+        <section class="split-pane" id="pane-preview">
+            <div class="panel-header">
+                <div class="header-btn-row">
+                    <select id="selectDeviceMode" style="padding:4px 8px;font-size:0.8rem;">
+                        <option value="desktop">Desktop</option>
+                        <option value="laptop">Laptop (1024px)</option>
+                        <option value="tablet">Tablet (768px)</option>
+                        <option value="mobile">Mobile (375px)</option>
+                    </select>
+                    <button class="btn-action secondary" id="btnOrientationToggle" title="Toggle Orientation">Orientation</button>
+                </div>
+                <div class="header-btn-row">
+                    <button class="btn-action secondary" id="btnPresentationToggle">Presentation</button>
+                    <button class="btn-action secondary" id="btnFullscreenPreview">Fullscreen</button>
+                </div>
+            </div>
+            <div class="preview-workspace-wrapper">
+                <div class="preview-viewport-frame device-desktop" id="previewViewportFrame">
+                    <iframe class="sandbox-iframe" id="sandboxIframe" sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin"></iframe>
                 </div>
             </div>
         </section>
-        <main class="workspace-split" id="workspaceSplit">
-            
-            <section class="split-pane" id="pane-editor">
-                <div class="panel-header">
-                    <div class="header-btn-row">
-                        <label style="font-size:0.75rem; color:var(--text-secondary); display:flex; align-items:center; gap:6px;">
-                            <input type="checkbox" id="checkAutoRun" checked>
-                            Auto Run
-                        </label>
-                        <label style="font-size:0.75rem; color:var(--text-secondary); display:flex; align-items:center; gap:6px; margin-left:12px;">
-                            <input type="checkbox" id="checkAutoSave" checked>
-                            Auto Save
-                        </label>
-                    </div>
-                    
-                    <div class="header-btn-row">
-                        <button class="btn-action secondary" id="btnFormatCode" title="Beautify document styles">Format</button>
-                        <button class="btn-action secondary" id="btnMinifyCode" title="Compress script parameters">Minify</button>
-                        <button class="btn-action primary" id="btnRunCode" title="Run Code (Ctrl + Enter)">
-                            <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                            Run
-                        </button>
-                    </div>
-                </div>
-                <div class="editor-tabs-bar">
-                    <div class="editor-tab active" data-tab="html">
-                        <span class="editor-tab-icon html">&lt;/&gt;</span>
-                        index.html
-                    </div>
-                    <div class="editor-tab" data-tab="css">
-                        <span class="editor-tab-icon css">#</span>
-                        style.css
-                    </div>
-                    <div class="editor-tab" data-tab="js">
-                        <span class="editor-tab-icon js">{}</span>
-                        script.js
-                    </div>
-                </div>
-                <div class="editor-editor-workspace" id="monacoEditorContainer"></div>
-                <div class="console-drawer-panel collapsed" id="consoleDrawer">
-                    <div class="console-header" id="btnConsoleToggle">
-                        <span class="console-title">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
-                            Console Output log
-                        </span>
-                        <div style="display:flex; gap:8px;">
-                            <button class="project-action-btn" id="btnClearConsole" style="font-size:0.7rem; font-weight:700;">Clear</button>
-                            <span style="font-size:0.75rem; color:var(--text-muted);" id="consoleChevron">&#9650;</span>
-                        </div>
-                    </div>
-                    <div class="console-log-list" id="consoleLogList">
-                        </div>
-                </div>
-            </section>
+    </main>
+</div>
 
-            <div class="split-resizer" id="splitResizer"></div>
-
-            <section class="split-pane" id="pane-preview">
-                <div class="panel-header">
-                    <div class="header-btn-row">
-                        <select id="selectDeviceMode" style="padding: 4px 8px; font-size: 0.8rem;">
-                            <option value="desktop">Desktop Preview</option>
-                            <option value="laptop">Laptop view (1024px)</option>
-                            <option value="tablet">Tablet mode (768px)</option>
-                            <option value="mobile">Mobile size (375px)</option>
-                        </select>
-                        <button class="btn-action secondary" id="btnOrientationToggle" title="Toggle Orientation">
-                            Orientation
-                        </button>
-                    </div>
-                    
-                    <div class="header-btn-row">
-                        <button class="btn-action secondary" id="btnPresentationToggle" title="Presentation Mode (Hide Editor)">
-                            Presentation Mode
-                        </button>
-                        <button class="btn-action secondary" id="btnFullscreenPreview" title="Fullscreen Preview Only">
-                            Fullscreen
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="preview-workspace-wrapper">
-                    <div class="preview-viewport-frame device-desktop" id="previewViewportFrame">
-                        <iframe class="sandbox-iframe" id="sandboxIframe" sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin"></iframe>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-    <div class="modal-overlay" id="modalProjectName">
-        <div class="modal-card">
-            <h3 class="modal-title" id="projectNameModalTitle">New Project Configuration</h3>
-            <p class="modal-desc">Configure a name identifier for this creative playground space.</p>
-            <input type="text" class="modal-input" id="inputProjectName" placeholder="Project Name..." value="Untitled Project">
-            <div class="modal-actions">
-                <button class="btn-action secondary" id="btnCancelProjectModal">Cancel</button>
-                <button class="btn-action primary" id="btnConfirmProjectModal">Confirm</button>
-            </div>
+<!-- COMMAND PALETTE -->
+<div class="command-palette-overlay" id="commandPalette">
+    <div class="command-palette-box">
+        <div class="command-palette-search-row">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="command-palette-input" id="commandPaletteInput" placeholder="Type a command or search...">
+        </div>
+        <div class="command-palette-results" id="commandPaletteResults"></div>
+        <div class="command-palette-footer">
+            <span class="command-palette-hint"><kbd>↑↓</kbd> Navigate</span>
+            <span class="command-palette-hint"><kbd>↵</kbd> Execute</span>
+            <span class="command-palette-hint"><kbd>Esc</kbd> Close</span>
         </div>
     </div>
-    <div class="modal-overlay" id="modalShortcuts">
-        <div class="modal-card" style="max-width:550px;">
-            <h3 class="modal-title">Keyboard IDE Shortcuts</h3>
-            <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:24px; font-size:0.85rem; color:var(--text-secondary);">
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding-bottom:6px;">
-                    <span>Run code inside Sandbox</span>
-                    <strong style="color:var(--text-primary);">Ctrl + Enter / Cmd + Enter</strong>
-                </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding-bottom:6px;">
-                    <span>Format Document</span>
-                    <strong style="color:var(--text-primary);">Shift + Alt + F</strong>
-                </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding-bottom:6px;">
-                    <span>Toggle File tabs</span>
-                    <strong style="color:var(--text-primary);">Ctrl + 1 (HTML), Ctrl + 2 (CSS), Ctrl + 3 (JS)</strong>
-                </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding-bottom:6px;">
-                    <span>Save Project Snapshot</span>
-                    <strong style="color:var(--text-primary);">Ctrl + S / Cmd + S</strong>
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="btn-action primary" id="btnCloseShortcutsModal" style="margin:0 auto;">Close Options</button>
-            </div>
+</div>
+
+<!-- PROJECT NAME MODAL -->
+<div class="modal-overlay" id="modalProjectName">
+    <div class="modal-card">
+        <h3 class="modal-title" id="projectNameModalTitle">New Project</h3>
+        <p class="modal-desc">Name this project workspace.</p>
+        <input type="text" class="modal-input" id="inputProjectName" placeholder="Project Name..." value="Untitled Project">
+        <div class="modal-actions">
+            <button class="btn-action secondary" id="btnCancelProjectModal">Cancel</button>
+            <button class="btn-action primary" id="btnConfirmProjectModal">Confirm</button>
         </div>
     </div>
-    <script>
-        /* ==========================================
-           0. MONACO WORKER PROXY (FIXED CDN ISSUE)
-           ========================================== */
-        window.MonacoEnvironment = {
-            getWorkerUrl: function(workerId, label) {
-                return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-                    self.MonacoEnvironment = {
-                        baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/'
-                    };
-                    importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/base/worker/workerMain.js');`
-                )}`;
-            }
-        };
+</div>
 
-        /* ==========================================
-           1. SIDEBAR EXPANSION UTILS
-           ========================================== */
-        const sidebarButtons = document.querySelectorAll(".sidebar-btn[data-drawer]");
-        const drawerPanel = document.getElementById("drawerPanel");
-        const drawerSections = document.querySelectorAll(".drawer-section");
-        sidebarButtons.forEach(btn => {
-            btn.addEventListener("click", () => {
-                const target = btn.getAttribute("data-drawer");
-                // Toggle drawer panel collapsed state
-                if (btn.classList.contains("active") && !drawerPanel.classList.contains("collapsed")) {
-                    drawerPanel.classList.add("collapsed");
-                    btn.classList.remove("active");
-                } else {
-                    drawerPanel.classList.remove("collapsed");
-                    sidebarButtons.forEach(b => b.classList.remove("active"));
-                    btn.classList.add("active");
-                    // Toggle drawer section display
-                    drawerSections.forEach(section => {
-                        section.style.display = "none";
-                        if (section.id === `drawer-${target}`) {
-                            section.style.display = "block";
-                        }
-                    });
+<!-- SHORTCUTS MODAL -->
+<div class="modal-overlay" id="modalShortcuts">
+    <div class="modal-card" style="max-width:580px;">
+        <h3 class="modal-title">Keyboard Shortcuts</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;font-size:0.85rem;color:var(--text-secondary);">
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border-color);padding-bottom:6px;">
+                <span>Run code</span><strong style="color:var(--text-primary);">Ctrl + Enter</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border-color);padding-bottom:6px;">
+                <span>Format Document</span><strong style="color:var(--text-primary);">Shift + Alt + F</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border-color);padding-bottom:6px;">
+                <span>Switch tabs</span><strong style="color:var(--text-primary);">Ctrl + 1 / 2 / 3</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border-color);padding-bottom:6px;">
+                <span>Save Snapshot</span><strong style="color:var(--text-primary);">Ctrl + S</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border-color);padding-bottom:6px;">
+                <span>Command Palette</span><strong style="color:var(--text-primary);">Ctrl + Shift + P</strong>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-action primary" id="btnCloseShortcutsModal" style="margin:0 auto;">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ==========================================
+   0. MONACO WORKER PROXY
+   ========================================== */
+window.MonacoEnvironment = {
+    getWorkerUrl: function(workerId, label) {
+        return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+            self.MonacoEnvironment = {
+                baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/'
+            };
+            importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/base/worker/workerMain.js');`
+        )}`;
+    }
+};
+
+/* ==========================================
+   1. TEMPLATE DEFINITIONS
+   ========================================== */
+const TEMPLATES = [
+    {
+        id: 'blank',
+        name: 'Blank Canvas',
+        desc: 'Clean slate with minimal boilerplate. Start fresh.',
+        tags: ['minimal', 'starter'],
+        html: `<div class="container">\n  <h1>Hello, World!</h1>\n  <p>Start building something amazing.</p>\n</div>`,
+        css: `* { box-sizing: border-box; margin: 0; padding: 0; }\nbody {\n  font-family: system-ui, sans-serif;\n  background: #0f1015;\n  color: #f1f5f9;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 100vh;\n}\n.container { text-align: center; }\nh1 { font-size: 2.5rem; margin-bottom: 0.5rem; }\np { color: #94a3b8; }`,
+        js: `console.log('Ready to build!');`
+    },
+    {
+        id: 'particle',
+        name: 'Particle System',
+        desc: 'Animated canvas particle system with interactive button.',
+        tags: ['canvas', 'animation', 'demo'],
+        html: `<div class="canvas-wrap">\n  <h1>CodeForge Studio</h1>\n  <p>Ready to build high-end frontend structures.</p>\n  <button id="action-btn">Launch Animation</button>\n</div>\n<canvas id="anim-canvas"></canvas>`,
+        css: `body {\n  margin: 0; padding: 0;\n  background: #0f1015;\n  color: #ffffff;\n  font-family: 'Inter', sans-serif;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 100vh;\n  overflow: hidden;\n}\n.canvas-wrap {\n  text-align: center;\n  z-index: 10;\n  background: rgba(15, 17, 26, 0.7);\n  padding: 30px;\n  border-radius: 16px;\n  border: 1px solid rgba(255,255,255,0.08);\n  backdrop-filter: blur(10px);\n}\nh1 {\n  margin: 0 0 10px;\n  font-size: 2.2rem;\n  letter-spacing: -1px;\n  background: linear-gradient(135deg, #6366f1, #d946ef);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n}\nbutton {\n  background: #6366f1;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: 0.2s;\n}\nbutton:hover { background: #4f46e5; transform: translateY(-2px); }\ncanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }`,
+        js: `const canvas = document.getElementById("anim-canvas");\nconst ctx = canvas.getContext("2d");\nlet width = canvas.width = window.innerWidth;\nlet height = canvas.height = window.innerHeight;\nwindow.addEventListener("resize", () => {\n  width = canvas.width = window.innerWidth;\n  height = canvas.height = window.innerHeight;\n});\nconst particles = [];\nclass Particle {\n  constructor() {\n    this.x = Math.random() * width;\n    this.y = Math.random() * height;\n    this.size = Math.random() * 3 + 1;\n    this.speedX = Math.random() * 1 - 0.5;\n    this.speedY = Math.random() * 1 - 0.5;\n  }\n  update() {\n    this.x += this.speedX;\n    this.y += this.speedY;\n    if (this.x < 0 || this.x > width) this.speedX *= -1;\n    if (this.y < 0 || this.y > height) this.speedY *= -1;\n  }\n  draw() {\n    ctx.fillStyle = "rgba(99, 102, 241, 0.4)";\n    ctx.beginPath();\n    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);\n    ctx.fill();\n  }\n}\nfor(let i=0;i<80;i++) particles.push(new Particle());\nfunction loop() {\n  ctx.clearRect(0, 0, width, height);\n  particles.forEach(p => { p.update(); p.draw(); });\n  requestAnimationFrame(loop);\n}\nloop();\ndocument.getElementById("action-btn").addEventListener("click", () => {\n  console.log("Animation triggered!");\n});`
+    },
+    {
+        id: 'modern-ui',
+        name: 'Modern UI Layout',
+        desc: 'Full-page app shell: fixed navbar, sidebar, and scrollable content feed.',
+        tags: ['layout', 'navbar', 'sidebar', 'feed'],
+        html: `<div class="app-shell">\n  <nav class="navbar">\n    <div class="nav-brand">\n      <div class="nav-logo"></div>\n      <span>AppShell</span>\n    </div>\n    <div class="nav-links">\n      <a href="#" class="nav-link active">Home</a>\n      <a href="#" class="nav-link">Explore</a>\n      <a href="#" class="nav-link">Library</a>\n    </div>\n    <div class="nav-actions">\n      <button class="nav-btn">Sign In</button>\n    </div>\n  </nav>\n  <div class="app-body">\n    <aside class="sidebar">\n      <div class="sidebar-section">\n        <div class="sidebar-label">NAVIGATION</div>\n        <a href="#" class="sidebar-item active">\n          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>\n          Dashboard\n        </a>\n        <a href="#" class="sidebar-item">\n          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>\n          Analytics\n        </a>\n        <a href="#" class="sidebar-item">\n          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>\n          Profile\n        </a>\n        <a href="#" class="sidebar-item">\n          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>\n          Settings\n        </a>\n      </div>\n      <div class="sidebar-section">\n        <div class="sidebar-label">PROJECTS</div>\n        <a href="#" class="sidebar-item">Alpha Build</a>\n        <a href="#" class="sidebar-item">Beta Release</a>\n        <a href="#" class="sidebar-item">Gamma Preview</a>\n      </div>\n    </aside>\n    <main class="content-feed">\n      <div class="feed-header">\n        <h1>Dashboard</h1>\n        <button class="primary-btn">+ New Item</button>\n      </div>\n      <div class="stats-row">\n        <div class="stat-card">\n          <div class="stat-value">2,847</div>\n          <div class="stat-label">Total Views</div>\n          <div class="stat-change up">+12.5%</div>\n        </div>\n        <div class="stat-card">\n          <div class="stat-value">384</div>\n          <div class="stat-label">New Users</div>\n          <div class="stat-change up">+8.2%</div>\n        </div>\n        <div class="stat-card">\n          <div class="stat-value">$5,210</div>\n          <div class="stat-label">Revenue</div>\n          <div class="stat-change down">-2.1%</div>\n        </div>\n        <div class="stat-card">\n          <div class="stat-value">97%</div>\n          <div class="stat-label">Uptime</div>\n          <div class="stat-change up">+0.4%</div>\n        </div>\n      </div>\n      <div class="feed-grid">\n        <div class="feed-card">\n          <div class="card-img" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);"></div>\n          <div class="card-body">\n            <div class="card-tag">Design</div>\n            <h3 class="card-title">Component Architecture</h3>\n            <p class="card-desc">Modular patterns for scalable frontend systems at enterprise scale.</p>\n            <div class="card-meta"><span>Apr 12</span><span>8 min read</span></div>\n          </div>\n        </div>\n        <div class="feed-card">\n          <div class="card-img" style="background:linear-gradient(135deg,#06b6d4,#10b981);"></div>\n          <div class="card-body">\n            <div class="card-tag">Engineering</div>\n            <h3 class="card-title">Performance Patterns</h3>\n            <p class="card-desc">Techniques for sub-50ms interaction budgets on complex web apps.</p>\n            <div class="card-meta"><span>Apr 15</span><span>12 min read</span></div>\n          </div>\n        </div>\n        <div class="feed-card">\n          <div class="card-img" style="background:linear-gradient(135deg,#f59e0b,#ef4444);"></div>\n          <div class="card-body">\n            <div class="card-tag">Product</div>\n            <h3 class="card-title">User Research Methods</h3>\n            <p class="card-desc">Data-driven approaches to validate product decisions early.</p>\n            <div class="card-meta"><span>Apr 18</span><span>6 min read</span></div>\n          </div>\n        </div>\n      </div>\n    </main>\n  </div>\n</div>`,
+        css: `* { box-sizing: border-box; margin: 0; padding: 0; }\nbody {\n  font-family: 'Inter', system-ui, sans-serif;\n  background: #0b0e18;\n  color: #f1f5f9;\n  height: 100vh;\n  overflow: hidden;\n}\n.app-shell { display: flex; flex-direction: column; height: 100vh; }\n\n/* Navbar */\n.navbar {\n  height: 56px;\n  background: rgba(15,18,30,0.95);\n  border-bottom: 1px solid rgba(255,255,255,0.07);\n  display: flex;\n  align-items: center;\n  padding: 0 24px;\n  gap: 32px;\n  flex-shrink: 0;\n  backdrop-filter: blur(10px);\n  position: sticky;\n  top: 0;\n  z-index: 100;\n}\n.nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; }\n.nav-logo { width: 28px; height: 28px; border-radius: 7px; background: linear-gradient(135deg,#6366f1,#d946ef); }\n.nav-links { display: flex; gap: 4px; flex-grow: 1; }\n.nav-link { padding: 6px 14px; border-radius: 7px; font-size: 0.88rem; font-weight: 500; color: #94a3b8; text-decoration: none; transition: all 0.15s; }\n.nav-link:hover { color: #f1f5f9; background: rgba(255,255,255,0.06); }\n.nav-link.active { color: #f1f5f9; background: rgba(99,102,241,0.15); }\n.nav-btn { padding: 7px 16px; border-radius: 7px; background: #6366f1; color: white; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer; transition: 0.15s; }\n.nav-btn:hover { background: #4f46e5; }\n\n/* Body layout */\n.app-body { display: flex; flex-grow: 1; overflow: hidden; }\n\n/* Sidebar */\n.sidebar { width: 220px; background: #0d1017; border-right: 1px solid rgba(255,255,255,0.06); padding: 20px 12px; overflow-y: auto; flex-shrink: 0; }\n.sidebar-section { margin-bottom: 24px; }\n.sidebar-label { font-size: 0.65rem; font-weight: 700; color: #475569; letter-spacing: 0.8px; padding: 0 10px; margin-bottom: 8px; }\n.sidebar-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 0.83rem; color: #94a3b8; text-decoration: none; transition: all 0.15s; margin-bottom: 2px; }\n.sidebar-item svg { width: 16px; height: 16px; flex-shrink: 0; }\n.sidebar-item:hover { color: #f1f5f9; background: rgba(255,255,255,0.06); }\n.sidebar-item.active { color: #f1f5f9; background: rgba(99,102,241,0.15); }\n\n/* Content */\n.content-feed { flex-grow: 1; overflow-y: auto; padding: 28px; }\n.feed-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }\n.feed-header h1 { font-size: 1.6rem; font-weight: 800; }\n.primary-btn { background: linear-gradient(135deg,#6366f1,#8b5cf6); color: white; border: none; padding: 9px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; }\n\n/* Stats */\n.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }\n.stat-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 18px; }\n.stat-value { font-size: 1.6rem; font-weight: 800; margin-bottom: 4px; }\n.stat-label { font-size: 0.78rem; color: #64748b; margin-bottom: 8px; }\n.stat-change { font-size: 0.78rem; font-weight: 700; }\n.stat-change.up { color: #10b981; }\n.stat-change.down { color: #ef4444; }\n\n/* Feed cards */\n.feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }\n.feed-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; overflow: hidden; transition: transform 0.2s, border-color 0.2s; }\n.feed-card:hover { transform: translateY(-3px); border-color: rgba(99,102,241,0.35); }\n.card-img { height: 130px; }\n.card-body { padding: 16px; }\n.card-tag { font-size: 0.68rem; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }\n.card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; line-height: 1.35; }\n.card-desc { font-size: 0.78rem; color: #64748b; line-height: 1.5; margin-bottom: 12px; }\n.card-meta { display: flex; justify-content: space-between; font-size: 0.72rem; color: #475569; }`,
+        js: `console.log('Modern UI Layout ready.');\n// Example: add active state to sidebar items\ndocument.querySelectorAll('.sidebar-item').forEach(item => {\n  item.addEventListener('click', (e) => {\n    e.preventDefault();\n    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));\n    item.classList.add('active');\n  });\n});`
+    },
+    {
+        id: 'ecommerce',
+        name: 'E-commerce Dashboard',
+        desc: 'Product grid with filters, cart sidebar, and order summary panel.',
+        tags: ['shop', 'cart', 'grid', 'ecommerce'],
+        html: `<div class="store-layout">\n  <header class="store-header">\n    <div class="store-brand">🛒 ShopForge</div>\n    <input class="store-search" type="text" placeholder="Search products...">\n    <div class="cart-icon-wrap" id="cartToggle">\n      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>\n      <span class="cart-badge" id="cartBadge">0</span>\n    </div>\n  </header>\n  <div class="store-body">\n    <aside class="filter-sidebar">\n      <h3>Filters</h3>\n      <div class="filter-group">\n        <div class="filter-label">Category</div>\n        <label class="filter-opt"><input type="radio" name="cat" checked> All</label>\n        <label class="filter-opt"><input type="radio" name="cat"> Electronics</label>\n        <label class="filter-opt"><input type="radio" name="cat"> Apparel</label>\n        <label class="filter-opt"><input type="radio" name="cat"> Home</label>\n      </div>\n      <div class="filter-group">\n        <div class="filter-label">Price Range</div>\n        <input type="range" min="0" max="500" value="500" style="width:100%;" id="priceRange">\n        <div class="price-display">Up to $<span id="priceVal">500</span></div>\n      </div>\n      <div class="filter-group">\n        <div class="filter-label">Rating</div>\n        <label class="filter-opt"><input type="checkbox"> ⭐⭐⭐⭐⭐ 5 Stars</label>\n        <label class="filter-opt"><input type="checkbox"> ⭐⭐⭐⭐ 4+ Stars</label>\n      </div>\n    </aside>\n    <main class="product-area">\n      <div class="product-toolbar">\n        <span class="results-count">12 Products</span>\n        <select class="sort-select"><option>Sort: Featured</option><option>Price: Low to High</option><option>Price: High to Low</option><option>Best Rated</option></select>\n      </div>\n      <div class="product-grid" id="productGrid"></div>\n    </main>\n    <aside class="cart-sidebar" id="cartSidebar">\n      <div class="cart-header"><h3>Your Cart</h3><button id="cartClose">✕</button></div>\n      <div class="cart-items" id="cartItems"><p class="cart-empty">Your cart is empty.</p></div>\n      <div class="cart-footer">\n        <div class="cart-total-row"><span>Subtotal</span><strong id="cartTotal">$0.00</strong></div>\n        <div class="cart-total-row"><span>Shipping</span><strong>Free</strong></div>\n        <button class="checkout-btn">Checkout →</button>\n      </div>\n    </aside>\n  </div>\n</div>`,
+        css: `* { box-sizing: border-box; margin: 0; padding: 0; }\nbody { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; color: #0f172a; }\n.store-layout { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }\n.store-header { display: flex; align-items: center; gap: 16px; padding: 0 24px; height: 60px; background: #ffffff; border-bottom: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,0.05); flex-shrink: 0; }\n.store-brand { font-weight: 800; font-size: 1.15rem; white-space: nowrap; }\n.store-search { flex-grow: 1; padding: 8px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.88rem; background: #f8fafc; outline: none; }\n.store-search:focus { border-color: #6366f1; }\n.cart-icon-wrap { position: relative; cursor: pointer; padding: 6px; border-radius: 8px; transition: background 0.15s; }\n.cart-icon-wrap:hover { background: #f1f5f9; }\n.cart-badge { position: absolute; top: 0; right: 0; background: #ef4444; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; font-weight: 800; display: flex; align-items: center; justify-content: center; }\n.store-body { display: flex; flex-grow: 1; overflow: hidden; position: relative; }\n.filter-sidebar { width: 210px; background: #fff; border-right: 1px solid #e2e8f0; padding: 20px 16px; overflow-y: auto; flex-shrink: 0; }\n.filter-sidebar h3 { font-size: 0.9rem; font-weight: 800; margin-bottom: 16px; }\n.filter-group { margin-bottom: 20px; }\n.filter-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; margin-bottom: 8px; }\n.filter-opt { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; margin-bottom: 6px; cursor: pointer; }\n.price-display { font-size: 0.78rem; color: #64748b; margin-top: 6px; }\n.product-area { flex-grow: 1; overflow-y: auto; padding: 20px; }\n.product-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }\n.results-count { font-size: 0.82rem; color: #64748b; font-weight: 600; }\n.sort-select { padding: 6px 10px; border: 1px solid #e2e8f0; border-radius: 7px; font-size: 0.8rem; background: #fff; outline: none; cursor: pointer; }\n.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }\n.product-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; cursor: pointer; }\n.product-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1); transform: translateY(-2px); }\n.product-img { height: 140px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; background: #f1f5f9; }\n.product-info { padding: 12px; }\n.product-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }\n.product-price { font-size: 1rem; font-weight: 800; color: #6366f1; margin-bottom: 10px; }\n.product-rating { font-size: 0.72rem; color: #64748b; margin-bottom: 10px; }\n.add-to-cart-btn { width: 100%; padding: 8px; background: #6366f1; color: white; border: none; border-radius: 7px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: background 0.15s; }\n.add-to-cart-btn:hover { background: #4f46e5; }\n.cart-sidebar { width: 300px; background: #fff; border-left: 1px solid #e2e8f0; display: flex; flex-direction: column; flex-shrink: 0; transform: translateX(100%); position: absolute; right: 0; top: 0; bottom: 0; transition: transform 0.3s ease; z-index: 50; box-shadow: -4px 0 20px rgba(0,0,0,0.08); }\n.cart-sidebar.open { transform: translateX(0); }\n.cart-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid #e2e8f0; }\n.cart-header h3 { font-weight: 800; }\n.cart-header button { background: none; border: none; cursor: pointer; font-size: 1rem; color: #64748b; }\n.cart-items { flex-grow: 1; overflow-y: auto; padding: 16px 20px; }\n.cart-empty { text-align: center; color: #94a3b8; font-size: 0.85rem; padding: 24px 0; }\n.cart-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }\n.cart-item-emoji { font-size: 1.5rem; }\n.cart-item-info { flex-grow: 1; }\n.cart-item-name { font-size: 0.82rem; font-weight: 700; }\n.cart-item-price { font-size: 0.8rem; color: #6366f1; font-weight: 600; }\n.cart-item-remove { color: #ef4444; cursor: pointer; font-size: 0.85rem; }\n.cart-footer { padding: 16px 20px; border-top: 1px solid #e2e8f0; }\n.cart-total-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; }\n.checkout-btn { width: 100%; padding: 12px; background: linear-gradient(135deg,#6366f1,#8b5cf6); color: white; border: none; border-radius: 9px; font-weight: 700; font-size: 0.9rem; cursor: pointer; margin-top: 12px; transition: opacity 0.2s; }\n.checkout-btn:hover { opacity: 0.9; }`,
+        js: `const products = [\n  { id:1, name:'Wireless Headphones', price:129, emoji:'🎧', rating:'4.8 (2.1k)', category:'Electronics' },\n  { id:2, name:'Mechanical Keyboard', price:219, emoji:'⌨️', rating:'4.9 (890)', category:'Electronics' },\n  { id:3, name:'Standing Desk', price:449, emoji:'🖥️', rating:'4.7 (430)', category:'Home' },\n  { id:4, name:'Sneakers Pro X', price:89, emoji:'👟', rating:'4.6 (1.5k)', category:'Apparel' },\n  { id:5, name:'Smart Watch', price:299, emoji:'⌚', rating:'4.7 (3.2k)', category:'Electronics' },\n  { id:6, name:'Leather Jacket', price:179, emoji:'🧥', rating:'4.5 (670)', category:'Apparel' },\n  { id:7, name:'Coffee Maker', price:99, emoji:'☕', rating:'4.8 (1.1k)', category:'Home' },\n  { id:8, name:'Backpack', price:69, emoji:'🎒', rating:'4.6 (2.3k)', category:'Apparel' },\n];\nlet cart = [];\nconst grid = document.getElementById('productGrid');\nconst badge = document.getElementById('cartBadge');\nconst cartItems = document.getElementById('cartItems');\nconst cartTotal = document.getElementById('cartTotal');\nconst sidebar = document.getElementById('cartSidebar');\nfunction renderProducts() {\n  grid.innerHTML = products.map(p => \`<div class="product-card">\n    <div class="product-img">\${p.emoji}</div>\n    <div class="product-info">\n      <div class="product-name">\${p.name}</div>\n      <div class="product-price">$\${p.price}</div>\n      <div class="product-rating">⭐ \${p.rating} reviews</div>\n      <button class="add-to-cart-btn" onclick="addToCart(\${p.id})">Add to Cart</button>\n    </div>\n  </div>\`).join('');\n}\nwindow.addToCart = function(id) {\n  const p = products.find(x => x.id === id);\n  const existing = cart.find(x => x.id === id);\n  if (existing) existing.qty++;\n  else cart.push({ ...p, qty: 1 });\n  renderCart();\n  sidebar.classList.add('open');\n};\nfunction renderCart() {\n  badge.textContent = cart.reduce((s, x) => s + x.qty, 0);\n  if (!cart.length) { cartItems.innerHTML = '<p class="cart-empty">Your cart is empty.</p>'; cartTotal.textContent = '$0.00'; return; }\n  cartItems.innerHTML = cart.map(i => \`<div class="cart-item">\n    <div class="cart-item-emoji">\${i.emoji}</div>\n    <div class="cart-item-info">\n      <div class="cart-item-name">\${i.name} ×\${i.qty}</div>\n      <div class="cart-item-price">$\${i.price * i.qty}</div>\n    </div>\n    <span class="cart-item-remove" onclick="removeFromCart(\${i.id})">✕</span>\n  </div>\`).join('');\n  const total = cart.reduce((s, x) => s + x.price * x.qty, 0);\n  cartTotal.textContent = '$' + total.toFixed(2);\n}\nwindow.removeFromCart = function(id) {\n  cart = cart.filter(x => x.id !== id);\n  renderCart();\n};\ndocument.getElementById('cartToggle').addEventListener('click', () => sidebar.classList.toggle('open'));\ndocument.getElementById('cartClose').addEventListener('click', () => sidebar.classList.remove('open'));\ndocument.getElementById('priceRange').addEventListener('input', (e) => { document.getElementById('priceVal').textContent = e.target.value; });\nrenderProducts();`
+    },
+    {
+        id: 'css-art',
+        name: 'CSS Art / Animation',
+        desc: 'Pure CSS art piece with keyframe animations and no JavaScript required.',
+        tags: ['CSS', 'animation', 'creative', 'no-js'],
+        html: `<div class="scene">\n  <div class="planet">\n    <div class="ring"></div>\n    <div class="crater c1"></div>\n    <div class="crater c2"></div>\n    <div class="crater c3"></div>\n  </div>\n  <div class="orbit">\n    <div class="moon"></div>\n  </div>\n  <div class="stars"></div>\n  <div class="label">Explore The Cosmos</div>\n</div>`,
+        css: `* { box-sizing: border-box; margin: 0; padding: 0; }\nbody { background: #020409; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; font-family: 'Inter', sans-serif; }\n.scene { position: relative; width: 300px; height: 300px; display: flex; align-items: center; justify-content: center; }\n@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }\n@keyframes orbit { from{transform:rotate(0deg) translateX(120px)} to{transform:rotate(360deg) translateX(120px)} }\n@keyframes shimmer { 0%,100%{opacity:0.5} 50%{opacity:1} }\n@keyframes starTwinkle { 0%,100%{opacity:0.2;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.2)} }\n.planet { width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #818cf8, #6366f1 50%, #312e81); box-shadow: 0 0 40px rgba(99,102,241,0.6), inset -20px -10px 30px rgba(0,0,0,0.4); animation: float 4s ease-in-out infinite; position: relative; }\n.ring { position: absolute; width: 200px; height: 40px; border-radius: 50%; border: 10px solid rgba(167,139,250,0.4); top: 50%; left: 50%; transform: translate(-50%,-50%) rotateX(75deg); pointer-events: none; }\n.crater { position: absolute; border-radius: 50%; background: rgba(0,0,0,0.25); }\n.c1 { width: 24px; height: 24px; top: 20%; left: 25%; }\n.c2 { width: 16px; height: 16px; top: 55%; left: 60%; }\n.c3 { width: 10px; height: 10px; top: 35%; left: 55%; }\n.orbit { position: absolute; width: 240px; height: 240px; border-radius: 50%; border: 1px dashed rgba(255,255,255,0.1); display: flex; align-items: flex-start; justify-content: center; animation: orbit 6s linear infinite; }\n.moon { width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #e2e8f0, #94a3b8); box-shadow: 0 0 12px rgba(255,255,255,0.4); margin-top: 0; position: absolute; top: 0; left: 50%; transform: translateX(-50%); }\n.stars { position: absolute; width: 100%; height: 100%; pointer-events: none; }\n.stars::before, .stars::after { content: ''; position: absolute; border-radius: 50%; }\n.stars::before { width: 4px; height: 4px; background: white; box-shadow: -80px -80px 0 white, 60px -100px 0 rgba(255,255,255,0.7), 120px 20px 0 white, -120px 40px 0 rgba(255,255,255,0.6), 90px 90px 0 white, -60px 100px 0 rgba(255,255,255,0.8), 0px -130px 0 rgba(255,255,255,0.5); animation: starTwinkle 2.5s ease-in-out infinite; }\n.stars::after { width: 2px; height: 2px; background: white; box-shadow: -100px -50px 0 white, 40px -110px 0 rgba(255,255,255,0.6), 130px -20px 0 white, -110px 70px 0 rgba(255,255,255,0.7), 70px 110px 0 white; animation: starTwinkle 3.5s ease-in-out infinite reverse; }\n.label { position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 0.8rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: rgba(167,139,250,0.8); animation: shimmer 3s ease-in-out infinite; }`,
+        js: `// Pure CSS art – no JS needed!\nconsole.log('CSS art: Cosmos scene rendered.');`
+    }
+];
+
+/* ==========================================
+   2. CDN PRESETS
+   ========================================== */
+const CDN_PRESETS = [
+    { name: 'Tailwind CSS', url: 'https://cdn.tailwindcss.com', type: 'script' },
+    { name: 'Bootstrap 5', url: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', type: 'stylesheet' },
+    { name: 'Bootstrap JS', url: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', type: 'script' },
+    { name: 'Alpine.js', url: 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js', type: 'script' },
+    { name: 'Three.js', url: 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js', type: 'script' },
+    { name: 'GSAP', url: 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', type: 'script' },
+    { name: 'D3.js', url: 'https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js', type: 'script' },
+    { name: 'Chart.js', url: 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js', type: 'script' },
+    { name: 'Font Awesome', url: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css', type: 'stylesheet' },
+    { name: 'Anime.js', url: 'https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js', type: 'script' },
+    { name: 'Lodash', url: 'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js', type: 'script' },
+    { name: 'Moment.js', url: 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js', type: 'script' },
+];
+
+/* ==========================================
+   3. SIDEBAR EXPANSION UTILS
+   ========================================== */
+const sidebarButtons = document.querySelectorAll(".sidebar-btn[data-drawer]");
+const drawerPanel = document.getElementById("drawerPanel");
+const drawerSections = document.querySelectorAll(".drawer-section");
+sidebarButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        const target = btn.getAttribute("data-drawer");
+        if (btn.classList.contains("active") && !drawerPanel.classList.contains("collapsed")) {
+            drawerPanel.classList.add("collapsed");
+            btn.classList.remove("active");
+        } else {
+            drawerPanel.classList.remove("collapsed");
+            sidebarButtons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            drawerSections.forEach(section => {
+                section.style.display = "none";
+                if (section.id === `drawer-${target}`) {
+                    section.style.display = "flex";
+                    section.style.flexDirection = "column";
+                    section.style.height = "100%";
                 }
-                
-                // Trigger Monaco layout update to fit new widths
-                setTimeout(() => {
-                    if (window.editor) window.editor.layout();
-                }, 300);
             });
-        });
-        /* ==========================================
-           2. SPLIT RESIZER DRAG CONTROLLER (UPDATED FOR SWAPPED LAYOUT)
-           ========================================== */
-        const splitResizer = document.getElementById("splitResizer");
-        const panePreview = document.getElementById("pane-preview");
-        const paneEditor = document.getElementById("pane-editor");
-        const workspaceSplit = document.getElementById("workspaceSplit");
-        let isDraggingSplit = false;
-        splitResizer.addEventListener("mousedown", (e) => {
-            isDraggingSplit = true;
-            splitResizer.classList.add("dragging");
-            // Disable select & pointer actions on iframe to avoid focus capture during drags
-            document.getElementById("sandboxIframe").style.pointerEvents = "none";
-        });
-        document.addEventListener("mousemove", (e) => {
-            if (!isDraggingSplit) return;
-            
-            const totalWidth = workspaceSplit.getBoundingClientRect().width;
-            let leftPaneWidth = e.clientX - workspaceSplit.getBoundingClientRect().left;
-            // Restrict panels dimensions
-            if (leftPaneWidth < 200) leftPaneWidth = 200;
-            if (leftPaneWidth > totalWidth - 250) leftPaneWidth = totalWidth - 250;
-            const leftPct = (leftPaneWidth / totalWidth) * 100;
-            
-            // Apply widths based on the new reversed layout
-            paneEditor.style.width = `${leftPct}%`;
-            panePreview.style.width = `${100 - leftPct}%`;
-            
-            if (window.editor) window.editor.layout();
-        });
-        document.addEventListener("mouseup", () => {
-            if (isDraggingSplit) {
-                isDraggingSplit = false;
-                splitResizer.classList.remove("dragging");
-                document.getElementById("sandboxIframe").style.pointerEvents = "auto";
+        }
+        setTimeout(() => { if (window.editor) window.editor.layout(); }, 310);
+    });
+});
+
+/* ==========================================
+   4. SPLIT RESIZER
+   ========================================== */
+const splitResizer = document.getElementById("splitResizer");
+const panePreview = document.getElementById("pane-preview");
+const paneEditor = document.getElementById("pane-editor");
+const workspaceSplit = document.getElementById("workspaceSplit");
+let isDraggingSplit = false;
+splitResizer.addEventListener("mousedown", () => {
+    isDraggingSplit = true;
+    splitResizer.classList.add("dragging");
+    document.getElementById("sandboxIframe").style.pointerEvents = "none";
+});
+document.addEventListener("mousemove", (e) => {
+    if (!isDraggingSplit) return;
+    const totalWidth = workspaceSplit.getBoundingClientRect().width;
+    let leftPaneWidth = e.clientX - workspaceSplit.getBoundingClientRect().left;
+    if (leftPaneWidth < 200) leftPaneWidth = 200;
+    if (leftPaneWidth > totalWidth - 250) leftPaneWidth = totalWidth - 250;
+    const leftPct = (leftPaneWidth / totalWidth) * 100;
+    paneEditor.style.width = `${leftPct}%`;
+    panePreview.style.width = `${100 - leftPct}%`;
+    if (window.editor) window.editor.layout();
+});
+document.addEventListener("mouseup", () => {
+    if (isDraggingSplit) {
+        isDraggingSplit = false;
+        splitResizer.classList.remove("dragging");
+        document.getElementById("sandboxIframe").style.pointerEvents = "auto";
+    }
+});
+
+/* ==========================================
+   5. STORAGE ENGINE
+   ========================================== */
+let state = {
+    projects: {},
+    activeId: null,
+    cdnLibraries: [] // [{url, type}]
+};
+const STARTER = TEMPLATES.find(t => t.id === 'particle');
+
+function loadStateFromStorage() {
+    const raw = localStorage.getItem("codeforge_studio_state_v2");
+    if (raw) {
+        try { state = JSON.parse(raw); } catch(e) { console.error("State parse error, rebuilding."); }
+    }
+    if (!state.cdnLibraries) state.cdnLibraries = [];
+    if (!state.projects || Object.keys(state.projects).length === 0) {
+        const initId = "proj_" + Date.now();
+        state.projects = {
+            [initId]: {
+                name: "Demo Particle System",
+                html: STARTER.html,
+                css: STARTER.css,
+                js: STARTER.js,
+                snapshots: [],
+                updated: Date.now()
             }
-        });
-        /* ==========================================
-           3. STORAGE ENGINE & PROJECTS SERIALIZATION
-           ========================================== */
-        let state = {
-            projects: {}, // mapping id -> { name, html, css, js, snapshots: [], updated }
-            activeId: null
         };
-        const STARTER_HTML = `\n<div class="canvas-wrap">\n  <h1>CodeForge Studio</h1>\n  <p>Ready to build high-end frontend structures.</p>\n  <button id="action-btn">Launch Animation</button>\n</div>\n\n<canvas id="anim-canvas"></canvas>`;
-        
-        const STARTER_CSS = `/* Premium Dark Canvas Stylings */\nbody {\n  margin: 0;\n  padding: 0;\n  background: #0f1015;\n  color: #ffffff;\n  font-family: 'Inter', sans-serif;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 100vh;\n  overflow: hidden;\n}\n\n.canvas-wrap {\n  text-align: center;\n  z-index: 10;\n  background: rgba(15, 17, 26, 0.7);\n  padding: 30px;\n  border-radius: 16px;\n  border: 1px solid rgba(255,255,255,0.08);\n  backdrop-filter: blur(10px);\n}\n\nh1 {\n  margin: 0 0 10px;\n  font-size: 2.2rem;\n  letter-spacing: -1px;\n  background: linear-gradient(135deg, #6366f1, #d946ef);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n}\n\nbutton {\n  background: #6366f1;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: 0.2s;\n}\n\nbutton:hover {\n  background: #4f46e5;\n  transform: translateY(-2px);\n}\n\ncanvas {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n}`;
-        const STARTER_JS = `// Particle Animation Engine\nconst canvas = document.getElementById("anim-canvas");\nconst ctx = canvas.getContext("2d");\n\nlet width = canvas.width = window.innerWidth;\nlet height = canvas.height = window.innerHeight;\n\nwindow.addEventListener("resize", () => {\n  width = canvas.width = window.innerWidth;\n  height = canvas.height = window.innerHeight;\n});\n\nconst particles = [];\n\nclass Particle {\n  constructor() {\n    this.x = Math.random() * width;\n    this.y = Math.random() * height;\n    this.size = Math.random() * 3 + 1;\n    this.speedX = Math.random() * 1 - 0.5;\n    this.speedY = Math.random() * 1 - 0.5;\n  }\n  update() {\n    this.x += this.speedX;\n    this.y += this.speedY;\n    if (this.x < 0 || this.x > width) this.speedX *= -1;\n    if (this.y < 0 || this.y > height) this.speedY *= -1;\n  }\n  draw() {\n    ctx.fillStyle = "rgba(99, 102, 241, 0.4)";\n    ctx.beginPath();\n    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);\n    ctx.fill();\n  }\n}\n\nfor(let i=0; i<80; i++) {\n  particles.push(new Particle());\n}\n\nfunction loop() {\n  ctx.clearRect(0, 0, width, height);\n  particles.forEach(p => {\n    p.update();\n    p.draw();\n  });\n  requestAnimationFrame(loop);\n}\n\nloop();\n\n// Action trigger log\ndocument.getElementById("action-btn").addEventListener("click", () => {\n  console.log("Animation Trigger Button clicked!");\n});`;
-        function loadStateFromStorage() {
-            const raw = localStorage.getItem("codeforge_studio_state");
-            if (raw) {
-                try {
-                    state = JSON.parse(raw);
-                } catch(e) {
-                    console.error("Storage corrupted, rebuilding state logs.");
-                }
-            }
-            
-            // Build fallback templates if empty list
-            if (!state.projects || Object.keys(state.projects).length === 0) {
-                const initId = "proj_" + Date.now();
-                state.projects = {
-                    [initId]: {
-                        name: "Demo Particle System",
-                        html: STARTER_HTML,
-                        css: STARTER_CSS,
-                        js: STARTER_JS,
-                        snapshots: [],
-                        updated: Date.now()
-                    }
-                };
-                state.activeId = initId;
-                saveStateToStorage();
-            }
-        }
-        function saveStateToStorage() {
-            localStorage.setItem("codeforge_studio_state", JSON.stringify(state));
-        }
-        /* ==========================================
-           4. MONACO EDITOR & TAB CONFIGURATIONS
-           ========================================== */
-        let htmlModel, cssModel, jsModel;
-        let activeFileTab = "html";
-        function startMonacoEditor() {
-            require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
-            require(['vs/editor/editor.main'], () => {
-                const activeProj = state.projects[state.activeId];
-                // Create distinct models
-                htmlModel = monaco.editor.createModel(activeProj.html, 'html');
-                cssModel = monaco.editor.createModel(activeProj.css, 'css');
-                jsModel = monaco.editor.createModel(activeProj.js, 'javascript');
-                // Initialize editor
-                window.editor = monaco.editor.create(document.getElementById("monacoEditorContainer"), {
-                    model: htmlModel,
-                    theme: 'vs-dark',
-                    automaticLayout: true,
-                    fontSize: 14,
-                    fontFamily: "'Fira Code', Consolas, monospace",
-                    tabSize: 2,
-                    lineNumbers: 'on',
-                    minimap: { enabled: false },
-                    bracketPairColorization: { enabled: true },
-                    autoClosingBrackets: 'always',
-                    autoClosingTags: true,
-                    folding: true,
-                    wordWrap: 'on'
-                });
-                // Debounced triggers for Auto Run
-                let runDebounce;
-                window.editor.onDidChangeModelContent(() => {
-                    // Update active model parameters inside state
-                    const codeVal = window.editor.getValue();
-                    const activeP = state.projects[state.activeId];
-                    if (activeFileTab === "html") activeP.html = codeVal;
-                    else if (activeFileTab === "css") activeP.css = codeVal;
-                    else if (activeFileTab === "js") activeP.js = codeVal;
-                    
-                    activeP.updated = Date.now();
-                    
-                    if (document.getElementById("checkAutoSave").checked) {
-                        saveStateToStorage();
-                    }
-                    if (document.getElementById("checkAutoRun").checked) {
-                        clearTimeout(runDebounce);
-                        runDebounce = setTimeout(triggerLivePreviewBuild, 800);
-                    }
-                });
-                // Setup tabs keyboard shortcuts
-                window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
-                    triggerLivePreviewBuild();
-                });
-                window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-                    createSnapshotFromState();
-                });
-                // Render Initial Layout
-                triggerLivePreviewBuild();
-            });
-        }
-        // Tab switching engine
-        const editorTabs = document.querySelectorAll(".editor-tab");
-        editorTabs.forEach(tab => {
-            tab.addEventListener("click", () => {
-                const tabName = tab.getAttribute("data-tab");
-                if (tabName === activeFileTab || !window.editor) return;
-                editorTabs.forEach(t => t.classList.remove("active"));
-                tab.classList.add("active");
-                activeFileTab = tabName;
-                // Set Monaco Model
-                if (tabName === "html") window.editor.setModel(htmlModel);
-                else if (tabName === "css") window.editor.setModel(cssModel);
-                else if (tabName === "js") window.editor.setModel(jsModel);
-            });
+        state.activeId = initId;
+        saveStateToStorage();
+    }
+    if (!state.activeId || !state.projects[state.activeId]) {
+        state.activeId = Object.keys(state.projects)[0];
+    }
+}
+function saveStateToStorage() {
+    localStorage.setItem("codeforge_studio_state_v2", JSON.stringify(state));
+}
+
+/* ==========================================
+   6. MONACO EDITOR & INTELLISENSE
+   ========================================== */
+let htmlModel, cssModel, jsModel;
+let activeFileTab = "html";
+
+function startMonacoEditor() {
+    require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
+    require(['vs/editor/editor.main'], () => {
+        const activeProj = state.projects[state.activeId];
+        htmlModel = monaco.editor.createModel(activeProj.html, 'html');
+        cssModel  = monaco.editor.createModel(activeProj.css,  'css');
+        jsModel   = monaco.editor.createModel(activeProj.js,   'javascript');
+
+        // ---- IntelliSense: DOM + common APIs ----
+        monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+            target: monaco.languages.typescript.ScriptTarget.ES2020,
+            allowNonTsExtensions: true,
+            lib: ['es2020', 'dom']
         });
-        /* ==========================================
-           5. SANDBOX PREVIEW & CONSOLE PIPELINE
-           ========================================== */
-        const consoleLogList = document.getElementById("consoleLogList");
-        window.addEventListener("message", (e) => {
-            const data = e.data;
-            if (data && data.type === 'console') {
-                logMessageToDrawer(data.logType, data.message);
+        monaco.languages.typescript.javascriptDefaults.addExtraLib(`
+            declare const document: Document;
+            declare const window: Window & typeof globalThis;
+            declare const console: Console;
+            declare const setTimeout: (fn: Function, ms?: number) => number;
+            declare const setInterval: (fn: Function, ms?: number) => number;
+            declare const clearTimeout: (id: number) => void;
+            declare const clearInterval: (id: number) => void;
+            declare const requestAnimationFrame: (fn: FrameRequestCallback) => number;
+            declare const cancelAnimationFrame: (id: number) => void;
+            declare const fetch: (input: RequestInfo, init?: RequestInit) => Promise<Response>;
+            declare const localStorage: Storage;
+            declare const sessionStorage: Storage;
+            declare const JSON: JSON;
+            declare const Math: Math;
+            declare const Array: ArrayConstructor;
+            declare const Object: ObjectConstructor;
+            declare const Promise: PromiseConstructor;
+        `, 'ts:builtin-dom.d.ts');
+
+        // Custom JS completions
+        monaco.languages.registerCompletionItemProvider('javascript', {
+            provideCompletionItems: (model, position) => {
+                const word = model.getWordUntilPosition(position);
+                const range = { startLineNumber: position.lineNumber, endLineNumber: position.lineNumber, startColumn: word.startColumn, endColumn: word.endColumn };
+                const suggestions = [
+                    { label: 'qs', kind: monaco.languages.CompletionItemKind.Snippet, insertText: "document.querySelector('${1:selector}')", insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'document.querySelector()', range },
+                    { label: 'qsa', kind: monaco.languages.CompletionItemKind.Snippet, insertText: "document.querySelectorAll('${1:selector}')", insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'document.querySelectorAll()', range },
+                    { label: 'ael', kind: monaco.languages.CompletionItemKind.Snippet, insertText: "${1:element}.addEventListener('${2:event}', (${3:e}) => {\n\t$0\n});", insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'addEventListener', range },
+                    { label: 'raf', kind: monaco.languages.CompletionItemKind.Snippet, insertText: "requestAnimationFrame(function animate() {\n\t$0\n\trequestAnimationFrame(animate);\n});", insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'requestAnimationFrame loop', range },
+                    { label: 'cl', kind: monaco.languages.CompletionItemKind.Snippet, insertText: "console.log(${1:value});", insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'console.log', range },
+                    { label: 'fetch', kind: monaco.languages.CompletionItemKind.Snippet, insertText: "fetch('${1:url}')\n  .then(res => res.json())\n  .then(data => {\n\t${2:console.log(data);}\n  })\n  .catch(err => console.error(err));", insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'fetch API', range },
+                    { label: 'iife', kind: monaco.languages.CompletionItemKind.Snippet, insertText: "(function() {\n\t'use strict';\n\t$0\n})();", insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'IIFE pattern', range },
+                    { label: 'cls', kind: monaco.languages.CompletionItemKind.Snippet, insertText: "class ${1:MyClass} {\n\tconstructor(${2}) {\n\t\t$0\n\t}\n}", insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'ES6 Class', range },
+                ];
+                return { suggestions };
             }
         });
-        function logMessageToDrawer(type, message) {
-            const item = document.createElement("div");
-            item.className = `console-log-item ${type}`;
-            
-            let timeStr = new Date().toLocaleTimeString().split(' ')[0];
-            item.innerHTML = `<span style="color: var(--text-muted); font-size: 0.7rem; margin-right: 6px;">[${timeStr}]</span> ${message}`;
-            
-            consoleLogList.appendChild(item);
-            consoleLogList.scrollTop = consoleLogList.scrollHeight; // Scroll to bottom
-            
-            // Auto expand console tray if it returns an error
-            if (type === 'error' && document.getElementById("consoleDrawer").classList.contains("collapsed")) {
-                toggleConsoleDrawer();
+
+        window.editor = monaco.editor.create(document.getElementById("monacoEditorContainer"), {
+            model: htmlModel,
+            theme: 'vs-dark',
+            automaticLayout: true,
+            fontSize: 14,
+            fontFamily: "'Fira Code', Consolas, monospace",
+            fontLigatures: true,
+            tabSize: 2,
+            lineNumbers: 'on',
+            minimap: { enabled: false },
+            bracketPairColorization: { enabled: true },
+            autoClosingBrackets: 'always',
+            autoClosingTags: true,
+            folding: true,
+            wordWrap: 'on',
+            suggestOnTriggerCharacters: true,
+            quickSuggestions: { other: true, comments: false, strings: true },
+            parameterHints: { enabled: true },
+            inlineSuggest: { enabled: true }
+        });
+
+        let runDebounce;
+        window.editor.onDidChangeModelContent(() => {
+            const codeVal = window.editor.getValue();
+            const activeP = state.projects[state.activeId];
+            if (activeFileTab === "html") activeP.html = codeVal;
+            else if (activeFileTab === "css") activeP.css = codeVal;
+            else if (activeFileTab === "js") activeP.js = codeVal;
+            activeP.updated = Date.now();
+            if (document.getElementById("checkAutoSave").checked) saveStateToStorage();
+            if (document.getElementById("checkAutoRun").checked) {
+                clearTimeout(runDebounce);
+                runDebounce = setTimeout(triggerLivePreviewBuild, 800);
             }
-        }
-        function triggerLivePreviewBuild() {
-            if (!htmlModel) return;
-            const html = htmlModel.getValue();
-            const css = cssModel.getValue();
-            const js = jsModel.getValue();
-            // Construct preview doc string
-            const srcDoc = `
-<!DOCTYPE html>
+        });
+        window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => triggerLivePreviewBuild());
+        window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => createSnapshotFromState());
+        window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyP, () => openCommandPalette());
+        window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Digit1, () => switchTab('html'));
+        window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Digit2, () => switchTab('css'));
+        window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Digit3, () => switchTab('js'));
+
+        triggerLivePreviewBuild();
+    });
+}
+
+function switchTab(tabName) {
+    if (tabName === activeFileTab || !window.editor) return;
+    document.querySelectorAll(".editor-tab").forEach(t => t.classList.remove("active"));
+    document.querySelector(`.editor-tab[data-tab="${tabName}"]`).classList.add("active");
+    activeFileTab = tabName;
+    if (tabName === "html") window.editor.setModel(htmlModel);
+    else if (tabName === "css") window.editor.setModel(cssModel);
+    else if (tabName === "js") window.editor.setModel(jsModel);
+}
+
+const editorTabs = document.querySelectorAll(".editor-tab");
+editorTabs.forEach(tab => {
+    tab.addEventListener("click", () => switchTab(tab.getAttribute("data-tab")));
+});
+
+/* ==========================================
+   7. SANDBOX PREVIEW & CONSOLE
+   ========================================== */
+const consoleLogList = document.getElementById("consoleLogList");
+
+window.addEventListener("message", (e) => {
+    if (e.data && e.data.type === 'console') logMessageToDrawer(e.data.logType, e.data.message);
+});
+
+function logMessageToDrawer(type, message) {
+    const item = document.createElement("div");
+    item.className = `console-log-item ${type}`;
+    const timeStr = new Date().toLocaleTimeString().split(' ')[0];
+    item.innerHTML = `<span style="color:var(--text-muted);font-size:0.7rem;margin-right:6px;">[${timeStr}]</span> ${escapeHtml(message)}`;
+    consoleLogList.appendChild(item);
+    consoleLogList.scrollTop = consoleLogList.scrollHeight;
+    if (type === 'error' && document.getElementById("consoleDrawer").classList.contains("collapsed")) toggleConsoleDrawer();
+}
+
+function escapeHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function buildCdnTags() {
+    return state.cdnLibraries.map(lib => {
+        if (lib.type === 'stylesheet') return `<link rel="stylesheet" href="${lib.url}">`;
+        return `<script src="${lib.url}"><\/script>`;
+    }).join('\n    ');
+}
+
+function triggerLivePreviewBuild() {
+    if (!htmlModel) return;
+    const html = htmlModel.getValue();
+    const css  = cssModel.getValue();
+    const js   = jsModel.getValue();
+    const cdnTags = buildCdnTags();
+    const srcDoc = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Preview Frame</title>
-    <style>
-        ${css}
-    </style>
+    <title>Preview</title>
+    ${cdnTags}
+    <style>${css}</style>
 </head>
 <body>
     ${html}
-    
     <script>
-        (function() {
-            const _log = console.log;
-            const _warn = console.warn;
-            const _error = console.error;
-            function send(type, args) {
-                window.parent.postMessage({
-                    type: 'console',
-                    logType: type,
-                    message: args.map(arg => {
-                        if (arg === null) return 'null';
-                        if (arg === undefined) return 'undefined';
-                        if (typeof arg === 'object') {
-                            try { return JSON.stringify(arg); } catch(e) { return String(arg); }
-                        }
-                        return String(arg);
-                    }).join(' ')
-                }, '*');
-            }
-            console.log = (...args) => {
-                _log(...args);
-                send('log', args);
-            };
-            console.warn = (...args) => {
-                _warn(...args);
-                send('warn', args);
-            };
-            console.error = (...args) => {
-                _error(...args);
-                send('error', args);
-            };
-            
-            window.onerror = (msg, url, line) => {
-                send('error', [msg + " (line " + line + ")"]);
-            };
-        })();
-    <\/script>
-    <script>
-        try {
-            ${js}
-        } catch(err) {
-            console.error(err.message);
+    (function() {
+        const _log = console.log, _warn = console.warn, _error = console.error;
+        function send(type, args) {
+            window.parent.postMessage({ type:'console', logType:type, message:args.map(a => {
+                if(a===null) return 'null';
+                if(a===undefined) return 'undefined';
+                if(typeof a==='object') { try{return JSON.stringify(a);}catch(e){return String(a);} }
+                return String(a);
+            }).join(' ') }, '*');
         }
+        console.log = (...a) => { _log(...a); send('log',a); };
+        console.warn = (...a) => { _warn(...a); send('warn',a); };
+        console.error = (...a) => { _error(...a); send('error',a); };
+        window.onerror = (msg,url,line) => send('error',[msg+' (line '+line+')']);
+    })();
     <\/script>
+    <script>try { ${js} } catch(err) { console.error(err.message); }<\/script>
 </body>
-</html>
-            `;
-            const iframe = document.getElementById("sandboxIframe");
-            iframe.srcdoc = srcDoc;
-        }
-        document.getElementById("btnRunCode").addEventListener("click", () => {
-            triggerLivePreviewBuild();
-            logMessageToDrawer("log", "Execution Triggered manually.");
+</html>`;
+    document.getElementById("sandboxIframe").srcdoc = srcDoc;
+}
+
+document.getElementById("btnRunCode").addEventListener("click", () => {
+    triggerLivePreviewBuild();
+    logMessageToDrawer("log", "Execution triggered manually.");
+});
+
+/* ==========================================
+   8. CONSOLE TOGGLE
+   ========================================== */
+const consoleDrawer = document.getElementById("consoleDrawer");
+const consoleChevron = document.getElementById("consoleChevron");
+function toggleConsoleDrawer() {
+    consoleDrawer.classList.toggle("collapsed");
+    consoleChevron.innerHTML = consoleDrawer.classList.contains("collapsed") ? "&#9650;" : "&#9660;";
+    setTimeout(() => { if (window.editor) window.editor.layout(); }, 310);
+}
+document.getElementById("btnConsoleToggle").addEventListener("click", (e) => {
+    if (e.target.closest("#btnClearConsole")) return;
+    toggleConsoleDrawer();
+});
+document.getElementById("btnClearConsole").addEventListener("click", () => { consoleLogList.innerHTML = ""; });
+
+/* ==========================================
+   9. PROJECT MANAGEMENT
+   ========================================== */
+const projectListContainer = document.getElementById("projectListContainer");
+
+function renderProjectsList() {
+    projectListContainer.innerHTML = "";
+    Object.keys(state.projects).forEach(id => {
+        const proj = state.projects[id];
+        const active = (id === state.activeId);
+        const item = document.createElement("div");
+        item.className = `project-item ${active ? 'active' : ''}`;
+        item.addEventListener("click", (e) => {
+            if (e.target.closest(".project-action-btn")) return;
+            loadActiveProjectWorkspace(id);
         });
-        /* ==========================================
-           6. CONSOLE EXPANSION UTILS
-           ========================================== */
-        const consoleDrawer = document.getElementById("consoleDrawer");
-        const btnConsoleToggle = document.getElementById("btnConsoleToggle");
-        const consoleChevron = document.getElementById("consoleChevron");
-        function toggleConsoleDrawer() {
-            if (consoleDrawer.classList.contains("collapsed")) {
-                consoleDrawer.classList.remove("collapsed");
-                consoleChevron.innerHTML = "&#9660;";
-            } else {
-                consoleDrawer.classList.add("collapsed");
-                consoleChevron.innerHTML = "&#9650;";
-            }
-            setTimeout(() => {
-                if (window.editor) window.editor.layout();
-            }, 300);
-        }
-        btnConsoleToggle.addEventListener("click", (e) => {
-            if (e.target.closest("#btnClearConsole")) return; // skip clear clicks
-            toggleConsoleDrawer();
-        });
-        document.getElementById("btnClearConsole").addEventListener("click", () => {
-            consoleLogList.innerHTML = "";
-        });
-        /* ==========================================
-           7. SIDEBAR PANELS ACTIONS CONTROLLERS
-           ========================================== */
-        const projectListContainer = document.getElementById("projectListContainer");
-        // Render projects selection list
-        function renderProjectsList() {
-            projectListContainer.innerHTML = "";
-            Object.keys(state.projects).forEach(id => {
-                const proj = state.projects[id];
-                const active = (id === state.activeId);
-                const item = document.createElement("div");
-                item.className = `project-item ${active ? 'active' : ''}`;
-                item.addEventListener("click", (e) => {
-                    if (e.target.closest(".project-action-btn")) return; // Skip actions
-                    loadActiveProjectWorkspace(id);
-                });
-                item.innerHTML = `
-                    <div>
-                        <div class="project-name">${proj.name}</div>
-                        <div class="project-date">Updated: ${new Date(proj.updated).toLocaleDateString()}</div>
-                    </div>
-                    <div class="project-item-actions">
-                        <button class="project-action-btn" onclick="triggerDuplicateProject('${id}')" title="Duplicate Project">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                        </button>
-                        <button class="project-action-btn" onclick="triggerDeleteProject('${id}')" title="Delete Project" style="color: var(--danger);">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        </button>
-                    </div>
-                `;
-                projectListContainer.appendChild(item);
-            });
-        }
-        // Active project loads
-        function loadActiveProjectWorkspace(id) {
-            state.activeId = id;
-            saveStateToStorage();
-            
-            const activeProj = state.projects[id];
-            
-            // Set Monaco Models values
-            if (htmlModel) htmlModel.setValue(activeProj.html);
-            if (cssModel) cssModel.setValue(activeProj.css);
-            if (jsModel) jsModel.setValue(activeProj.js);
-            renderProjectsList();
-            renderSnapshotsList();
-            triggerLivePreviewBuild();
-            
-            logMessageToDrawer("log", `Project Loaded: ${activeProj.name}`);
-        }
-        // Project Creation modal
-        const modalProjectName = document.getElementById("modalProjectName");
-        const inputProjectName = document.getElementById("inputProjectName");
-        let projectModalCallback = null;
-        document.getElementById("btnCreateProject").addEventListener("click", () => {
-            document.getElementById("projectNameModalTitle").innerText = "New Project Configuration";
-            inputProjectName.value = "Untitled Project";
-            modalProjectName.classList.add("active");
-            
-            projectModalCallback = (name) => {
-                const newId = "proj_" + Date.now();
-                state.projects[newId] = {
-                    name: name || "New Project",
-                    html: `\n<h1>Welcome to ${name}</h1>`,
-                    css: `/* Page designs */\nbody { background: #000; color: #fff; }`,
-                    js: `// Scripts\nconsole.log("Ready!");`,
-                    snapshots: [],
-                    updated: Date.now()
-                };
-                loadActiveProjectWorkspace(newId);
-            };
-        });
-        document.getElementById("btnCancelProjectModal").addEventListener("click", () => {
-            modalProjectName.classList.remove("active");
-        });
-        document.getElementById("btnConfirmProjectModal").addEventListener("click", () => {
-            const name = inputProjectName.value.trim();
-            if (projectModalCallback) projectModalCallback(name);
-            modalProjectName.classList.remove("active");
-        });
-        function triggerDuplicateProject(id) {
-            const src = state.projects[id];
-            const dupId = "proj_" + Date.now();
-            state.projects[dupId] = {
-                name: `${src.name} (Copy)`,
-                html: src.html,
-                css: src.css,
-                js: src.js,
-                snapshots: [],
-                updated: Date.now()
-            };
-            saveStateToStorage();
-            renderProjectsList();
-            logMessageToDrawer("log", `Project Duplicated.`);
-        }
-        function triggerDeleteProject(id) {
-            if (Object.keys(state.projects).length <= 1) {
-                alert("Cannot delete the only remaining project workspace!");
-                return;
-            }
-            if (confirm("Are you sure you want to delete this project? This action cannot be reversed!")) {
-                delete state.projects[id];
-                if (state.activeId === id) {
-                    state.activeId = Object.keys(state.projects)[0];
-                }
-                loadActiveProjectWorkspace(state.activeId);
-            }
-        }
-        /* ==========================================
-           8. SNAPSHOTS VERSION CONTROL ENGINE
-           ========================================== */
-        const snapshotListContainer = document.getElementById("snapshotListContainer");
-        function renderSnapshotsList() {
-            snapshotListContainer.innerHTML = "";
-            const activeProj = state.projects[state.activeId];
-            if (!activeProj.snapshots || activeProj.snapshots.length === 0) {
-                snapshotListContainer.innerHTML = `<div style="font-size:0.75rem; color:var(--text-muted); text-align:center; padding:20px 0;">No snapshots found. Click '+' above to create a version snapshot.</div>`;
-                return;
-            }
-            activeProj.snapshots.slice().reverse().forEach((snap, index) => {
-                const item = document.createElement("div");
-                item.className = "snapshot-item";
-                item.innerHTML = `
-                    <div>
-                        <strong>Version ${activeProj.snapshots.length - index}</strong>
-                        <div style="font-size:0.65rem; color:var(--text-muted);">${new Date(snap.timestamp).toLocaleTimeString()}</div>
-                    </div>
-                    <button class="project-action-btn" onclick="restoreSnapshotState(${activeProj.snapshots.length - 1 - index})" style="color:var(--primary); font-weight:600;">Restore</button>
-                `;
-                snapshotListContainer.appendChild(item);
-            });
-        }
-        function createSnapshotFromState() {
-            const activeProj = state.projects[state.activeId];
-            if (!activeProj.snapshots) activeProj.snapshots = [];
-            const newSnap = {
-                timestamp: Date.now(),
-                html: htmlModel.getValue(),
-                css: cssModel.getValue(),
-                js: jsModel.getValue()
-            };
-            activeProj.snapshots.push(newSnap);
-            saveStateToStorage();
-            renderSnapshotsList();
-            logMessageToDrawer("log", "Version Snapshot captured successfully.");
-        }
-        document.getElementById("btnCreateSnapshot").addEventListener("click", () => {
-            createSnapshotFromState();
-        });
-        window.restoreSnapshotState = function(index) {
-            const activeProj = state.projects[state.activeId];
-            const snap = activeProj.snapshots[index];
-            if (!snap) return;
-            if (confirm("Restore workspace variables to this version snapshot? Unsaved current progress may be overwritten.")) {
-                htmlModel.setValue(snap.html);
-                cssModel.setValue(snap.css);
-                jsModel.setValue(snap.js);
-                triggerLivePreviewBuild();
-                logMessageToDrawer("log", `Restored to Snapshot timestamp: ${new Date(snap.timestamp).toLocaleTimeString()}`);
-            }
+        item.innerHTML = `
+            <div style="min-width:0;">
+                <div class="project-name">${proj.name}</div>
+                <div class="project-date">Updated: ${new Date(proj.updated).toLocaleDateString()}</div>
+            </div>
+            <div class="project-item-actions">
+                <button class="project-action-btn" onclick="triggerDuplicateProject('${id}')" title="Duplicate">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+                <button class="project-action-btn" onclick="triggerDeleteProject('${id}')" title="Delete" style="color:var(--danger);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+            </div>
+        `;
+        projectListContainer.appendChild(item);
+    });
+}
+
+function loadActiveProjectWorkspace(id) {
+    state.activeId = id;
+    saveStateToStorage();
+    const activeProj = state.projects[id];
+    if (htmlModel) htmlModel.setValue(activeProj.html);
+    if (cssModel)  cssModel.setValue(activeProj.css);
+    if (jsModel)   jsModel.setValue(activeProj.js);
+    renderProjectsList();
+    renderSnapshotsList();
+    triggerLivePreviewBuild();
+    logMessageToDrawer("log", `Project loaded: ${activeProj.name}`);
+}
+
+const modalProjectName = document.getElementById("modalProjectName");
+const inputProjectName = document.getElementById("inputProjectName");
+let projectModalCallback = null;
+
+document.getElementById("btnCreateProject").addEventListener("click", () => {
+    document.getElementById("projectNameModalTitle").innerText = "New Project";
+    inputProjectName.value = "Untitled Project";
+    modalProjectName.classList.add("active");
+    projectModalCallback = (name) => {
+        const newId = "proj_" + Date.now();
+        state.projects[newId] = {
+            name: name || "New Project",
+            html: `<h1>Welcome to ${name}</h1>`,
+            css: `body { background: #000; color: #fff; font-family: sans-serif; display:flex; align-items:center; justify-content:center; min-height:100vh; text-align:center; }`,
+            js: `console.log("Ready!");`,
+            snapshots: [],
+            updated: Date.now()
         };
-        /* ==========================================
-           9. PROJECT IMPORT / EXPORT ENGINES
-           ========================================== */
-        const fileInputProject = document.getElementById("importFileProject");
-        document.getElementById("btnImportProject").addEventListener("click", () => {
-            fileInputProject.click();
+        loadActiveProjectWorkspace(newId);
+    };
+});
+document.getElementById("btnCancelProjectModal").addEventListener("click", () => modalProjectName.classList.remove("active"));
+document.getElementById("btnConfirmProjectModal").addEventListener("click", () => {
+    const name = inputProjectName.value.trim();
+    if (projectModalCallback) projectModalCallback(name);
+    modalProjectName.classList.remove("active");
+});
+inputProjectName.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("btnConfirmProjectModal").click(); });
+
+window.triggerDuplicateProject = function(id) {
+    const src = state.projects[id];
+    const dupId = "proj_" + Date.now();
+    state.projects[dupId] = { name: `${src.name} (Copy)`, html: src.html, css: src.css, js: src.js, snapshots: [], updated: Date.now() };
+    saveStateToStorage();
+    renderProjectsList();
+    logMessageToDrawer("log", "Project duplicated.");
+};
+window.triggerDeleteProject = function(id) {
+    if (Object.keys(state.projects).length <= 1) { alert("Cannot delete the last project!"); return; }
+    if (confirm("Delete this project? This cannot be undone.")) {
+        delete state.projects[id];
+        if (state.activeId === id) state.activeId = Object.keys(state.projects)[0];
+        loadActiveProjectWorkspace(state.activeId);
+    }
+};
+
+/* ==========================================
+   10. TEMPLATES RENDERING
+   ========================================== */
+function renderTemplates() {
+    const grid = document.getElementById("templateGrid");
+    grid.innerHTML = "";
+    TEMPLATES.forEach(tpl => {
+        const card = document.createElement("div");
+        card.className = "template-card";
+        card.innerHTML = `
+            <div class="template-card-name">${tpl.name}</div>
+            <div class="template-card-desc">${tpl.desc}</div>
+            <div class="template-card-tags">${tpl.tags.map(t => `<span class="template-tag">${t}</span>`).join('')}</div>
+        `;
+        card.addEventListener("click", () => applyTemplate(tpl));
+        grid.appendChild(card);
+    });
+}
+
+function applyTemplate(tpl) {
+    const name = tpl.name + " – " + new Date().toLocaleDateString();
+    const newId = "proj_" + Date.now();
+    state.projects[newId] = {
+        name,
+        html: tpl.html,
+        css: tpl.css,
+        js: tpl.js,
+        snapshots: [],
+        updated: Date.now()
+    };
+    loadActiveProjectWorkspace(newId);
+    // Switch to projects drawer
+    document.querySelector('.sidebar-btn[data-drawer="projects"]').click();
+    logMessageToDrawer("log", `Template applied: ${tpl.name}`);
+}
+
+/* ==========================================
+   11. CDN MANAGER
+   ========================================== */
+function renderCdnList() {
+    const list = document.getElementById("cdnList");
+    list.innerHTML = "";
+    if (!state.cdnLibraries.length) {
+        list.innerHTML = `<div style="font-size:0.75rem;color:var(--text-muted);text-align:center;padding:12px 0;">No libraries added yet.</div>`;
+        return;
+    }
+    state.cdnLibraries.forEach((lib, i) => {
+        const item = document.createElement("div");
+        item.className = "cdn-item";
+        item.innerHTML = `
+            <span class="cdn-item-type ${lib.type === 'stylesheet' ? 'stylesheet' : 'script'}">${lib.type === 'stylesheet' ? 'CSS' : 'JS'}</span>
+            <span class="cdn-item-url" title="${lib.url}">${lib.url}</span>
+            <button class="project-action-btn" onclick="removeCdn(${i})" title="Remove" style="color:var(--danger);flex-shrink:0;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        `;
+        list.appendChild(item);
+    });
+}
+
+function renderCdnPresets() {
+    const chips = document.getElementById("cdnPresetChips");
+    chips.innerHTML = "";
+    CDN_PRESETS.forEach(preset => {
+        const chip = document.createElement("button");
+        chip.className = "cdn-preset-chip";
+        const alreadyAdded = state.cdnLibraries.some(l => l.url === preset.url);
+        if (alreadyAdded) chip.classList.add("added");
+        chip.textContent = preset.name;
+        chip.title = preset.url;
+        chip.addEventListener("click", () => {
+            if (state.cdnLibraries.some(l => l.url === preset.url)) return;
+            state.cdnLibraries.push({ url: preset.url, type: preset.type });
+            saveStateToStorage();
+            renderCdnList();
+            renderCdnPresets();
+            logMessageToDrawer("log", `CDN added: ${preset.name}`);
         });
-        fileInputProject.addEventListener("change", (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const parsed = JSON.parse(evt.target.result);
-                    if (parsed && parsed.html !== undefined && parsed.css !== undefined) {
-                        const newId = "proj_" + Date.now();
-                        state.projects[newId] = {
-                            name: parsed.name || "Imported Project",
-                            html: parsed.html,
-                            css: parsed.css,
-                            js: parsed.js || "",
-                            snapshots: [],
-                            updated: Date.now()
-                        };
-                        loadActiveProjectWorkspace(newId);
-                        alert("Project imported successfully!");
-                    } else {
-                        alert("Invalid JSON format detected.");
-                    }
-                } catch(err) {
-                    alert("Failed to parse project configuration JSON.");
-                }
-            };
-            reader.readAsText(file);
-        });
-        // Export as self-contained HTML file
-        document.getElementById("btnExportHTML").addEventListener("click", () => {
-            const activeProj = state.projects[state.activeId];
-            const doc = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${activeProj.name}</title>
-    <style>
-        ${activeProj.css}
-    </style>
-</head>
-<body>
-    ${activeProj.html}
-    <script>
-        ${activeProj.js}
-    <\/script>
-</body>
-</html>`;
-            const blob = new Blob([doc], { type: "text/html" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `${activeProj.name.replace(/\s+/g, '_').toLowerCase()}_export.html`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
-        // Export as complete zip containing index.html, style.css, and script.js
-        document.getElementById("btnExportZIP").addEventListener("click", () => {
-            const activeProj = state.projects[state.activeId];
-            const zip = new JSZip();
-            // Link stylesheet and script source inside packaged html
-            const doc = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${activeProj.name}</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    ${activeProj.html}
-    <script src="script.js"><\/script>
-</body>
-</html>`;
-            zip.file("index.html", doc);
-            zip.file("style.css", activeProj.css);
-            zip.file("script.js", activeProj.js);
-            zip.generateAsync({ type: "blob" }).then((content) => {
-                const url = URL.createObjectURL(content);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `${activeProj.name.replace(/\s+/g, '_').toLowerCase()}_package.zip`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            });
-        });
-        /* ==========================================
-           10. LAYOUT & VIEWPORT DEVICES MODE SELECTORS
-           ========================================== */
-        const selectDeviceMode = document.getElementById("selectDeviceMode");
-        const previewViewportFrame = document.getElementById("previewViewportFrame");
-        selectDeviceMode.addEventListener("change", () => {
-            const mode = selectDeviceMode.value;
-            
-            // Remove previous device viewport styles
-            previewViewportFrame.className = "preview-viewport-frame";
-            previewViewportFrame.classList.add(`device-${mode}`);
-        });
-        document.getElementById("btnOrientationToggle").addEventListener("click", () => {
-            previewViewportFrame.classList.toggle("orientation-landscape");
-        });
-        // Presentation Mode (Hides editor completely)
-        document.getElementById("btnPresentationToggle").addEventListener("click", () => {
-            document.body.classList.toggle("presentation-mode");
-            if (window.editor) window.editor.layout();
-        });
-        // Fullscreen preview toggling
-        document.getElementById("btnFullscreenPreview").addEventListener("click", () => {
-            const iframeWrap = document.getElementById("pane-preview");
-            if (!document.fullscreenElement) {
-                iframeWrap.requestFullscreen().catch(err => {
-                    alert(`Error enabling fullscreen mode: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        });
-        /* ==========================================
-           11. COMPRESSION / FORMAT AND UTILITIES
-           ========================================== */
-        // Format Document using Monaco's native formatter
-        document.getElementById("btnFormatCode").addEventListener("click", () => {
-            if (window.editor) {
-                window.editor.getAction('editor.action.formatDocument').run();
-                logMessageToDrawer("log", "Document Formatted.");
-            }
-        });
-        // Compress Document logic
-        document.getElementById("btnMinifyCode").addEventListener("click", () => {
-            if (!window.editor) return;
-            const code = window.editor.getValue();
-            
-            // Simple compression (Removes comments and consolidates spaces)
-            let minified = code
-                .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '$1') // remove comments
-                .replace(/\s+/g, ' ') // collapse spacing
-                .trim();
-            window.editor.setValue(minified);
-            logMessageToDrawer("log", "Document Minified. Spaces collapsed.");
-        });
-        // Theme controllers
-        const btnThemeToggle = document.getElementById("btnThemeToggle");
-        btnThemeToggle.addEventListener("click", () => {
-            const isDark = document.body.getAttribute("data-theme") !== "light";
-            const newTheme = isDark ? "light" : "dark";
-            
-            document.body.setAttribute("data-theme", newTheme);
-            if (window.editor) {
-                monaco.editor.setTheme(newTheme === "dark" ? 'vs-dark' : 'vs');
-            }
-        });
-        // Keyboard Shortcuts Modal Toggle
-        const modalShortcuts = document.getElementById("modalShortcuts");
-        document.getElementById("btnShortcutModalTrigger").addEventListener("click", () => {
-            modalShortcuts.classList.add("active");
-        });
-        document.getElementById("btnCloseShortcutsModal").addEventListener("click", () => {
-            modalShortcuts.classList.remove("active");
-        });
-        /* ==========================================
-           12. INITIALIZATION LOOPS
-           ========================================== */
-        window.addEventListener("DOMContentLoaded", () => {
-            loadStateFromStorage();
-            renderProjectsList();
-            renderSnapshotsList();
-            startMonacoEditor();
-        });
-    </script>
+        chips.appendChild(chip);
+    });
+}
+
+window.removeCdn = function(index) {
+    state.cdnLibraries.splice(index, 1);
+    saveStateToStorage();
+    renderCdnList();
+    renderCdnPresets();
+};
+
+document.getElementById("btnAddCdn").addEventListener("click", () => {
+    const input = document.getElementById("cdnUrlInput");
+    const url = input.value.trim();
+    if (!url) return;
+    if (!url.startsWith("http")) { alert("Please enter a valid CDN URL starting with http(s)."); return; }
+    if (state.cdnLibraries.some(l => l.url === url)) { alert("This URL is already added."); return; }
+    const type = url.endsWith(".css") ? "stylesheet" : "script";
+    state.cdnLibraries.push({ url, type });
+    saveStateToStorage();
+    renderCdnList();
+    renderCdnPresets();
+    input.value = "";
+    logMessageToDrawer("log", `CDN added: ${url}`);
+});
+document.getElementById("cdnUrlInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") document.getElementById("btnAddCdn").click();
+});
+
+/* ==========================================
+   12. SNAPSHOTS
+   ========================================== */
+const snapshotListContainer = document.getElementById("snapshotListContainer");
+function renderSnapshotsList() {
+    snapshotListContainer.innerHTML = "";
+    const activeProj = state.projects[state.activeId];
+    if (!activeProj.snapshots || !activeProj.snapshots.length) {
+        snapshotListContainer.innerHTML = `<div style="font-size:0.75rem;color:var(--text-muted);text-align:center;padding:20px 0;">No snapshots yet. Click '+' to create one.</div>`;
+        return;
+    }
+    activeProj.snapshots.slice().reverse().forEach((snap, index) => {
+        const realIdx = activeProj.snapshots.length - 1 - index;
+        const item = document.createElement("div");
+        item.className = "snapshot-item";
+        item.innerHTML = `
+            <div>
+                <strong>Version ${activeProj.snapshots.length - index}</strong>
+                <div style="font-size:0.65rem;color:var(--text-muted);">${new Date(snap.timestamp).toLocaleTimeString()}</div>
+            </div>
+            <button class="project-action-btn" onclick="restoreSnapshotState(${realIdx})" style="color:var(--primary);font-weight:600;">Restore</button>
+        `;
+        snapshotListContainer.appendChild(item);
+    });
+}
+function createSnapshotFromState() {
+    const activeProj = state.projects[state.activeId];
+    if (!activeProj.snapshots) activeProj.snapshots = [];
+    activeProj.snapshots.push({ timestamp: Date.now(), html: htmlModel.getValue(), css: cssModel.getValue(), js: jsModel.getValue() });
+    saveStateToStorage();
+    renderSnapshotsList();
+    logMessageToDrawer("log", "Snapshot saved.");
+}
+document.getElementById("btnCreateSnapshot").addEventListener("click", createSnapshotFromState);
+window.restoreSnapshotState = function(index) {
+    const activeProj = state.projects[state.activeId];
+    const snap = activeProj.snapshots[index];
+    if (!snap) return;
+    if (confirm("Restore to this snapshot? Unsaved work may be lost.")) {
+        htmlModel.setValue(snap.html);
+        cssModel.setValue(snap.css);
+        jsModel.setValue(snap.js);
+        triggerLivePreviewBuild();
+        logMessageToDrawer("log", `Restored to snapshot: ${new Date(snap.timestamp).toLocaleTimeString()}`);
+    }
+};
+
+/* ==========================================
+   13. EXPORT / IMPORT
+   ========================================== */
+const fileInputProject = document.getElementById("importFileProject");
+document.getElementById("btnImportProject").addEventListener("click", () => fileInputProject.click());
+fileInputProject.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+        try {
+            const parsed = JSON.parse(evt.target.result);
+            if (parsed && parsed.html !== undefined && parsed.css !== undefined) {
+                const newId = "proj_" + Date.now();
+                state.projects[newId] = { name: parsed.name || "Imported Project", html: parsed.html, css: parsed.css, js: parsed.js || "", snapshots: [], updated: Date.now() };
+                loadActiveProjectWorkspace(newId);
+                alert("Project imported!");
+            } else { alert("Invalid JSON format."); }
+        } catch(e) { alert("Failed to parse JSON."); }
+    };
+    reader.readAsText(file);
+});
+document.getElementById("btnExportHTML").addEventListener("click", () => {
+    const activeProj = state.projects[state.activeId];
+    const cdnTags = buildCdnTags();
+    const doc = `<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>${activeProj.name}</title>\n    ${cdnTags}\n    <style>\n${activeProj.css}\n    </style>\n</head>\n<body>\n${activeProj.html}\n    <script>\n${activeProj.js}\n    <\/script>\n</body>\n</html>`;
+    const blob = new Blob([doc], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `${activeProj.name.replace(/\s+/g,'_').toLowerCase()}_export.html`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+});
+document.getElementById("btnExportZIP").addEventListener("click", () => {
+    const activeProj = state.projects[state.activeId];
+    const cdnTags = buildCdnTags();
+    const zip = new JSZip();
+    const doc = `<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>${activeProj.name}</title>\n    ${cdnTags}\n    <link rel="stylesheet" href="style.css">\n</head>\n<body>\n${activeProj.html}\n    <script src="script.js"><\/script>\n</body>\n</html>`;
+    zip.file("index.html", doc);
+    zip.file("style.css", activeProj.css);
+    zip.file("script.js", activeProj.js);
+    zip.generateAsync({ type: "blob" }).then(content => {
+        const url = URL.createObjectURL(content);
+        const a = document.createElement("a");
+        a.href = url; a.download = `${activeProj.name.replace(/\s+/g,'_').toLowerCase()}_package.zip`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    });
+});
+
+/* ==========================================
+   14. DEVICE / VIEWPORT CONTROLS
+   ========================================== */
+const previewViewportFrame = document.getElementById("previewViewportFrame");
+document.getElementById("selectDeviceMode").addEventListener("change", (e) => {
+    previewViewportFrame.className = `preview-viewport-frame device-${e.target.value}`;
+});
+document.getElementById("btnOrientationToggle").addEventListener("click", () => {
+    previewViewportFrame.classList.toggle("orientation-landscape");
+});
+document.getElementById("btnPresentationToggle").addEventListener("click", () => {
+    document.body.classList.toggle("presentation-mode");
+    if (window.editor) window.editor.layout();
+});
+document.getElementById("btnFullscreenPreview").addEventListener("click", () => {
+    const wrap = document.getElementById("pane-preview");
+    if (!document.fullscreenElement) wrap.requestFullscreen().catch(err => alert(`Fullscreen error: ${err.message}`));
+    else document.exitFullscreen();
+});
+
+/* ==========================================
+   15. FORMAT / MINIFY / THEME
+   ========================================== */
+document.getElementById("btnFormatCode").addEventListener("click", () => {
+    if (window.editor) { window.editor.getAction('editor.action.formatDocument').run(); logMessageToDrawer("log", "Document formatted."); }
+});
+document.getElementById("btnMinifyCode").addEventListener("click", () => {
+    if (!window.editor) return;
+    let minified = window.editor.getValue()
+        .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '$1')
+        .replace(/\s+/g, ' ').trim();
+    window.editor.setValue(minified);
+    logMessageToDrawer("log", "Document minified.");
+});
+document.getElementById("btnThemeToggle").addEventListener("click", () => {
+    const isDark = document.body.getAttribute("data-theme") !== "light";
+    document.body.setAttribute("data-theme", isDark ? "light" : "dark");
+    if (window.editor) monaco.editor.setTheme(isDark ? 'vs' : 'vs-dark');
+});
+document.getElementById("btnShortcutModalTrigger").addEventListener("click", () => document.getElementById("modalShortcuts").classList.add("active"));
+document.getElementById("btnCloseShortcutsModal").addEventListener("click", () => document.getElementById("modalShortcuts").classList.remove("active"));
+
+/* ==========================================
+   16. COMMAND PALETTE
+   ========================================== */
+const COMMAND_PALETTE_COMMANDS = [
+    {
+        id: 'run', label: 'Run Code', desc: 'Execute code in preview sandbox', kbd: 'Ctrl+Enter',
+        icon: '<polygon points="5 3 19 12 5 21 5 3"></polygon>',
+        action: () => { triggerLivePreviewBuild(); logMessageToDrawer("log", "Executed via Command Palette."); }
+    },
+    {
+        id: 'format', label: 'Format Document', desc: 'Beautify the current file', kbd: 'Shift+Alt+F',
+        icon: '<line x1="21" y1="10" x2="7" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="7" y2="18"></line>',
+        action: () => { if (window.editor) window.editor.getAction('editor.action.formatDocument').run(); logMessageToDrawer("log", "Formatted via Command Palette."); }
+    },
+    {
+        id: 'minify', label: 'Minify Code', desc: 'Compress current file content', kbd: '',
+        icon: '<polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line>',
+        action: () => document.getElementById("btnMinifyCode").click()
+    },
+    {
+        id: 'snapshot', label: 'Save Snapshot', desc: 'Create a version snapshot', kbd: 'Ctrl+S',
+        icon: '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>',
+        action: () => createSnapshotFromState()
+    },
+    {
+        id: 'theme', label: 'Toggle Theme', desc: 'Switch between dark and light mode', kbd: '',
+        icon: '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>',
+        action: () => document.getElementById("btnThemeToggle").click()
+    },
+    {
+        id: 'export-zip', label: 'Export ZIP', desc: 'Download project as ZIP archive', kbd: '',
+        icon: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>',
+        action: () => document.getElementById("btnExportZIP").click()
+    },
+    {
+        id: 'export-html', label: 'Export HTML', desc: 'Download as single HTML file', kbd: '',
+        icon: '<polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline>',
+        action: () => document.getElementById("btnExportHTML").click()
+    },
+    {
+        id: 'tab-html', label: 'Switch to HTML', desc: 'Open index.html tab', kbd: 'Ctrl+1',
+        icon: '<polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline>',
+        action: () => switchTab('html')
+    },
+    {
+        id: 'tab-css', label: 'Switch to CSS', desc: 'Open style.css tab', kbd: 'Ctrl+2',
+        icon: '<circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line>',
+        action: () => switchTab('css')
+    },
+    {
+        id: 'tab-js', label: 'Switch to JavaScript', desc: 'Open script.js tab', kbd: 'Ctrl+3',
+        icon: '<polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line>',
+        action: () => switchTab('js')
+    },
+    {
+        id: 'new-project', label: 'New Project', desc: 'Create a blank project', kbd: '',
+        icon: '<line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>',
+        action: () => document.getElementById("btnCreateProject").click()
+    },
+    {
+        id: 'cdn-manager', label: 'Open CDN Manager', desc: 'Manage external library imports', kbd: '',
+        icon: '<circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>',
+        action: () => document.querySelector('.sidebar-btn[data-drawer="cdn"]').click()
+    },
+    {
+        id: 'presentation', label: 'Toggle Presentation Mode', desc: 'Hide editor, show only preview', kbd: '',
+        icon: '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>',
+        action: () => document.getElementById("btnPresentationToggle").click()
+    },
+    ...TEMPLATES.map(tpl => ({
+        id: `tpl-${tpl.id}`,
+        label: `Template: ${tpl.name}`,
+        desc: tpl.desc,
+        kbd: '',
+        icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline>',
+        action: () => applyTemplate(tpl)
+    }))
+];
+
+const commandPalette = document.getElementById("commandPalette");
+const commandPaletteInput = document.getElementById("commandPaletteInput");
+const commandPaletteResults = document.getElementById("commandPaletteResults");
+let cpSelectedIndex = 0;
+let cpFilteredCommands = [];
+
+function openCommandPalette() {
+    commandPalette.classList.add("active");
+    commandPaletteInput.value = "";
+    filterCommands("");
+    setTimeout(() => commandPaletteInput.focus(), 50);
+}
+function closeCommandPalette() {
+    commandPalette.classList.remove("active");
+    commandPaletteInput.blur();
+}
+function filterCommands(query) {
+    const q = query.toLowerCase().trim();
+    if (!q) {
+        cpFilteredCommands = COMMAND_PALETTE_COMMANDS.slice(0, 10);
+    } else {
+        cpFilteredCommands = COMMAND_PALETTE_COMMANDS.filter(c =>
+            c.label.toLowerCase().includes(q) || c.desc.toLowerCase().includes(q)
+        );
+    }
+    cpSelectedIndex = 0;
+    renderCommandResults();
+}
+function renderCommandResults() {
+    commandPaletteResults.innerHTML = "";
+    if (!cpFilteredCommands.length) {
+        commandPaletteResults.innerHTML = `<div class="command-palette-empty">No commands found.</div>`;
+        return;
+    }
+    cpFilteredCommands.forEach((cmd, i) => {
+        const item = document.createElement("div");
+        item.className = `command-palette-item${i === cpSelectedIndex ? ' selected' : ''}`;
+        item.innerHTML = `
+            <div class="command-palette-item-icon">
+                <svg viewBox="0 0 24 24">${cmd.icon}</svg>
+            </div>
+            <div>
+                <div class="command-palette-item-label">${cmd.label}</div>
+                <div class="command-palette-item-desc">${cmd.desc}</div>
+            </div>
+            ${cmd.kbd ? `<span class="command-palette-item-kbd">${cmd.kbd}</span>` : ''}
+        `;
+        item.addEventListener("click", () => executeCommand(cmd));
+        item.addEventListener("mouseenter", () => { cpSelectedIndex = i; renderCommandResults(); });
+        commandPaletteResults.appendChild(item);
+    });
+    // Scroll selected into view
+    const selected = commandPaletteResults.querySelector('.selected');
+    if (selected) selected.scrollIntoView({ block: 'nearest' });
+}
+function executeCommand(cmd) {
+    closeCommandPalette();
+    setTimeout(() => cmd.action(), 100);
+}
+
+commandPaletteInput.addEventListener("input", (e) => filterCommands(e.target.value));
+commandPaletteInput.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") {
+        e.preventDefault();
+        cpSelectedIndex = Math.min(cpSelectedIndex + 1, cpFilteredCommands.length - 1);
+        renderCommandResults();
+    } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        cpSelectedIndex = Math.max(cpSelectedIndex - 1, 0);
+        renderCommandResults();
+    } else if (e.key === "Enter") {
+        if (cpFilteredCommands[cpSelectedIndex]) executeCommand(cpFilteredCommands[cpSelectedIndex]);
+    } else if (e.key === "Escape") {
+        closeCommandPalette();
+    }
+});
+commandPalette.addEventListener("click", (e) => { if (e.target === commandPalette) closeCommandPalette(); });
+document.getElementById("btnCommandPalette").addEventListener("click", openCommandPalette);
+
+// Global keyboard shortcut for Command Palette
+document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        if (commandPalette.classList.contains("active")) closeCommandPalette();
+        else openCommandPalette();
+    }
+    // Close modals on Escape
+    if (e.key === "Escape") {
+        document.getElementById("modalProjectName").classList.remove("active");
+        document.getElementById("modalShortcuts").classList.remove("active");
+        closeCommandPalette();
+    }
+});
+
+/* ==========================================
+   17. INITIALIZATION
+   ========================================== */
+window.addEventListener("DOMContentLoaded", () => {
+    loadStateFromStorage();
+    renderProjectsList();
+    renderSnapshotsList();
+    renderTemplates();
+    renderCdnList();
+    renderCdnPresets();
+    startMonacoEditor();
+});
+</script>
 </body>
 </html>
