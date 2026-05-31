@@ -1,1465 +1,1566 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-            /* Dimensions */
-            --sidebar-width: 60px;
-            --control-panel-width: 250px;
-            --control-panel-width: 260px;
-            --header-height: 48px;
-            --tabs-height: 36px;
-            --transition-speed: 0.25s;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            flex-shrink: 0;
-        }
-        .drawer-title {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 130px;
-            max-width: 120px;
-        }
-        .project-date {
-        #pane-preview {
-            background: var(--bg-app);
-            flex-grow: 1;
-            width: 50%;
-        }
-        #pane-editor {
-            background: var(--bg-panel);
-            width: 50%;
-            flex-grow: 1;
-        }
-        /* Split Panel Resizer Divider */
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            flex-shrink: 0;
-        }
-        /* Editor Tabs block */
-        .editor-tabs-bar {
-            display: flex;
-            height: var(--tabs-height);
-            background: var(--bg-sidebar);
-            border-bottom: 1px solid var(--border-color);
-            flex-shrink: 0;
-        }
-        .editor-tab {
-            stroke-width: 2;
-        }
-        .btn-action.success-glow {
-            border-color: var(--success);
-            color: var(--success);
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
-        }
-        /* ==========================================
-           4. INTEGRATED CONSOLE DRAWER
-           ========================================== */
-        .console-drawer-panel {
-            height: 180px;
-            background: var(--bg-sidebar);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            z-index: 6;
-            transition: height var(--transition-speed) ease;
-            flex-shrink: 0;
-        }
-        .console-drawer-panel.collapsed {
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .console-title {
-        .editor-fullscreen #pane-editor {
-            width: 100% !important;
-        }
-        /* ==========================================
-           6. CDN MANAGER PANEL STYLES
-           ========================================== */
-        .cdn-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .cdn-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            padding: 8px 10px;
-            border-radius: 8px;
-            gap: 8px;
-        }
-        .cdn-item-url {
-            font-size: 0.72rem;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            flex-grow: 1;
-            font-family: 'Fira Code', monospace;
-        }
-        .cdn-item-type {
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-            flex-shrink: 0;
-        }
-        .cdn-item-type.script {
-            background: rgba(247, 223, 30, 0.1);
-            color: #f7df1e;
-        }
-        .cdn-item-type.stylesheet {
-            background: rgba(38, 77, 228, 0.15);
-            color: #7c9fff;
-        }
-        .cdn-add-row {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        .cdn-add-input {
-            flex-grow: 1;
-            padding: 8px 10px;
-            font-size: 0.78rem;
-            font-family: 'Fira Code', monospace;
-        }
-        .cdn-presets {
-            margin-top: 12px;
-        }
-        .cdn-presets-title {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-        .cdn-preset-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .cdn-preset-chip {
-            font-size: 0.72rem;
-            padding: 4px 10px;
-            border-radius: 20px;
-            background: var(--bg-active);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .cdn-preset-chip:hover {
-            border-color: var(--primary);
-            color: var(--text-primary);
-        }
-        .cdn-preset-chip.added {
-            border-color: var(--success);
-            color: var(--success);
-            background: rgba(16, 185, 129, 0.05);
-        }
-        /* ==========================================
-           7. TEMPLATES SECTION STYLES
-           ========================================== */
-        .template-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .template-card {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .template-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 3px;
-            height: 100%;
-            background: var(--gradient-accent);
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-        .template-card:hover {
-            border-color: var(--primary);
-        }
-        .template-card:hover::before {
-            opacity: 1;
-        }
-        .template-card-name {
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: var(--text-primary);
-        }
-        .template-card-desc {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
-        .template-card-tags {
-            display: flex;
-            gap: 4px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-        .template-tag {
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: var(--bg-active);
-            color: var(--text-muted);
-        }
-        /* ==========================================
-           8. COMMAND PALETTE STYLES
-           ========================================== */
-        .command-palette-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(7, 8, 13, 0.75);
-            backdrop-filter: blur(12px);
-            z-index: 900;
-            display: none;
-            align-items: flex-start;
-            justify-content: center;
-            padding-top: 15vh;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-        .command-palette-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-        .command-palette-box {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            width: 90%;
-            max-width: 580px;
-            box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(99,102,241,0.15);
-            overflow: hidden;
-            transform: translateY(-12px) scale(0.97);
-            transition: transform 0.2s cubic-bezier(0.34, 1.4, 0.64, 1);
-        }
-        .command-palette-overlay.active .command-palette-box {
-            transform: translateY(0) scale(1);
-        }
-        .command-palette-search-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 18px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .command-palette-search-row svg {
-            width: 18px;
-            height: 18px;
-            stroke: var(--text-muted);
-            fill: none;
-            stroke-width: 2;
-            flex-shrink: 0;
-        }
-        .command-palette-input {
-            flex-grow: 1;
-            background: transparent;
-            border: none;
-            border-radius: 0;
-            font-size: 1rem;
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-        }
-        .command-palette-input::placeholder {
-            color: var(--text-muted);
-        }
-        .command-palette-input:focus {
-            border: none;
-            box-shadow: none;
-        }
-        .command-palette-results {
-            max-height: 340px;
-            overflow-y: auto;
-            padding: 8px;
-        }
-        .command-palette-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.15s ease;
-        }
-        .command-palette-item:hover, .command-palette-item.selected {
-            background: var(--bg-active);
-        }
-        .command-palette-item-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: var(--bg-app);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .command-palette-item-icon svg {
-            width: 16px;
-            height: 16px;
-            stroke: var(--primary);
-            fill: none;
-            stroke-width: 2;
-        }
-        .command-palette-item-label {
-            font-size: 0.88rem;
-            font-weight: 600;
-        }
-        .command-palette-item-desc {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 1px;
-        }
-        .command-palette-item-kbd {
-            margin-left: auto;
-            flex-shrink: 0;
-            font-size: 0.7rem;
-            padding: 3px 7px;
-            border-radius: 4px;
-            background: var(--bg-app);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            font-family: 'Fira Code', monospace;
-        }
-        .command-palette-section-label {
-            font-size: 0.68rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: var(--text-muted);
-            padding: 8px 12px 4px;
-            margin-top: 4px;
-        }
-        .command-palette-footer {
-            border-top: 1px solid var(--border-color);
-            padding: 8px 18px;
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-        .command-palette-hint {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .command-palette-hint kbd {
-            padding: 2px 5px;
-            border-radius: 3px;
-            background: var(--bg-app);
-            border: 1px solid var(--border-color);
-            font-size: 0.68rem;
-            font-family: 'Fira Code', monospace;
-        }
-        .command-palette-empty {
-            text-align: center;
-            padding: 32px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeForge Studio v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+<style>
+:root {
+  --bg: #0a0b0f;
+  --bg2: #0f1117;
+  --bg3: #161821;
+  --bg4: #1e2130;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --accent: #5b6af0;
+  --accent2: #a78bfa;
+  --accent-glow: rgba(91,106,240,0.3);
+  --green: #34d399;
+  --red: #f87171;
+  --yellow: #fbbf24;
+  --txt: #eef0f8;
+  --txt2: #8892a4;
+  --txt3: #4a5568;
+  --sidebar-w: 52px;
+  --drawer-w: 240px;
+  --header-h: 44px;
+  --tab-h: 34px;
+  --radius: 8px;
+  --trans: 0.18s ease;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--txt);height:100vh;overflow:hidden;display:flex;}
+button{cursor:pointer;border:none;background:none;color:inherit;font-family:inherit;}
+input,select,textarea{font-family:inherit;outline:none;color:var(--txt);}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar-w);
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;
+  padding:12px 0;gap:4px;z-index:20;flex-shrink:0;
+}
+.logo{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:8px;box-shadow:0 0 20px var(--accent-glow);
+  flex-shrink:0;
+}
+.logo svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;}
+.sb-btn{
+  width:38px;height:38px;border-radius:var(--radius);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--txt3);transition:all var(--trans);position:relative;
+}
+.sb-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;}
+.sb-btn:hover{color:var(--txt);background:var(--bg4);}
+.sb-btn.on{color:var(--accent);background:var(--bg4);}
+.sb-btn[data-tip]::after{
+  content:attr(data-tip);position:absolute;left:calc(var(--sidebar-w) + 4px);
+  background:#1e2130;color:var(--txt);padding:4px 8px;border-radius:5px;
+  font-size:0.72rem;white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity 0.15s;z-index:100;border:1px solid var(--border2);
+}
+.sb-btn:hover[data-tip]::after{opacity:1;}
+.sb-sep{width:30px;height:1px;background:var(--border);margin:4px 0;}
+
+/* ── DRAWER ── */
+.drawer{
+  width:var(--drawer-w);background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:width var(--trans);flex-shrink:0;
+}
+.drawer.closed{width:0;border:none;}
+.dh{
+  height:var(--header-h);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;flex-shrink:0;
+}
+.dh-title{font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--txt2);}
+.dc{flex:1;padding:12px;overflow-y:auto;}
+.d-section{display:none;flex-direction:column;height:100%;}
+.d-section.active{display:flex;}
+
+/* Project list */
+.proj-list{display:flex;flex-direction:column;gap:6px;}
+.proj-item{
+  padding:8px 10px;border-radius:var(--radius);
+  border:1px solid var(--border);background:var(--bg3);
+  cursor:pointer;transition:all var(--trans);
+}
+.proj-item:hover,.proj-item.on{border-color:var(--accent);}
+.proj-item.on{background:var(--bg4);}
+.proj-name{font-size:0.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.proj-date{font-size:0.68rem;color:var(--txt3);margin-top:2px;}
+.proj-actions{display:flex;gap:4px;margin-top:6px;}
+.proj-btn{font-size:0.68rem;padding:2px 7px;border-radius:4px;border:1px solid var(--border2);color:var(--txt2);transition:all var(--trans);}
+.proj-btn:hover{color:var(--txt);border-color:var(--txt2);}
+.proj-btn.del:hover{color:var(--red);border-color:var(--red);}
+
+/* Templates */
+.tpl-card{
+  padding:10px;border-radius:var(--radius);border:1px solid var(--border);
+  background:var(--bg3);cursor:pointer;transition:all var(--trans);margin-bottom:6px;
+}
+.tpl-card:hover{border-color:var(--accent);}
+.tpl-name{font-size:0.82rem;font-weight:700;margin-bottom:2px;}
+.tpl-desc{font-size:0.7rem;color:var(--txt2);line-height:1.4;}
+.tpl-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;}
+.tpl-tag{font-size:0.62rem;padding:1px 5px;border-radius:3px;background:var(--bg4);color:var(--txt3);}
+
+/* CDN */
+.cdn-item-row{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);margin-bottom:5px;}
+.cdn-badge{font-size:0.6rem;font-weight:700;padding:1px 5px;border-radius:3px;flex-shrink:0;}
+.cdn-badge.js{background:rgba(251,191,36,0.15);color:#fbbf24;}
+.cdn-badge.css{background:rgba(96,165,250,0.15);color:#60a5fa;}
+.cdn-url{font-size:0.68rem;color:var(--txt2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-family:'JetBrains Mono',monospace;}
+.cdn-rm{color:var(--txt3);transition:color var(--trans);}
+.cdn-rm:hover{color:var(--red);}
+.cdn-add-row{display:flex;gap:6px;margin:8px 0;}
+.cdn-input{flex:1;padding:6px 8px;font-size:0.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;}
+.cdn-input:focus{border-color:var(--accent);}
+.small-btn{padding:5px 10px;font-size:0.73rem;font-weight:600;border-radius:6px;border:1px solid var(--border2);color:var(--txt2);transition:all var(--trans);}
+.small-btn:hover{color:var(--txt);border-color:var(--accent);}
+.preset-wrap{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+.preset-chip{font-size:0.68rem;padding:3px 8px;border-radius:12px;border:1px solid var(--border);color:var(--txt2);transition:all var(--trans);}
+.preset-chip:hover{border-color:var(--accent);color:var(--txt);}
+.preset-chip.added{border-color:var(--green);color:var(--green);}
+
+/* Snapshot */
+.snap-item{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);margin-bottom:5px;}
+.snap-meta{font-size:0.72rem;font-weight:600;}
+.snap-time{font-size:0.65rem;color:var(--txt3);margin-top:1px;}
+.snap-restore{font-size:0.7rem;color:var(--accent);font-weight:600;}
+
+/* ── WORKSPACE ── */
+.workspace{display:flex;flex:1;overflow:hidden;position:relative;}
+
+/* ── EDITOR PANE ── */
+.editor-pane{
+  display:flex;flex-direction:column;
+  background:var(--bg2);overflow:hidden;
+  width:50%;min-width:200px;
+}
+.pane-header{
+  height:var(--header-h);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 12px;flex-shrink:0;gap:8px;
+}
+.tab-bar{
+  display:flex;height:var(--tab-h);
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.tab{
+  padding:0 16px;height:100%;display:flex;align-items:center;gap:6px;
+  font-size:0.75rem;font-weight:600;color:var(--txt3);
+  border-right:1px solid var(--border);cursor:pointer;transition:all var(--trans);
+  position:relative;
+}
+.tab:hover{color:var(--txt2);}
+.tab.on{color:var(--txt);background:var(--bg3);}
+.tab.on::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent);}
+.tab-dot{width:8px;height:8px;border-radius:50%;}
+.td-html{background:#e34c26;}
+.td-css{background:#264de4;}
+.td-js{background:#f7df1e;}
+.editor-wrap{flex:1;overflow:hidden;position:relative;}
+
+/* ── CONSOLE ── */
+.console-panel{
+  height:140px;border-top:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;
+  transition:height var(--trans);
+}
+.console-panel.closed{height:30px;}
+.console-hdr{
+  height:30px;background:var(--bg);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 12px;cursor:pointer;flex-shrink:0;
+}
+.console-title{font-size:0.7rem;font-weight:700;color:var(--txt2);display:flex;align-items:center;gap:6px;}
+.console-body{flex:1;overflow-y:auto;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;}
+.log-line{padding:2px 6px;border-radius:3px;margin-bottom:3px;line-height:1.5;border-left:2px solid transparent;word-break:break-all;}
+.log-line.log{border-left-color:var(--txt3);}
+.log-line.warn{color:#fef08a;border-left-color:var(--yellow);}
+.log-line.error{color:#fca5a5;border-left-color:var(--red);}
+
+/* ── RESIZER ── */
+.resizer{
+  width:5px;background:var(--bg);border-left:1px solid var(--border);border-right:1px solid var(--border);
+  cursor:col-resize;flex-shrink:0;transition:background var(--trans);
+}
+.resizer:hover,.resizer.drag{background:var(--accent);}
+
+/* ── PREVIEW PANE ── */
+.preview-pane{display:flex;flex-direction:column;flex:1;background:var(--bg);overflow:hidden;}
+.preview-header{
+  height:var(--header-h);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 12px;flex-shrink:0;gap:8px;
+}
+.preview-wrap{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:16px;overflow:auto;background:var(--bg);
+}
+.preview-frame{
+  background:#fff;border-radius:10px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  overflow:hidden;width:100%;height:100%;
+  transition:width 0.3s,height 0.3s;
+  position:relative;
+}
+.preview-frame.mob{width:375px;height:667px;}
+.preview-frame.tab{width:768px;height:1024px;}
+.preview-frame.lap{width:1024px;height:768px;}
+.sandbox{width:100%;height:100%;border:none;}
+
+/* Design mode overlay border */
+.preview-frame.design-on{outline:3px solid var(--accent);}
+
+/* ── BUTTONS ── */
+.btn{
+  height:28px;padding:0 10px;border-radius:6px;font-size:0.75rem;font-weight:600;
+  display:flex;align-items:center;gap:5px;transition:all var(--trans);
+  border:1px solid var(--border2);color:var(--txt2);
+}
+.btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
+.btn:hover{color:var(--txt);border-color:var(--txt2);}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 4px 14px var(--accent-glow);}
+.btn.primary:hover{background:#4a58dc;}
+.btn.active-state{background:var(--bg4);color:var(--accent);border-color:var(--accent);}
+
+/* ── PROPS PANEL ── */
+.props-panel{
+  width:220px;background:var(--bg2);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;
+  transition:width var(--trans);
+}
+.props-panel.closed{width:0;border:none;}
+.props-hdr{height:var(--header-h);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;flex-shrink:0;}
+.props-title{font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--txt2);}
+.props-body{flex:1;padding:12px;overflow-y:auto;}
+.prop-group{margin-bottom:16px;}
+.prop-label{font-size:0.65rem;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;}
+.prop-name{font-size:0.72rem;color:var(--txt2);}
+.prop-input{
+  font-size:0.72rem;padding:3px 6px;border-radius:4px;border:1px solid var(--border);
+  background:var(--bg3);width:110px;font-family:'JetBrains Mono',monospace;
+}
+.prop-input:focus{border-color:var(--accent);}
+.prop-color{width:30px;height:24px;padding:0;border-radius:4px;border:1px solid var(--border);cursor:pointer;}
+.no-selection{text-align:center;padding:24px 12px;color:var(--txt3);font-size:0.78rem;line-height:1.5;}
+.tag-chip{
+  display:inline-block;font-size:0.7rem;padding:2px 8px;border-radius:12px;
+  background:var(--bg4);border:1px solid var(--border2);color:var(--txt2);
+  margin-bottom:8px;font-family:'JetBrains Mono',monospace;
+}
+.add-child-btn{
+  width:100%;padding:5px;font-size:0.72rem;border-radius:5px;border:1px dashed var(--border2);
+  color:var(--txt3);transition:all var(--trans);margin-top:4px;
+}
+.add-child-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── COMMAND PALETTE ── */
+.cp-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);
+  z-index:900;display:none;align-items:flex-start;justify-content:center;padding-top:14vh;
+  opacity:0;transition:opacity 0.2s;
+}
+.cp-overlay.open{display:flex;opacity:1;}
+.cp-box{
+  background:var(--bg3);border:1px solid var(--border2);border-radius:12px;
+  width:90%;max-width:560px;overflow:hidden;
+  box-shadow:0 24px 80px rgba(0,0,0,0.7);
+  transform:translateY(-10px);transition:transform 0.2s;
+}
+.cp-overlay.open .cp-box{transform:none;}
+.cp-search{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);}
+.cp-search svg{width:16px;height:16px;stroke:var(--txt3);fill:none;stroke-width:2;flex-shrink:0;}
+.cp-input{flex:1;background:none;border:none;font-size:0.9rem;color:var(--txt);}
+.cp-input::placeholder{color:var(--txt3);}
+.cp-results{max-height:320px;overflow-y:auto;padding:6px;}
+.cp-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;cursor:pointer;transition:background 0.1s;}
+.cp-item:hover,.cp-item.sel{background:var(--bg4);}
+.cp-icon{width:28px;height:28px;border-radius:6px;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cp-icon svg{width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2;}
+.cp-text .cp-label{font-size:0.82rem;font-weight:600;}
+.cp-text .cp-desc{font-size:0.68rem;color:var(--txt3);margin-top:1px;}
+.cp-kbd{margin-left:auto;font-size:0.65rem;padding:2px 6px;border-radius:4px;background:var(--bg);border:1px solid var(--border2);color:var(--txt3);font-family:'JetBrains Mono',monospace;white-space:nowrap;}
+.cp-footer{border-top:1px solid var(--border);padding:6px 16px;display:flex;gap:12px;}
+.cp-hint{font-size:0.65rem;color:var(--txt3);display:flex;align-items:center;gap:4px;}
+.cp-hint kbd{padding:1px 4px;border-radius:3px;background:var(--bg);border:1px solid var(--border2);}
+
+/* ── MODAL ── */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:800;display:none;align-items:center;justify-content:center;}
+.modal-backdrop.open{display:flex;}
+.modal{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:24px;width:90%;max-width:420px;}
+.modal-title{font-size:1rem;font-weight:700;margin-bottom:8px;}
+.modal-desc{font-size:0.8rem;color:var(--txt2);margin-bottom:16px;}
+.modal-input{width:100%;padding:8px 12px;background:var(--bg4);border:1px solid var(--border2);border-radius:6px;font-size:0.85rem;margin-bottom:16px;}
+.modal-input:focus{border-color:var(--accent);}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;}
+
+/* ── MISC ── */
+.label-txt{font-size:0.65rem;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:0.8px;}
+select.styled{padding:4px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:0.75rem;color:var(--txt);}
+select.styled:focus{border-color:var(--accent);}
+.check-label{display:flex;align-items:center;gap:5px;font-size:0.73rem;color:var(--txt2);cursor:pointer;}
+.check-label input{accent-color:var(--accent);}
+.empty-state{text-align:center;padding:20px;color:var(--txt3);font-size:0.75rem;}
+</style>
 </head>
 <body>
-    <div class="ide-container">
-        <!-- ==========================================
-           A. ACTION SIDEBAR ICONS
-                <button class="sidebar-btn active" data-drawer="projects" title="Project Manager">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
-                </button>
-                <button class="sidebar-btn" data-drawer="templates" title="Project Templates">
-                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                </button>
-                <button class="sidebar-btn" data-drawer="cdn" title="CDN Library Manager">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                </button>
-                <button class="sidebar-btn" data-drawer="history" title="Version Snapshots">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                </button>
-                <button class="sidebar-btn" data-drawer="export" title="Export Blueprints">
-                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                </button>
-                <button class="sidebar-btn" id="btnThemeToggle" title="Theme Mode Toggle">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                </button>
-                <button class="sidebar-btn" id="btnCommandPalette" title="Command Palette (Ctrl+Shift+P)">
-                    <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
-                </button>
-                <button class="sidebar-btn" id="btnShortcutModalTrigger" title="Keyboard Shortcuts">
-                    <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
-                </button>
-            </div>
-            
-            <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; transform: rotate(-90deg); margin-top: 24px;">
-                V1.0
-                V2.0
-            </div>
-        </aside>
-                </div>
-            </div>
-            <!-- Templates Section tab -->
-            <div class="drawer-section" id="drawer-templates" style="display: none;">
-                <div class="drawer-header">
-                    <span class="drawer-title">Templates</span>
-                </div>
-                <div class="drawer-content">
-                    <div class="template-grid" id="templateGrid">
-                        <!-- Dynamically rendered templates -->
-                    </div>
-                </div>
-            </div>
-            <!-- CDN Library Manager tab -->
-            <div class="drawer-section" id="drawer-cdn" style="display: none;">
-                <div class="drawer-header">
-                    <span class="drawer-title">CDN Libraries</span>
-                </div>
-                <div class="drawer-content">
-                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.5;">
-                        Paste CDN URLs below. Scripts & stylesheets are injected into the preview on every Run.
-                    </div>
-                    <div class="cdn-list" id="cdnList">
-                        <!-- Added libraries -->
-                    </div>
-                    <div class="cdn-add-row">
-                        <input type="text" class="cdn-add-input" id="cdnUrlInput" placeholder="https://cdn.example.com/lib.js">
-                        <button class="btn-action secondary" id="btnAddCdn" style="flex-shrink:0; padding: 0 10px;">Add</button>
-                    </div>
-                    <div class="cdn-presets">
-                        <div class="cdn-presets-title">Quick Add Presets</div>
-                        <div class="cdn-preset-chips" id="cdnPresetChips">
-                            <!-- Presets chips -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Version History snapshots tab -->
-            <div class="drawer-section" id="drawer-history" style="display: none;">
-                <div class="drawer-header">
-                    </div>
-                    
-                    <div class="header-btn-row">
-                        <!-- Visual Edit Mode -->
-                        <button class="btn-action secondary" id="btnVisualEditToggle" title="Enable Visual Editing (Two-way sync)">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                            Design Mode: OFF
-                        </button>
-                        <button class="btn-action secondary" id="btnPresentationToggle" title="Presentation Mode (Hide Editor)">
-                            Presentation Mode
-                        </button>
-    <!-- ==========================================
-       D. DIALOG MODAL SYSTEM
-       ========================================== -->
-    <!-- Command Palette Overlay -->
-    <div class="command-palette-overlay" id="commandPalette">
-        <div class="command-palette-box">
-            <div class="command-palette-search-row">
-                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" class="command-palette-input" id="commandPaletteInput" placeholder="Type a command or search (e.g. 'Format', 'Mobile', 'Tailwind')...">
-            </div>
-            <div class="command-palette-results" id="commandPaletteResults">
-                <!-- Executable matches loaded dynamically -->
-            </div>
-            <div class="command-palette-footer">
-                <span class="command-palette-hint"><kbd>↑↓</kbd> Navigate</span>
-                <span class="command-palette-hint"><kbd>↵</kbd> Execute</span>
-                <span class="command-palette-hint"><kbd>Esc</kbd> Close</span>
-            </div>
-        </div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+  </div>
+  <button class="sb-btn on" data-drawer="projects" data-tip="Projects">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+  </button>
+  <button class="sb-btn" data-drawer="templates" data-tip="Templates">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+  </button>
+  <button class="sb-btn" data-drawer="cdn" data-tip="CDN Manager">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+  </button>
+  <button class="sb-btn" data-drawer="history" data-tip="Snapshots">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+  </button>
+  <button class="sb-btn" data-drawer="export" data-tip="Export">
+    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  </button>
+  <div class="sb-sep"></div>
+  <button class="sb-btn" id="btnTheme" data-tip="Toggle Theme">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  </button>
+  <button class="sb-btn" id="btnCP" data-tip="Command Palette (Ctrl+Shift+P)">
+    <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+  </button>
+</aside>
+
+<!-- DRAWER -->
+<div class="drawer" id="drawer">
+  <!-- Projects -->
+  <div class="d-section active" id="dsec-projects">
+    <div class="dh">
+      <span class="dh-title">Projects</span>
+      <button class="sb-btn" id="btnNewProj" style="width:28px;height:28px;" data-tip="New">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
     </div>
-    <!-- Create / Edit project modal -->
-    <div class="modal-overlay" id="modalProjectName">
-        <div class="modal-card">
-                    <span>Save Project Snapshot</span>
-                    <strong style="color:var(--text-primary);">Ctrl + S / Cmd + S</strong>
-                </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding-bottom:6px;">
-                    <span>Open Command Palette</span>
-                    <strong style="color:var(--text-primary);">Ctrl + Shift + P / Cmd + Shift + P</strong>
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="btn-action primary" id="btnCloseShortcutsModal" style="margin:0 auto;">Close Options</button>
-            </div>
-        </div>
+    <div class="dc"><div class="proj-list" id="projList"></div></div>
+  </div>
+  <!-- Templates -->
+  <div class="d-section" id="dsec-templates">
+    <div class="dh"><span class="dh-title">Templates</span></div>
+    <div class="dc" id="tplGrid"></div>
+  </div>
+  <!-- CDN -->
+  <div class="d-section" id="dsec-cdn">
+    <div class="dh"><span class="dh-title">CDN Libraries</span></div>
+    <div class="dc">
+      <div id="cdnList"></div>
+      <div class="cdn-add-row">
+        <input class="cdn-input" id="cdnInput" placeholder="https://cdn.example.com/lib.js">
+        <button class="small-btn" id="btnAddCdn">Add</button>
+      </div>
+      <div style="margin-top:10px;">
+        <div class="label-txt" style="margin-bottom:6px;">Quick Presets</div>
+        <div class="preset-wrap" id="presetWrap"></div>
+      </div>
     </div>
-    <!-- ==========================================
-       E. IDE CONTROLLERS LOGIC
-       ========================================== */ -->
-       ========================================== -->
-    <script>
-        /* ==========================================
-           1. SIDEBAR EXPANSION UTILS
-           0. MONACO WORKER PROXY
-           ========================================== */
-        window.MonacoEnvironment = {
-            getWorkerUrl: function(workerId, label) {
-                return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-                    self.MonacoEnvironment = {
-                        baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/'
-                    };
-                    importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/base/worker/workerMain.js');`
-                )}`;
-            }
-        };
-        /* ==========================================
-           1. TEMPLATE DEFINITIONS
-           ========================================== */
-        const TEMPLATES = [
-            {
-                id: 'blank',
-                name: 'Blank Canvas',
-                desc: 'Clean slate with minimal boilerplate. Start fresh.',
-                tags: ['minimal', 'starter'],
-                html: `<div class="container">\n  <h1>Hello, World!</h1>\n  <p>Start building something amazing.</p>\n</div>`,
-                css: `* { box-sizing: border-box; margin: 0; padding: 0; }\nbody {\n  font-family: system-ui, -apple-system, sans-serif;\n  background: #0f1015;\n  color: #f1f5f9;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 100vh;\n}\n.container {\n  text-align: center;\n  padding: 2rem;\n  border-radius: 12px;\n  background: rgba(255, 255, 255, 0.02);\n  border: 1px solid rgba(255, 255, 255, 0.05);\n}\nh1 {\n  font-size: 2.5rem;\n  margin-bottom: 0.5rem;\n  background: linear-gradient(135deg, #6366f1, #d946ef);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n}\np {\n  color: #94a3b8;\n}`,
-                js: `console.log('Ready to build!');`
-            },
-            {
-                id: 'particle',
-                name: 'Particle System',
-                desc: 'Animated canvas particle system with interactive button.',
-                tags: ['canvas', 'animation', 'demo'],
-                html: `<div class="canvas-wrap">\n  <h1>CodeForge Studio</h1>\n  <p>Ready to build high-end frontend structures.</p>\n  <button id="action-btn">Launch Animation</button>\n</div>\n<canvas id="anim-canvas"></canvas>`,
-                css: `body {\n  margin: 0; padding: 0;\n  background: #0f1015;\n  color: #ffffff;\n  font-family: 'Inter', sans-serif;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 100vh;\n  overflow: hidden;\n}\n.canvas-wrap {\n  text-align: center;\n  z-index: 10;\n  background: rgba(15, 17, 26, 0.7);\n  padding: 30px;\n  border-radius: 16px;\n  border: 1px solid rgba(255,255,255,0.08);\n  backdrop-filter: blur(10px);\n}\nh1 {\n  margin: 0 0 10px;\n  font-size: 2.2rem;\n  letter-spacing: -1px;\n  background: linear-gradient(135deg, #6366f1, #d946ef);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n}\nbutton {\n  background: #6366f1;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: 0.2s;\n}\nbutton:hover { background: #4f46e5; transform: translateY(-2px); }\ncanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }`,
-                js: `const canvas = document.getElementById("anim-canvas");\nconst ctx = canvas.getContext("2d");\nlet width = canvas.width = window.innerWidth;\nlet height = canvas.height = window.innerHeight;\nwindow.addEventListener("resize", () => {\n  width = canvas.width = window.innerWidth;\n  height = canvas.height = window.innerHeight;\n});\nconst particles = [];\nclass Particle {\n  constructor() {\n    this.x = Math.random() * width;\n    this.y = Math.random() * height;\n    this.size = Math.random() * 3 + 1;\n    this.speedX = Math.random() * 1 - 0.5;\n    this.speedY = Math.random() * 1 - 0.5;\n  }\n  update() {\n    this.x += this.speedX;\n    this.y += this.speedY;\n    if (this.x < 0 || this.x > width) this.speedX *= -1;\n    if (this.y < 0 || this.y > height) this.speedY *= -1;\n  }\n  draw() {\n    ctx.fillStyle = "rgba(99, 102, 241, 0.4)";\n    ctx.beginPath();\n    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);\n    ctx.fill();\n  }\n}\nfor(let i=0;i<80;i++) particles.push(new Particle());\nfunction loop() {\n  ctx.clearRect(0, 0, width, height);\n  particles.forEach(p => { p.update(); p.draw(); });\n  requestAnimationFrame(loop);\n}\nloop();\ndocument.getElementById("action-btn").addEventListener("click", () => {\n  console.log("Animation triggered!");\n});`
-            },
-            {
-                id: 'modern-ui',
-                name: 'Modern UI Dashboard',
-                desc: 'Dashboard UI: Header navbar, sidebar links, grid metric cards, and responsive canvas charts.',
-                tags: ['layout', 'dashboard', 'analytics'],
-                html: `<div class="dashboard-shell">\n  <header class="top-nav">\n    <div class="logo">CloudBoard</div>\n    <div class="user-profile">Jane Doe</div>\n  </header>\n  <div class="main-body">\n    <aside class="side-nav">\n      <a href="#" class="nav-item active">Overview</a>\n      <a href="#" class="nav-item">Analytics</a>\n      <a href="#" class="nav-item">Customers</a>\n      <a href="#" class="nav-item">Settings</a>\n    </aside>\n    <main class="content-feed">\n      <div class="metrics-grid">\n        <div class="card">\n          <span class="card-label">Active Users</span>\n          <h3 class="card-val" id="users-count">1,245</h3>\n        </div>\n        <div class="card">\n          <span class="card-label">Sales Today</span>\n          <h3 class="card-val">$14,230</h3>\n        </div>\n        <div class="card">\n          <span class="card-label">Conversion Rate</span>\n          <h3 class="card-val">3.4%</h3>\n        </div>\n      </div>\n      <div class="chart-container">\n        <canvas id="dashboard-chart"></canvas>\n      </div>\n    </main>\n  </div>\n</div>`,
-                css: `* { box-sizing: border-box; margin: 0; padding: 0; }\nbody {\n  font-family: 'Inter', sans-serif;\n  background: #090a0f;\n  color: #e2e8f0;\n}\n.dashboard-shell {\n  display: flex;\n  flex-direction: column;\n  height: 100vh;\n}\n.top-nav {\n  height: 60px;\n  background: #11121a;\n  border-bottom: 1px solid #1f202e;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 0 24px;\n}\n.logo {\n  font-weight: 700;\n  background: linear-gradient(to right, #6366f1, #8b5cf6);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n}\n.main-body {\n  display: flex;\n  flex-grow: 1;\n}\n.side-nav {\n  width: 200px;\n  background: #11121a;\n  border-right: 1px solid #1f202e;\n  padding: 20px 10px;\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n.nav-item {\n  padding: 10px 16px;\n  color: #94a3b8;\n  text-decoration: none;\n  border-radius: 8px;\n  font-size: 0.9rem;\n  transition: all 0.2s;\n}\n.nav-item:hover, .nav-item.active {\n  background: #1e1b4b;\n  color: #a5b4fc;\n}\n.content-feed {\n  flex-grow: 1;\n  padding: 24px;\n  overflow-y: auto;\n  display: flex;\n  flex-direction: column;\n  gap: 24px;\n}\n.metrics-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));\n  gap: 20px;\n}\n.card {\n  background: #11121a;\n  border: 1px solid #1f202e;\n  border-radius: 12px;\n  padding: 20px;\n}\n.card-label {\n  font-size: 0.75rem;\n  color: #64748b;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.card-val {\n  font-size: 1.8rem;\n  margin-top: 8px;\n  font-weight: 700;\n}\n.chart-container {\n  flex-grow: 1;\n  min-height: 250px;\n  background: #11121a;\n  border: 1px solid #1f202e;\n  border-radius: 12px;\n  padding: 20px;\n  position: relative;\n}\ncanvas {\n  width: 100%;\n  height: 100%;\n}`,
-                js: `// Simple dynamic dashboard metrics and chart simulation\nlet users = 1245;\nconst usersCount = document.getElementById('users-count');\nsetInterval(() => {\n  users += Math.floor(Math.random() * 5) - 2;\n  if (usersCount) usersCount.innerText = users.toLocaleString();\n}, 3000);\n\n// Draw decorative chart grid\nconst canvas = document.getElementById('dashboard-chart');\nif (canvas) {\n  const ctx = canvas.getContext('2d');\n  const dpr = window.devicePixelRatio || 1;\n  \n  function resizeChart() {\n    const rect = canvas.getBoundingClientRect();\n    canvas.width = rect.width * dpr;\n    canvas.height = rect.height * dpr;\n    ctx.scale(dpr, dpr);\n    drawChart(rect.width, rect.height);\n  }\n  \n  function drawChart(w, h) {\n    ctx.clearRect(0, 0, w, h);\n    ctx.strokeStyle = '#1f202e';\n    ctx.lineWidth = 1;\n    \n    // Draw Grid Lines\n    for (let i = 0; i < w; i += 40) {\n      ctx.beginPath();\n      ctx.moveTo(i, 0);\n      ctx.lineTo(i, h);\n      ctx.stroke();\n    }\n    for (let j = 0; j < h; j += 40) {\n      ctx.beginPath();\n      ctx.moveTo(0, j);\n      ctx.lineTo(w, j);\n      ctx.stroke();\n    }\n    \n    // Draw line data\n    ctx.strokeStyle = '#6366f1';\n    ctx.lineWidth = 3;\n    ctx.beginPath();\n    ctx.moveTo(20, h - 30);\n    \n    const points = [h - 30, h - 60, h - 45, h - 100, h - 80, h - 120, h - 90, h - 160];\n    const step = (w - 40) / (points.length - 1);\n    \n    points.forEach((y, i) => {\n      ctx.lineTo(20 + i * step, y);\n    });\n    ctx.stroke();\n    \n    // Draw gradient area\n    ctx.lineTo(20 + (points.length - 1) * step, h);\n    ctx.lineTo(20, h);\n    ctx.closePath();\n    const grad = ctx.createLinearGradient(0, 0, 0, h);\n    grad.addColorStop(0, 'rgba(99, 102, 241, 0.3)');\n    grad.addColorStop(1, 'rgba(99, 102, 241, 0)');\n    ctx.fillStyle = grad;\n    ctx.fill();\n  }\n  \n  window.addEventListener('resize', resizeChart);\n  // Give a small delay to read correct bounding rect client size\n  setTimeout(resizeChart, 100);\n}`
-            }
-        ];
-        /* ==========================================
-           2. CDN PRESETS
-           ========================================== */
-        const CDN_PRESETS = [
-            { name: "Tailwind CSS", url: "https://cdn.tailwindcss.com" },
-            { name: "FontAwesome", url: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" },
-            { name: "Bootstrap CSS", url: "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" },
-            { name: "GSAP", url: "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" },
-            { name: "D3.js", url: "https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" },
-            { name: "Three.js", url: "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" },
-            { name: "Animate.css", url: "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" },
-            { name: "Lodash", url: "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js" }
-        ];
-        /* ==========================================
-           3. SIDEBAR EXPANSION UTILS
-           ========================================== */
-        const sidebarButtons = document.querySelectorAll(".sidebar-btn[data-drawer]");
-        const drawerPanel = document.getElementById("drawerPanel");
-        const drawerSections = document.querySelectorAll(".drawer-section");
-                    drawerSections.forEach(section => {
-                        section.style.display = "none";
-                        if (section.id === `drawer-${target}`) {
-                            section.style.display = "block";
-                            section.style.display = "flex";
-                        }
-                    });
-                }
-                
-                // Trigger Monaco layout update to fit new widths
-                setTimeout(() => {
-                    if (window.editor) window.editor.layout();
-                }, 300);
-            });
-        });
-        function showDrawerPanel(target) {
-            drawerPanel.classList.remove("collapsed");
-            sidebarButtons.forEach(b => {
-                b.classList.remove("active");
-                if (b.getAttribute("data-drawer") === target) {
-                    b.classList.add("active");
-                }
-            });
-            drawerSections.forEach(section => {
-                section.style.display = "none";
-                if (section.id === `drawer-${target}`) {
-                    section.style.display = "flex";
-                }
-            });
-            setTimeout(() => {
-                if (window.editor) window.editor.layout();
-            }, 300);
+  </div>
+  <!-- Snapshots -->
+  <div class="d-section" id="dsec-history">
+    <div class="dh">
+      <span class="dh-title">Snapshots</span>
+      <button class="sb-btn" id="btnNewSnap" style="width:28px;height:28px;" data-tip="Save now">
+        <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      </button>
+    </div>
+    <div class="dc" id="snapList"></div>
+  </div>
+  <!-- Export -->
+  <div class="d-section" id="dsec-export">
+    <div class="dh"><span class="dh-title">Export</span></div>
+    <div class="dc" style="display:flex;flex-direction:column;gap:8px;">
+      <button class="btn" id="btnExportHTML" style="width:100%;justify-content:center;">Export Single HTML</button>
+      <button class="btn" id="btnExportZip" style="width:100%;justify-content:center;">Download ZIP</button>
+      <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px;">
+        <div class="label-txt" style="margin-bottom:6px;">Import JSON</div>
+        <input type="file" id="importFile" accept=".json" style="display:none;">
+        <button class="btn" id="btnImport" style="width:100%;justify-content:center;">Import Project</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN WORKSPACE -->
+<div class="workspace" id="ws">
+
+  <!-- EDITOR PANE -->
+  <div class="editor-pane" id="edPane">
+    <div class="pane-header">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <label class="check-label"><input type="checkbox" id="chkAutoRun" checked>Auto Run</label>
+        <label class="check-label"><input type="checkbox" id="chkAutoSave" checked>Auto Save</label>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="btn" id="btnFmt">Format</button>
+        <button class="btn" id="btnMin">Minify</button>
+        <button class="btn primary" id="btnRun">
+          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>Run
+        </button>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <div class="tab on" data-tab="html"><span class="tab-dot td-html"></span>HTML</div>
+      <div class="tab" data-tab="css"><span class="tab-dot td-css"></span>CSS</div>
+      <div class="tab" data-tab="js"><span class="tab-dot td-js"></span>JS</div>
+    </div>
+    <div class="editor-wrap" id="monacoMount"></div>
+    <div class="console-panel closed" id="consolePanel">
+      <div class="console-hdr" id="consoleHdr">
+        <span class="console-title">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          Console
+        </span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button style="font-size:0.65rem;color:var(--txt3);" id="btnClearLog">Clear</button>
+          <span id="consoleChev" style="font-size:0.7rem;color:var(--txt3);">▲</span>
+        </div>
+      </div>
+      <div class="console-body" id="consoleBody"></div>
+    </div>
+  </div>
+
+  <!-- RESIZER -->
+  <div class="resizer" id="resizer"></div>
+
+  <!-- PREVIEW PANE -->
+  <div class="preview-pane" id="prevPane">
+    <div class="preview-header">
+      <div style="display:flex;gap:6px;align-items:center;">
+        <select class="styled" id="selDevice">
+          <option value="full">Desktop</option>
+          <option value="lap">Laptop (1024px)</option>
+          <option value="tab">Tablet (768px)</option>
+          <option value="mob">Mobile (375px)</option>
+        </select>
+        <button class="btn" id="btnOrientation">Rotate</button>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="btn" id="btnDesignMode">🎨 Design Mode: OFF</button>
+        <button class="btn" id="btnPropsToggle" data-tip="Properties Panel">
+          <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          Props
+        </button>
+        <button class="btn" id="btnFullscreen">⛶</button>
+      </div>
+    </div>
+    <div class="preview-wrap">
+      <div class="preview-frame" id="previewFrame">
+        <iframe class="sandbox" id="sandbox" sandbox="allow-scripts allow-modals allow-same-origin allow-pointer-lock"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROPERTIES PANEL -->
+  <div class="props-panel closed" id="propsPanel">
+    <div class="props-hdr">
+      <span class="props-title">Properties</span>
+    </div>
+    <div class="props-body" id="propsBody">
+      <div class="no-selection">Click any element in the preview with Design Mode ON to inspect &amp; edit its properties.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- COMMAND PALETTE -->
+<div class="cp-overlay" id="cpOverlay">
+  <div class="cp-box">
+    <div class="cp-search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="cp-input" id="cpInput" placeholder="Type a command...">
+    </div>
+    <div class="cp-results" id="cpResults"></div>
+    <div class="cp-footer">
+      <span class="cp-hint"><kbd>↑↓</kbd> navigate</span>
+      <span class="cp-hint"><kbd>↵</kbd> run</span>
+      <span class="cp-hint"><kbd>Esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBd">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">New Project</div>
+    <div class="modal-desc" id="modalDesc">Give your project a name.</div>
+    <input class="modal-input" id="modalInput" placeholder="Project name...">
+    <div class="modal-actions">
+      <button class="btn" id="modalCancel">Cancel</button>
+      <button class="btn primary" id="modalOk">Create</button>
+    </div>
+  </div>
+</div>
+
+<script>
+window.MonacoEnvironment = {
+  getWorkerUrl: function() {
+    return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+      self.MonacoEnvironment = { baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/' };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/base/worker/workerMain.js');
+    `)}`;
+  }
+};
+
+/* ═══════════════════════════════════════
+   TEMPLATES
+═══════════════════════════════════════ */
+const TEMPLATES = [
+  {
+    id:'blank', name:'Blank Canvas', desc:'Clean start.', tags:['minimal'],
+    html:'<div class="box">\n  <h1>Hello World</h1>\n  <p>Start building!</p>\n  <button onclick="alert(\'hi\')">Click me</button>\n</div>',
+    css:'*{box-sizing:border-box;margin:0;padding:0;}\nbody{font-family:system-ui,sans-serif;background:#0f1015;color:#f1f5f9;display:flex;align-items:center;justify-content:center;min-height:100vh;}\n.box{text-align:center;padding:40px;}\nh1{font-size:2.5rem;margin-bottom:12px;}\np{color:#94a3b8;margin-bottom:20px;}\nbutton{padding:10px 24px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer;}',
+    js:'console.log("Ready!");'
+  },
+  {
+    id:'particle', name:'Particle System', desc:'Animated canvas particle demo.', tags:['canvas','animation'],
+    html:'<canvas id="c"></canvas>\n<div class="ui">\n  <h1>CodeForge</h1>\n  <p>High-performance frontend playground</p>\n  <button id="btn">Launch</button>\n</div>',
+    css:'*{margin:0;padding:0;box-sizing:border-box;}\nbody{background:#020409;overflow:hidden;font-family:system-ui,sans-serif;color:#fff;}\ncanvas{position:fixed;top:0;left:0;}\n.ui{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}\nh1{font-size:3rem;font-weight:800;background:linear-gradient(135deg,#6366f1,#d946ef);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}\np{color:#94a3b8;margin:10px 0 24px;}\nbutton{padding:12px 28px;background:#6366f1;color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;}',
+    js:'const c=document.getElementById("c"),ctx=c.getContext("2d");let w=c.width=innerWidth,h=c.height=innerHeight;window.addEventListener("resize",()=>{w=c.width=innerWidth;h=c.height=innerHeight;});const pts=Array.from({length:100},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-0.5)*0.8,vy:(Math.random()-0.5)*0.8,r:Math.random()*2+1}));function loop(){ctx.clearRect(0,0,w,h);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle="rgba(99,102,241,0.6)";ctx.fill();});requestAnimationFrame(loop);}loop();document.getElementById("btn").onclick=()=>console.log("Launched!");'
+  },
+  {
+    id:'dashboard', name:'Dashboard Layout', desc:'Sidebar + stats + cards.', tags:['layout','app'],
+    html:'<div class="shell">\n  <nav class="nav"><div class="brand">AppShell</div><div class="nav-links"><a class="nl active" href="#">Dashboard</a><a class="nl" href="#">Analytics</a><a class="nl" href="#">Settings</a></div></nav>\n  <div class="body">\n    <aside class="side"><a class="si active" href="#">🏠 Home</a><a class="si" href="#">📊 Stats</a><a class="si" href="#">👤 Profile</a><a class="si" href="#">⚙️ Config</a></aside>\n    <main class="main">\n      <h1>Dashboard</h1>\n      <div class="stats"><div class="sc"><div class="sv">2,847</div><div class="sk">Views</div><div class="sg">+12%</div></div><div class="sc"><div class="sv">384</div><div class="sk">Users</div><div class="sg">+8%</div></div><div class="sc"><div class="sv">$5,210</div><div class="sk">Revenue</div><div class="sg up">↑</div></div><div class="sc"><div class="sv">97%</div><div class="sk">Uptime</div></div></div>\n      <div class="cards"><div class="card" style="--c:#6366f1"><div class="ct">Design Systems</div><div class="cd">Modular patterns for scalable UIs</div></div><div class="card" style="--c:#06b6d4"><div class="ct">Performance</div><div class="cd">Sub-50ms interaction budgets</div></div><div class="card" style="--c:#f59e0b"><div class="ct">User Research</div><div class="cd">Data-driven product validation</div></div></div>\n    </main>\n  </div>\n</div>',
+    css:'*{box-sizing:border-box;margin:0;padding:0;}\nbody,html{height:100%;font-family:system-ui,sans-serif;}\n.shell{display:flex;flex-direction:column;height:100vh;background:#0b0e18;color:#f1f5f9;}\n.nav{height:52px;background:#0d1017;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:24px;padding:0 20px;}\n.brand{font-weight:800;font-size:1.05rem;}\n.nav-links{display:flex;gap:4px;}\n.nl{padding:5px 12px;border-radius:6px;color:#94a3b8;text-decoration:none;font-size:0.85rem;}\n.nl.active{background:rgba(99,102,241,0.15);color:#f1f5f9;}\n.body{display:flex;flex:1;overflow:hidden;}\n.side{width:180px;background:#0a0d14;padding:12px 8px;border-right:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;gap:2px;}\n.si{display:block;padding:8px 10px;border-radius:7px;color:#64748b;text-decoration:none;font-size:0.82rem;}\n.si.active{background:rgba(99,102,241,0.12);color:#f1f5f9;}\n.main{flex:1;overflow-y:auto;padding:24px;}\nh1{font-size:1.5rem;font-weight:800;margin-bottom:20px;}\n.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}\n.sc{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:16px;}\n.sv{font-size:1.5rem;font-weight:800;}\n.sk{font-size:0.75rem;color:#64748b;margin-top:4px;}\n.sg{font-size:0.75rem;color:#34d399;margin-top:6px;}\n.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}\n.card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px;border-top:3px solid var(--c);}\n.ct{font-size:0.92rem;font-weight:700;margin-bottom:6px;}\n.cd{font-size:0.78rem;color:#64748b;line-height:1.5;}',
+    js:'console.log("Dashboard ready");document.querySelectorAll(".si").forEach(el=>el.addEventListener("click",e=>{e.preventDefault();document.querySelectorAll(".si").forEach(s=>s.classList.remove("active"));el.classList.add("active");}));'
+  },
+  {
+    id:'ecommerce', name:'E-Commerce Store', desc:'Product grid with cart sidebar.', tags:['shop','cart'],
+    html:'<div class="store">\n  <header class="sh"><span class="sb">🛒 ShopForge</span><input class="ss" placeholder="Search products..."><button class="cart-btn" id="cartBtn">Cart (<span id="cartCount">0</span>)</button></header>\n  <div class="sbody">\n    <main class="pgrid" id="pgrid"></main>\n    <aside class="cart-side" id="cartSide"><div class="csh"><h3>Your Cart</h3><button onclick="document.getElementById(\'cartSide\').style.transform=\'translateX(100%)\'">✕</button></div><div class="citems" id="citems"><p style="color:#94a3b8;text-align:center;padding:20px;">Cart is empty</p></div><div class="cfoot"><div class="ctrow"><span>Total</span><strong id="ctotal">$0.00</strong></div><button class="cbtn">Checkout →</button></div></aside>\n  </div>\n</div>',
+    css:'*{box-sizing:border-box;margin:0;padding:0;}body{font-family:system-ui,sans-serif;background:#f8fafc;color:#0f172a;height:100vh;overflow:hidden;}\n.store{display:flex;flex-direction:column;height:100vh;}\n.sh{height:56px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:12px;padding:0 20px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}\n.sb{font-weight:800;font-size:1.05rem;white-space:nowrap;}\n.ss{flex:1;padding:7px 12px;border:1px solid #e2e8f0;border-radius:7px;font-size:0.85rem;outline:none;}\n.cart-btn{padding:7px 16px;background:#6366f1;color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;}\n.sbody{display:flex;flex:1;overflow:hidden;position:relative;}\n.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;padding:20px;overflow-y:auto;flex:1;align-content:start;}\n.pc{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;cursor:pointer;transition:box-shadow 0.2s,transform 0.2s;}\n.pc:hover{box-shadow:0 8px 24px rgba(0,0,0,0.1);transform:translateY(-2px);}\n.pi{height:120px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:#f1f5f9;}\n.pinfo{padding:12px;}\n.pn{font-size:0.85rem;font-weight:700;margin-bottom:4px;}\n.pp{font-size:1rem;font-weight:800;color:#6366f1;margin-bottom:8px;}\n.padd{width:100%;padding:7px;background:#6366f1;color:#fff;border:none;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;}\n.cart-side{width:280px;background:#fff;border-left:1px solid #e2e8f0;display:flex;flex-direction:column;position:absolute;right:0;top:0;bottom:0;transform:translateX(100%);transition:transform 0.3s;z-index:10;}\n.cart-side.open{transform:none;}\n.csh{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid #e2e8f0;}\n.citems{flex:1;overflow-y:auto;padding:12px 18px;}\n.ci{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:0.82rem;}\n.cfoot{padding:14px 18px;border-top:1px solid #e2e8f0;}\n.ctrow{display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:10px;}\n.cbtn{width:100%;padding:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;}',
+    js:'const prods=[{id:1,n:"Headphones",p:129,e:"🎧"},{id:2,n:"Keyboard",p:219,e:"⌨️"},{id:3,n:"Monitor",p:449,e:"🖥️"},{id:4,n:"Sneakers",p:89,e:"👟"},{id:5,n:"Watch",p:299,e:"⌚"},{id:6,n:"Jacket",p:179,e:"🧥"}];\nlet cart=[];\nconst grid=document.getElementById("pgrid");\ngrid.innerHTML=prods.map(p=>`<div class="pc"><div class="pi">${p.e}</div><div class="pinfo"><div class="pn">${p.n}</div><div class="pp">$${p.p}</div><button class="padd" onclick="addCart(${p.id})">Add to Cart</button></div></div>`).join("");\nwindow.addCart=function(id){const p=prods.find(x=>x.id===id);const ex=cart.find(x=>x.id===id);ex?ex.q++:cart.push({...p,q:1});renderCart();document.getElementById("cartSide").classList.add("open");};\nfunction renderCart(){document.getElementById("cartCount").textContent=cart.reduce((s,x)=>s+x.q,0);const ci=document.getElementById("citems");if(!cart.length){ci.innerHTML=\'<p style="color:#94a3b8;text-align:center;padding:20px;">Cart is empty</p>\';document.getElementById("ctotal").textContent="$0.00";return;}ci.innerHTML=cart.map(i=>`<div class="ci"><span>${i.e} ${i.n} ×${i.q}</span><span style="font-weight:700;color:#6366f1;">$${i.p*i.q}</span></div>`).join("");document.getElementById("ctotal").textContent="$"+cart.reduce((s,x)=>s+x.p*x.q,0).toFixed(2);}\ndocument.getElementById("cartBtn").onclick=()=>document.getElementById("cartSide").classList.toggle("open");'
+  },
+  {
+    id:'cssart', name:'CSS Art', desc:'Pure CSS planetary animation.', tags:['css','animation'],
+    html:'<div class="scene"><div class="planet"><div class="ring"></div></div><div class="orbit"><div class="moon"></div></div><p class="label">EXPLORE THE COSMOS</p></div>',
+    css:'*{margin:0;padding:0;box-sizing:border-box;}\nbody{background:#020409;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden;font-family:system-ui,sans-serif;}\n.scene{position:relative;width:300px;height:300px;display:flex;align-items:center;justify-content:center;}\n@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}\n@keyframes orbit{from{transform:rotate(0deg) translateX(110px)}to{transform:rotate(360deg) translateX(110px)}}\n.planet{width:130px;height:130px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#818cf8,#6366f1 55%,#312e81);box-shadow:0 0 40px rgba(99,102,241,0.6);animation:float 4s ease-in-out infinite;position:relative;}\n.ring{position:absolute;width:190px;height:36px;border-radius:50%;border:8px solid rgba(167,139,250,0.4);top:50%;left:50%;transform:translate(-50%,-50%) rotateX(75deg);}\n.orbit{position:absolute;width:220px;height:220px;animation:orbit 6s linear infinite;}\n.moon{position:absolute;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#e2e8f0,#94a3b8);box-shadow:0 0 10px rgba(255,255,255,0.4);top:-11px;left:50%;transform:translateX(-50%);}\n.label{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:0.7rem;font-weight:700;letter-spacing:3px;color:rgba(167,139,250,0.7);}',
+    js:'console.log("CSS Art loaded");'
+  }
+];
+
+const CDN_PRESETS = [
+  {name:'Tailwind',url:'https://cdn.tailwindcss.com',type:'script'},
+  {name:'Bootstrap CSS',url:'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css',type:'stylesheet'},
+  {name:'Bootstrap JS',url:'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js',type:'script'},
+  {name:'Alpine.js',url:'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js',type:'script'},
+  {name:'GSAP',url:'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js',type:'script'},
+  {name:'Three.js',url:'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',type:'script'},
+  {name:'D3.js',url:'https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js',type:'script'},
+  {name:'Chart.js',url:'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js',type:'script'},
+  {name:'Font Awesome',url:'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',type:'stylesheet'},
+  {name:'Anime.js',url:'https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js',type:'script'},
+];
+
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+let S = { projects:{}, activeId:null, cdns:[] };
+const STARTER = TEMPLATES[1];
+
+function loadState() {
+  const raw = localStorage.getItem('codeforge_v3');
+  if (raw) { try { S = JSON.parse(raw); } catch(e){} }
+  if (!S.cdns) S.cdns = [];
+  if (!S.projects || !Object.keys(S.projects).length) {
+    const id = 'p_' + Date.now();
+    S.projects = { [id]: { name:'Demo – Particles', html:STARTER.html, css:STARTER.css, js:STARTER.js, snaps:[], updated:Date.now() } };
+    S.activeId = id;
+    saveState();
+  }
+  if (!S.activeId || !S.projects[S.activeId]) S.activeId = Object.keys(S.projects)[0];
+}
+function saveState() { localStorage.setItem('codeforge_v3', JSON.stringify(S)); }
+function activeProj() { return S.projects[S.activeId]; }
+
+/* ═══════════════════════════════════════
+   DRAWER / SIDEBAR NAV
+═══════════════════════════════════════ */
+const drawer = document.getElementById('drawer');
+let activeDrawer = 'projects';
+
+document.querySelectorAll('.sb-btn[data-drawer]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const key = btn.dataset.drawer;
+    if (activeDrawer === key && !drawer.classList.contains('closed')) {
+      drawer.classList.add('closed');
+      btn.classList.remove('on');
+      activeDrawer = null;
+    } else {
+      drawer.classList.remove('closed');
+      document.querySelectorAll('.sb-btn[data-drawer]').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      document.querySelectorAll('.d-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('dsec-' + key).classList.add('active');
+      activeDrawer = key;
+    }
+    setTimeout(() => window.editor && window.editor.layout(), 310);
+  });
+});
+
+/* ═══════════════════════════════════════
+   SPLIT RESIZER
+═══════════════════════════════════════ */
+const resizer = document.getElementById('resizer');
+const edPane = document.getElementById('edPane');
+const prevPane = document.getElementById('prevPane');
+const ws = document.getElementById('ws');
+let dragging = false;
+
+resizer.addEventListener('mousedown', e => {
+  dragging = true;
+  resizer.classList.add('drag');
+  document.getElementById('sandbox').style.pointerEvents = 'none';
+  e.preventDefault();
+});
+document.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  const rect = ws.getBoundingClientRect();
+  let left = e.clientX - rect.left;
+  left = Math.max(200, Math.min(rect.width - 250, left));
+  edPane.style.width = left + 'px';
+  edPane.style.flex = 'none';
+  window.editor && window.editor.layout();
+});
+document.addEventListener('mouseup', () => {
+  if (dragging) {
+    dragging = false;
+    resizer.classList.remove('drag');
+    document.getElementById('sandbox').style.pointerEvents = 'auto';
+  }
+});
+
+/* ═══════════════════════════════════════
+   MONACO EDITOR
+═══════════════════════════════════════ */
+let mHtml, mCss, mJs, curTab = 'html';
+let autoRunTimer = null;
+let syncLock = false;
+
+function initMonaco() {
+  require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
+  require(['vs/editor/editor.main'], () => {
+    const p = activeProj();
+    mHtml = monaco.editor.createModel(p.html, 'html');
+    mCss  = monaco.editor.createModel(p.css,  'css');
+    mJs   = monaco.editor.createModel(p.js,   'javascript');
+
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+      target: monaco.languages.typescript.ScriptTarget.ES2020,
+      allowNonTsExtensions: true,
+      lib: ['es2020', 'dom']
+    });
+
+    // Custom JS snippets
+    monaco.languages.registerCompletionItemProvider('javascript', {
+      provideCompletionItems: (model, pos) => {
+        const w = model.getWordUntilPosition(pos);
+        const range = { startLineNumber:pos.lineNumber, endLineNumber:pos.lineNumber, startColumn:w.startColumn, endColumn:w.endColumn };
+        return { suggestions: [
+          {label:'qs',kind:monaco.languages.CompletionItemKind.Snippet,insertText:"document.querySelector('${1}')",insertTextRules:4,documentation:'querySelector',range},
+          {label:'qsa',kind:monaco.languages.CompletionItemKind.Snippet,insertText:"document.querySelectorAll('${1}')",insertTextRules:4,documentation:'querySelectorAll',range},
+          {label:'ael',kind:monaco.languages.CompletionItemKind.Snippet,insertText:"${1:el}.addEventListener('${2:click}', (e) => {\n\t$0\n});",insertTextRules:4,documentation:'addEventListener',range},
+          {label:'raf',kind:monaco.languages.CompletionItemKind.Snippet,insertText:"requestAnimationFrame(function loop() {\n\t$0\n\trequestAnimationFrame(loop);\n});",insertTextRules:4,documentation:'rAF loop',range},
+          {label:'cl',kind:monaco.languages.CompletionItemKind.Snippet,insertText:"console.log($1);",insertTextRules:4,documentation:'console.log',range},
+          {label:'iife',kind:monaco.languages.CompletionItemKind.Snippet,insertText:"(function() {\n\t'use strict';\n\t$0\n})();",insertTextRules:4,documentation:'IIFE',range},
+        ]};
+      }
+    });
+
+    window.editor = monaco.editor.create(document.getElementById('monacoMount'), {
+      model: mHtml, theme:'vs-dark',
+      automaticLayout:true,
+      fontSize:13,
+      fontFamily:"'JetBrains Mono',Consolas,monospace",
+      fontLigatures:true,
+      tabSize:2,
+      lineNumbers:'on',
+      minimap:{enabled:false},
+      bracketPairColorization:{enabled:true},
+      autoClosingBrackets:'always',
+      autoClosingTags:true,
+      folding:true,
+      wordWrap:'on',
+      suggestOnTriggerCharacters:true,
+      quickSuggestions:{other:true,comments:false,strings:true},
+      inlineSuggest:{enabled:true},
+      scrollBeyondLastLine:false,
+    });
+
+    window.editor.onDidChangeModelContent(() => {
+      if (syncLock) return;
+      const val = window.editor.getValue();
+      const p = activeProj();
+      if (curTab === 'html') p.html = val;
+      else if (curTab === 'css') p.css = val;
+      else p.js = val;
+      p.updated = Date.now();
+      if (document.getElementById('chkAutoSave').checked) saveState();
+      if (document.getElementById('chkAutoRun').checked) {
+        clearTimeout(autoRunTimer);
+        autoRunTimer = setTimeout(buildPreview, 700);
+      }
+    });
+
+    window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, buildPreview);
+    window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, saveSnap);
+    window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyP, openCP);
+    window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Digit1, () => switchTab('html'));
+    window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Digit2, () => switchTab('css'));
+    window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Digit3, () => switchTab('js'));
+
+    buildPreview();
+  });
+}
+
+function switchTab(t) {
+  if (t === curTab) return;
+  document.querySelectorAll('.tab').forEach(el => el.classList.toggle('on', el.dataset.tab === t));
+  curTab = t;
+  window.editor.setModel(t === 'html' ? mHtml : t === 'css' ? mCss : mJs);
+}
+
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+/* ═══════════════════════════════════════
+   PREVIEW BUILD
+═══════════════════════════════════════ */
+let designMode = false;
+let selectedPath = null; // CSS selector path of selected element
+
+function cdnTags() {
+  return S.cdns.map(l => l.type === 'stylesheet'
+    ? `<link rel="stylesheet" href="${l.url}">`
+    : `<script src="${l.url}"><\/script>`
+  ).join('\n');
+}
+
+function buildPreview() {
+  if (!mHtml) return;
+  const html = mHtml.getValue();
+  const css  = mCss.getValue();
+  const js   = mJs.getValue();
+
+  const designScript = designMode ? `
+  <style>
+    [data-cfs-hover] { outline: 2px dashed rgba(91,106,240,0.5) !important; cursor: pointer !important; }
+    [data-cfs-selected] { outline: 2px solid #5b6af0 !important; }
+  </style>
+  <script>
+    let _sel = null;
+    function _path(el) {
+      if (!el || el === document.body) return 'body';
+      const tag = el.tagName.toLowerCase();
+      const par = el.parentElement;
+      const siblings = par ? Array.from(par.children).filter(c => c.tagName === el.tagName) : [];
+      const idx = siblings.indexOf(el);
+      const nthStr = siblings.length > 1 ? ':nth-of-type(' + (idx+1) + ')' : '';
+      return _path(par) + ' > ' + tag + nthStr;
+    }
+    document.addEventListener('mouseover', e => {
+      const el = e.target; if (el === document.body || el === document.documentElement) return;
+      el.setAttribute('data-cfs-hover','1');
+      e.stopPropagation();
+    }, true);
+    document.addEventListener('mouseout', e => { e.target.removeAttribute('data-cfs-hover'); }, true);
+    document.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      if (_sel) _sel.removeAttribute('data-cfs-selected');
+      _sel = e.target;
+      if (_sel === document.body || _sel === document.documentElement) { _sel = null; return; }
+      _sel.setAttribute('data-cfs-selected','1');
+      const cs = window.getComputedStyle(_sel);
+      const rect = _sel.getBoundingClientRect();
+      window.parent.postMessage({
+        type:'select',
+        path: _path(_sel),
+        tag: _sel.tagName.toLowerCase(),
+        text: _sel.childNodes.length === 1 && _sel.childNodes[0].nodeType === 3 ? _sel.textContent : null,
+        innerHTML: _sel.innerHTML,
+        styles: {
+          color: cs.color,
+          backgroundColor: cs.backgroundColor,
+          fontSize: cs.fontSize,
+          fontWeight: cs.fontWeight,
+          padding: cs.padding,
+          margin: cs.margin,
+          borderRadius: cs.borderRadius,
+          textAlign: cs.textAlign,
+          display: cs.display,
+          width: cs.width,
+          height: cs.height,
+          opacity: cs.opacity,
+        },
+        attrs: {
+          id: _sel.id || '',
+          className: _sel.className || '',
+          href: _sel.href || '',
+          src: _sel.src || '',
         }
-        /* ==========================================
-           2. SPLIT RESIZER DRAG CONTROLLER
-           4. SPLIT RESIZER DRAG CONTROLLER
-           ========================================== */
-        const splitResizer = document.getElementById("splitResizer");
-        const panePreview = document.getElementById("pane-preview");
-        });
-        /* ==========================================
-           3. STORAGE ENGINE & PROJECTS SERIALIZATION
-           5. STORAGE ENGINE & PROJECTS SERIALIZATION
-           ========================================== */
-        let state = {
-            projects: {}, // mapping id -> { name, html, css, js, snapshots: [], updated }
-            projects: {}, // mapping id -> { name, html, css, js, snapshots: [], cdns: [], updated }
-            activeId: null
-        };
-        const STARTER_HTML = `<!-- HTML Sandbox Core -->\n<div class="canvas-wrap">\n  <h1>CodeForge Studio</h1>\n  <p>Ready to build high-end frontend structures.</p>\n  <button id="action-btn">Launch Animation</button>\n</div>\n\n<canvas id="anim-canvas"></canvas>`;
-        
-        const STARTER_CSS = `/* Premium Dark Canvas Stylings */\nbody {\n  margin: 0;\n  padding: 0;\n  background: #0f1015;\n  color: #ffffff;\n  font-family: 'Inter', sans-serif;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 100vh;\n  overflow: hidden;\n}\n\n.canvas-wrap {\n  text-align: center;\n  z-index: 10;\n  background: rgba(15, 17, 26, 0.7);\n  padding: 30px;\n  border-radius: 16px;\n  border: 1px solid rgba(255,255,255,0.08);\n  backdrop-filter: blur(10px);\n}\n\nh1 {\n  margin: 0 0 10px;\n  font-size: 2.2rem;\n  letter-spacing: -1px;\n  background: linear-gradient(135deg, #6366f1, #d946ef);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n}\n\nbutton {\n  background: #6366f1;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: 0.2s;\n}\n\nbutton:hover {\n  background: #4f46e5;\n  transform: translateY(-2px);\n}\n\ncanvas {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n}`;
-        const STARTER_JS = `// Particle Animation Engine\nconst canvas = document.getElementById("anim-canvas");\nconst ctx = canvas.getContext("2d");\n\nlet width = canvas.width = window.innerWidth;\nlet height = canvas.height = window.innerHeight;\n\nwindow.addEventListener("resize", () => {\n  width = canvas.width = window.innerWidth;\n  height = canvas.height = window.innerHeight;\n});\n\nconst particles = [];\n\nclass Particle {\n  constructor() {\n    this.x = Math.random() * width;\n    this.y = Math.random() * height;\n    this.size = Math.random() * 3 + 1;\n    this.speedX = Math.random() * 1 - 0.5;\n    this.speedY = Math.random() * 1 - 0.5;\n  }\n  update() {\n    this.x += this.speedX;\n    this.y += this.speedY;\n    if (this.x < 0 || this.x > width) this.speedX *= -1;\n    if (this.y < 0 || this.y > height) this.speedY *= -1;\n  }\n  draw() {\n    ctx.fillStyle = "rgba(99, 102, 241, 0.4)";\n    ctx.beginPath();\n    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);\n    ctx.fill();\n  }\n}\n\nfor(let i=0; i<80; i++) {\n  particles.push(new Particle());\n}\n\nfunction loop() {\n  ctx.clearRect(0, 0, width, height);\n  particles.forEach(p => {\n    p.update();\n    p.draw();\n  });\n  requestAnimationFrame(loop);\n}\n\nloop();\n\n// Action trigger log\ndocument.getElementById("action-btn").addEventListener("click", () => {\n  console.log("Animation Trigger Button clicked!");\n});`;
-        function loadStateFromStorage() {
-                        html: STARTER_HTML,
-                        css: STARTER_CSS,
-                        js: STARTER_JS,
-                        cdns: [],
-                        snapshots: [],
-                        updated: Date.now()
-                    }
-                };
-                state.activeId = initId;
-                saveStateToStorage();
-            } else {
-                // Ensure all legacy projects have cdns array initialized
-                Object.keys(state.projects).forEach(id => {
-                    if (!state.projects[id].cdns) {
-                        state.projects[id].cdns = [];
-                    }
-                });
-            }
-        }
-        function saveStateToStorage() {
-            localStorage.setItem("codeforge_studio_state", JSON.stringify(state));
-        }
-        /* ==========================================
-           4. MONACO EDITOR & TAB CONFIGURATIONS
-           6. MONACO EDITOR & TAB CONFIGURATIONS
-           ========================================== */
-        let htmlModel, cssModel, jsModel;
-        let activeFileTab = "html";
-        let isSyncingFromIframe = false; // Flag to prevent infinite reload loops in design mode
-        function startMonacoEditor() {
-            require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
-                // Debounced triggers for Auto Run
-                let runDebounce;
-                window.editor.onDidChangeModelContent(() => {
-                    // Update active model parameters inside state
-                    const codeVal = window.editor.getValue();
-                    const activeP = state.projects[state.activeId];
-                    if (activeFileTab === "html") activeP.html = codeVal;
-                    else if (activeFileTab === "css") activeP.css = codeVal;
-                    else if (activeFileTab === "js") activeP.js = codeVal;
-                    
-                    activeP.updated = Date.now();
-                    
-                    if (document.getElementById("checkAutoSave").checked) {
-                        saveStateToStorage();
-                    }
-                    // If modification came from two-way visual sync, skip iframe reload (preserves typing state)
-                    if (isSyncingFromIframe) {
-                        return;
-                    }
-                    if (document.getElementById("checkAutoRun").checked) {
-                        clearTimeout(runDebounce);
-                        runDebounce = setTimeout(triggerLivePreviewBuild, 800);
-                    createSnapshotFromState();
-                });
-                window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyP, () => {
-                    toggleCommandPalette(true);
-                });
-                // Render Initial Layout
-                triggerLivePreviewBuild();
-            });
-            });
-        });
-        function switchEditorTab(tabName) {
-            const tab = document.querySelector(`.editor-tab[data-tab="${tabName}"]`);
-            if (tab) tab.click();
-        }
-        /* ==========================================
-           5. SANDBOX PREVIEW & CONSOLE PIPELINE
-           7. SANDBOX PREVIEW & CONSOLE PIPELINE
-           ========================================== */
-        const consoleLogList = document.getElementById("consoleLogList");
-        window.addEventListener("message", (e) => {
-            const data = e.data;
-            if (data && data.type === 'console') {
-                logMessageToDrawer(data.logType, data.message);
-            } else if (data && data.type === 'sync-html') {
-                // visual editing syncing
-                const activeP = state.projects[state.activeId];
-                activeP.html = data.html;
-                activeP.updated = Date.now();
-                
-                isSyncingFromIframe = true;
-                if (htmlModel) htmlModel.setValue(data.html);
-                isSyncingFromIframe = false;
-                
-                if (document.getElementById("checkAutoSave").checked) {
-                    saveStateToStorage();
-                }
-            }
-        });
-            const css = cssModel.getValue();
-            const js = jsModel.getValue();
-            // Construct preview doc string
-            const activeProj = state.projects[state.activeId];
-            const projectCdns = activeProj.cdns || [];
-            // Compile link tags for CSS and script tags for JS libraries
-            let cdnHeads = "";
-            projectCdns.forEach(url => {
-                const isCss = url.endsWith('.css') || url.includes('/css') || url.includes('font-awesome') || url.includes('animate.css');
-                if (isCss) {
-                    cdnHeads += `<link rel="stylesheet" href="${url}">\n`;
-                } else {
-                    cdnHeads += `<script src="${url}"><\/script>\n`;
-                }
-            });
-            // Construct preview doc string with two-way sync listener and visual outline styling
-            const srcDoc = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Preview Frame</title>
-    ${cdnHeads}
-    <style>
-        ${css}
-        
-        /* Visual outline editing border */
-        body[contenteditable="true"] {
-            outline: 2px dashed var(--primary, #6366f1) !important;
-            outline-offset: -2px !important;
-            min-height: 100vh;
-        }
-    </style>
-</head>
-<body>
-    ${html}
-    
-    <!-- Console Capture Wrapper -->
-    <!-- Console Capture Wrapper & Sync logic -->
-    <script>
-        (function() {
-            const _log = console.log;
-            window.onerror = (msg, url, line) => {
-                send('error', [msg + " (line " + line + ")"]);
-            };
-            // Enable two-way visual editing listener
-            window.addEventListener('message', (e) => {
-                if (e.data.type === 'toggle-design-mode') {
-                    document.body.contentEditable = e.data.enabled ? 'true' : 'false';
-                    
-                    // Disable link navigation during visual editing
-                    document.querySelectorAll('a').forEach(link => {
-                        if (e.data.enabled) {
-                            if (link.getAttribute('href')) {
-                                link.dataset.href = link.getAttribute('href');
-                                link.removeAttribute('href');
-                            }
-                        } else {
-                            if (link.dataset.href) {
-                                link.setAttribute('href', link.dataset.href);
-                            }
-                        }
-                    });
-                }
-            });
-            // Serializer for two-way sync content
-            function syncParentHtml() {
-                window.parent.postMessage({
-                    type: 'sync-html',
-                    html: document.body.innerHTML
-                }, '*');
-            }
-            document.body.addEventListener('input', syncParentHtml);
-            document.body.addEventListener('keyup', syncParentHtml);
-            document.body.addEventListener('blur', syncParentHtml);
-        })();
-    </script>
-    <\/script>
-    <script>
-        try {
-            ${js}
-        } catch(err) {
-            console.error(err.message);
-        }
-    </script>
-    <\/script>
-</body>
-</html>
-            `;
-            const iframe = document.getElementById("sandboxIframe");
-            iframe.srcdoc = srcDoc;
-            // Wait for iframe reload to push current Design Mode state
-            iframe.onload = () => {
-                if (visualEditMode) {
-                    iframe.contentWindow.postMessage({
-                        type: 'toggle-design-mode',
-                        enabled: true
-                    }, '*');
-                }
-            };
-        }
-        document.getElementById("btnRunCode").addEventListener("click", () => {
-            triggerLivePreviewBuild();
-            logMessageToDrawer("log", "Execution Triggered manually.");
-        });
-        /* ==========================================
-           6. CONSOLE EXPANSION UTILS
-           8. CONSOLE EXPANSION UTILS
-           ========================================== */
-        const consoleDrawer = document.getElementById("consoleDrawer");
-        const btnConsoleToggle = document.getElementById("btnConsoleToggle");
-        });
-        /* ==========================================
-           7. SIDEBAR PANELS ACTIONS CONTROLLERS
-           9. PROJECT MANAGEMENT CONTROLLERS
-           ========================================== */
-        const projectListContainer = document.getElementById("projectListContainer");
-            saveStateToStorage();
-            
-            const activeProj = state.projects[id];
-            if (!activeProj.cdns) activeProj.cdns = [];
-            
-            // Set Monaco Models values
-            if (htmlModel) htmlModel.setValue(activeProj.html);
-            if (cssModel) cssModel.setValue(activeProj.css);
-            if (jsModel) jsModel.setValue(activeProj.js);
-            renderProjectsList();
-            renderSnapshotsList();
-            renderCdnsList();
-            triggerLivePreviewBuild();
-            
-            logMessageToDrawer("log", `Project Loaded: ${activeProj.name}`);
-        }
-        // Project Creation modal
-        const modalProjectName = document.getElementById("modalProjectName");
-        const inputProjectName = document.getElementById("inputProjectName");
-        let projectModalCallback = null;
-        document.getElementById("btnCreateProject").addEventListener("click", () => {
-            triggerCreateProjectModal();
-        });
-        function triggerCreateProjectModal() {
-            document.getElementById("projectNameModalTitle").innerText = "New Project Configuration";
-            inputProjectName.value = "Untitled Project";
-            modalProjectName.classList.add("active");
-            
-            projectModalCallback = (name) => {
-                const newId = "proj_" + Date.now();
-                state.projects[newId] = {
-                    name: name || "New Project",
-                    html: `<!-- New ${name} Core -->\n<h1>Welcome to ${name}</h1>`,
-                    css: `/* Page designs */\nbody { background: #000; color: #fff; }`,
-                    js: `// Scripts\nconsole.log("Ready!");`,
-                    cdns: [],
-                    snapshots: [],
-                    updated: Date.now()
-                };
-                loadActiveProjectWorkspace(newId);
-            };
-        });
-        }
-        document.getElementById("btnCancelProjectModal").addEventListener("click", () => {
-            modalProjectName.classList.remove("active");
-        });
-        document.getElementById("btnConfirmProjectModal").addEventListener("click", () => {
-            const name = inputProjectName.value.trim();
-            if (projectModalCallback) projectModalCallback(name);
-            modalProjectName.classList.remove("active");
-        });
-        function triggerDuplicateProject(id) {
-        window.triggerDuplicateProject = function(id) {
-            const src = state.projects[id];
-            const dupId = "proj_" + Date.now();
-            state.projects[dupId] = {
-                name: `${src.name} (Copy)`,
-                html: src.html,
-                css: src.css,
-                js: src.js,
-                cdns: src.cdns ? [...src.cdns] : [],
-                snapshots: [],
-                updated: Date.now()
-            };
-            saveStateToStorage();
-            renderProjectsList();
-            logMessageToDrawer("log", `Project Duplicated.`);
-        }
-        };
-        function triggerDeleteProject(id) {
-        window.triggerDeleteProject = function(id) {
-            if (Object.keys(state.projects).length <= 1) {
-                alert("Cannot delete the only remaining project workspace!");
-                return;
-            }
-            if (confirm("Are you sure you want to delete this project? This action cannot be reversed!")) {
-                delete state.projects[id];
-                if (state.activeId === id) {
-                    state.activeId = Object.keys(state.projects)[0];
-                }
-                loadActiveProjectWorkspace(state.activeId);
-            }
-        };
-        /* ==========================================
-           10. TEMPLATES SYSTEM
-           ========================================== */
-        const templateGrid = document.getElementById("templateGrid");
-        function renderTemplatesGrid() {
-            templateGrid.innerHTML = "";
-            TEMPLATES.forEach(tmpl => {
-                const card = document.createElement("div");
-                card.className = "template-card";
-                card.addEventListener("click", () => {
-                    loadTemplateIntoWorkspace(tmpl);
-                });
-                let tagMarkup = tmpl.tags.map(t => `<span class="template-tag">${t}</span>`).join("");
-                card.innerHTML = `
-                    <h4 class="template-card-name">${tmpl.name}</h4>
-                    <p class="template-card-desc">${tmpl.desc}</p>
-                    <div class="template-card-tags">${tagMarkup}</div>
-                `;
-                templateGrid.appendChild(card);
-            });
-        }
-        function loadTemplateIntoWorkspace(tmpl) {
-            if (confirm(`Load template "${tmpl.name}"? This will replace your current workspace files.`)) {
-                if (htmlModel) htmlModel.setValue(tmpl.html);
-                if (cssModel) cssModel.setValue(tmpl.css);
-                if (jsModel) jsModel.setValue(tmpl.js);
-                // Reset CDNs for custom starter layouts
-                const activeProj = state.projects[state.activeId];
-                activeProj.cdns = [];
-                saveStateToStorage();
-                renderCdnsList();
-                triggerLivePreviewBuild();
-                logMessageToDrawer("log", `Template "${tmpl.name}" loaded successfully.`);
-            }
-        }
-        /* ==========================================
-           8. SNAPSHOTS VERSION CONTROL ENGINE
-           11. CDN MANAGER CONTROLLERS
-           ========================================== */
-        const cdnList = document.getElementById("cdnList");
-        const cdnUrlInput = document.getElementById("cdnUrlInput");
-        const btnAddCdn = document.getElementById("btnAddCdn");
-        const cdnPresetChips = document.getElementById("cdnPresetChips");
-        function renderCdnsList() {
-            cdnList.innerHTML = "";
-            const activeProj = state.projects[state.activeId];
-            const cdns = activeProj.cdns || [];
-            if (cdns.length === 0) {
-                cdnList.innerHTML = `<div style="font-size:0.75rem; color:var(--text-muted); text-align:center; padding:10px 0;">No external libraries loaded.</div>`;
-            } else {
-                cdns.forEach((url, index) => {
-                    const isCss = url.endsWith('.css') || url.includes('/css') || url.includes('font-awesome') || url.includes('animate.css');
-                    const item = document.createElement("div");
-                    item.className = "cdn-item";
-                    item.innerHTML = `
-                        <span class="cdn-item-type ${isCss ? 'stylesheet' : 'script'}">${isCss ? 'CSS' : 'JS'}</span>
-                        <div class="cdn-item-url" title="${url}">${url}</div>
-                        <button class="project-action-btn" onclick="removeCdnLibrary(${index})" title="Remove CDN">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        </button>
-                    `;
-                    cdnList.appendChild(item);
-                });
-            }
-            // Sync preset chips state
-            renderPresetChips();
-        }
-        function renderPresetChips() {
-            cdnPresetChips.innerHTML = "";
-            const activeProj = state.projects[state.activeId];
-            const cdns = activeProj.cdns || [];
-            CDN_PRESETS.forEach(preset => {
-                const chip = document.createElement("span");
-                const isAdded = cdns.includes(preset.url);
-                chip.className = `cdn-preset-chip ${isAdded ? 'added' : ''}`;
-                chip.innerText = preset.name;
-                chip.addEventListener("click", () => {
-                    if (isAdded) {
-                        const index = cdns.indexOf(preset.url);
-                        if (index > -1) removeCdnLibrary(index);
-                    } else {
-                        addCdnLibrary(preset.url);
-                    }
-                });
-                cdnPresetChips.appendChild(chip);
-            });
-        }
-        function addCdnLibrary(url) {
-            const cleanUrl = url.trim();
-            if (!cleanUrl) return;
-            const activeProj = state.projects[state.activeId];
-            if (!activeProj.cdns) activeProj.cdns = [];
-            if (activeProj.cdns.includes(cleanUrl)) {
-                alert("This CDN library has already been added.");
-                return;
-            }
-            activeProj.cdns.push(cleanUrl);
-            saveStateToStorage();
-            renderCdnsList();
-            triggerLivePreviewBuild();
-            logMessageToDrawer("log", `CDN Library loaded: ${cleanUrl}`);
-        }
-        window.removeCdnLibrary = function(index) {
-            const activeProj = state.projects[state.activeId];
-            if (activeProj.cdns && activeProj.cdns[index]) {
-                const removed = activeProj.cdns.splice(index, 1);
-                saveStateToStorage();
-                renderCdnsList();
-                triggerLivePreviewBuild();
-                logMessageToDrawer("log", `CDN Library removed: ${removed[0]}`);
-            }
-        };
-        btnAddCdn.addEventListener("click", () => {
-            const url = cdnUrlInput.value;
-            if (url) {
-                addCdnLibrary(url);
-                cdnUrlInput.value = "";
-            }
-        });
-        cdnUrlInput.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                btnAddCdn.click();
-            }
-        });
-        /* ==========================================
-           12. SNAPSHOTS VERSION CONTROL ENGINE
-           ========================================== */
-        const snapshotListContainer = document.getElementById("snapshotListContainer");
-        function renderSnapshotsList() {
-        };
-        /* ==========================================
-           9. PROJECT IMPORT / EXPORT ENGINES
-           13. TWO-WAY VISUAL EDITING (DESIGN MODE)
-           ========================================== */
-        let visualEditMode = false;
-        const btnVisualEditToggle = document.getElementById("btnVisualEditToggle");
-        btnVisualEditToggle.addEventListener("click", () => {
-            toggleVisualEditMode();
-        });
-        function toggleVisualEditMode(targetState) {
-            visualEditMode = (targetState !== undefined) ? targetState : !visualEditMode;
-            
-            const iframe = document.getElementById("sandboxIframe");
-            
-            if (visualEditMode) {
-                btnVisualEditToggle.classList.add("success-glow");
-                btnVisualEditToggle.innerHTML = `
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                    Design Mode: ON
-                `;
-                logMessageToDrawer("log", "Design Mode Enabled. Click on elements in the preview iframe to edit them.");
-            } else {
-                btnVisualEditToggle.classList.remove("success-glow");
-                btnVisualEditToggle.innerHTML = `
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                    Design Mode: OFF
-                `;
-                logMessageToDrawer("log", "Design Mode Disabled.");
-            }
-            // Sync visual edit state directly to the iframe
-            if (iframe.contentWindow) {
-                iframe.contentWindow.postMessage({
-                    type: 'toggle-design-mode',
-                    enabled: visualEditMode
-                }, '*');
-            }
-        }
-        /* ==========================================
-           14. COMMAND PALETTE LOGIC
-           ========================================== */
-        const commandPalette = document.getElementById("commandPalette");
-        const commandPaletteInput = document.getElementById("commandPaletteInput");
-        const commandPaletteResults = document.getElementById("commandPaletteResults");
-        const COMMANDS = [
-            // Section: Operations
-            { label: "Run Code", desc: "Build & render updated code inside live sandbox", shortcut: "Ctrl+Enter", section: "Operations", action: () => triggerLivePreviewBuild() },
-            { label: "Format Code", desc: "Beautify HTML, CSS, and JS styles", shortcut: "Shift+Alt+F", section: "Operations", action: () => { if(window.editor) window.editor.getAction('editor.action.formatDocument').run(); } },
-            { label: "Minify Code", desc: "Collapse spacings and compress active document", shortcut: "", section: "Operations", action: () => triggerCodeCompression() },
-            { label: "Save Snapshot", desc: "Capture version checkpoint of code history", shortcut: "Ctrl+S", section: "Operations", action: () => createSnapshotFromState() },
-            { label: "Create Project", desc: "Configure names & spawn a blank workspace", shortcut: "", section: "Operations", action: () => triggerCreateProjectModal() },
-            { label: "Toggle Theme", desc: "Switch theme mode between Midnight & Ivory styles", shortcut: "", section: "Operations", action: () => toggleThemeColors() },
-            { label: "Toggle Visual Edit", desc: "Enable contentEditable visual sync in playground", shortcut: "", section: "Operations", action: () => toggleVisualEditMode() },
-            
-            // Section: Viewports
-            { label: "Set Viewport: Desktop", desc: "Full-width scale responsive emulator view", shortcut: "", section: "Views", action: () => changeViewportLayout("desktop") },
-            { label: "Set Viewport: Laptop", desc: "Bound preview workspace frame to 1024px", shortcut: "", section: "Views", action: () => changeViewportLayout("laptop") },
-            { label: "Set Viewport: Tablet", desc: "Bound preview workspace frame to 768px", shortcut: "", section: "Views", action: () => changeViewportLayout("tablet") },
-            { label: "Set Viewport: Mobile", desc: "Bound preview workspace frame to 375px", shortcut: "", section: "Views", action: () => changeViewportLayout("mobile") },
-            { label: "Toggle Orientation", desc: "Rotate device framework to landscape view", shortcut: "", section: "Views", action: () => togglePreviewOrientation() },
-            { label: "Presentation Mode", desc: "Toggle full preview mode (Hides editor)", shortcut: "", section: "Views", action: () => togglePresentationLayout() },
-            { label: "Fullscreen Preview", desc: "Make live preview display on full monitor", shortcut: "", section: "Views", action: () => toggleFullscreenPreview() },
-            
-            // Section: Navigation drawers
-            { label: "Open Project Manager", desc: "Focus projects sidebar cabinet", shortcut: "", section: "Navigation", action: () => showDrawerPanel("projects") },
-            { label: "Open Templates", desc: "Display quick start boilerplate layout catalog", shortcut: "", section: "Navigation", action: () => showDrawerPanel("templates") },
-            { label: "Open CDN Libraries", desc: "Inject third-party scripts/styles config links", shortcut: "", section: "Navigation", action: () => showDrawerPanel("cdn") },
-            { label: "Open Snapshots", desc: "Restore historical version coordinates of project", shortcut: "", section: "Navigation", action: () => showDrawerPanel("history") },
-            { label: "Open Export Panel", desc: "Download project files as HTML or packaged ZIP", shortcut: "", section: "Navigation", action: () => showDrawerPanel("export") },
-            { label: "Keyboard Shortcuts", desc: "View hotkey combinations documentation modal", shortcut: "", section: "Navigation", action: () => { document.getElementById("modalShortcuts").classList.add("active"); } },
-            
-            // Section: Exporting
-            { label: "Export Source ZIP", desc: "Package code bundle as standard web zip", shortcut: "", section: "Exporting", action: () => document.getElementById("btnExportZIP").click() },
-            { label: "Export Single HTML", desc: "Bundle HTML/CSS/JS files into one runnable document", shortcut: "", section: "Exporting", action: () => document.getElementById("btnExportHTML").click() }
-        ];
-        let highlightedCommandIndex = 0;
-        let filteredCommands = [];
-        function toggleCommandPalette(visible) {
-            if (visible) {
-                commandPalette.classList.add("active");
-                commandPaletteInput.value = "";
-                commandPaletteInput.focus();
-                filterCommandsList("");
-            } else {
-                commandPalette.classList.remove("active");
-                if (window.editor) window.editor.focus();
-            }
-        }
-        function filterCommandsList(query) {
-            const cleanQuery = query.toLowerCase().trim();
-            
-            if (cleanQuery === "") {
-                filteredCommands = [...COMMANDS];
-            } else {
-                filteredCommands = COMMANDS.filter(cmd => 
-                    cmd.label.toLowerCase().includes(cleanQuery) || 
-                    cmd.desc.toLowerCase().includes(cleanQuery) ||
-                    cmd.section.toLowerCase().includes(cleanQuery)
-                );
-            }
-            highlightedCommandIndex = 0;
-            renderCommandResults();
-        }
-        function renderCommandResults() {
-            commandPaletteResults.innerHTML = "";
-            if (filteredCommands.length === 0) {
-                commandPaletteResults.innerHTML = `<div class="command-palette-empty">No matching commands found.</div>`;
-                return;
-            }
-            // Group by section
-            let currentSection = "";
-            filteredCommands.forEach((cmd, index) => {
-                if (cmd.section !== currentSection) {
-                    currentSection = cmd.section;
-                    const sectionLabel = document.createElement("div");
-                    sectionLabel.className = "command-palette-section-label";
-                    sectionLabel.innerText = currentSection;
-                    commandPaletteResults.appendChild(sectionLabel);
-                }
-                const isSelected = (index === highlightedCommandIndex);
-                const item = document.createElement("div");
-                item.className = `command-palette-item ${isSelected ? 'selected' : ''}`;
-                
-                // Keyboard icon
-                const gearSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`;
-                const navSvg = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>`;
-                
-                const isNav = cmd.section === "Navigation";
-                item.innerHTML = `
-                    <div class="command-palette-item-icon">${isNav ? navSvg : gearSvg}</div>
-                    <div>
-                        <div class="command-palette-item-label">${cmd.label}</div>
-                        <div class="command-palette-item-desc">${cmd.desc}</div>
-                    </div>
-                    ${cmd.shortcut ? `<span class="command-palette-item-kbd">${cmd.shortcut}</span>` : ''}
-                `;
-                item.addEventListener("click", () => {
-                    executeCommand(cmd);
-                });
-                commandPaletteResults.appendChild(item);
-                if (isSelected) {
-                    item.scrollIntoView({ block: "nearest" });
-                }
-            });
-        }
-        function executeCommand(cmd) {
-            toggleCommandPalette(false);
-            if (cmd && cmd.action) {
-                cmd.action();
-            }
-        }
-        commandPaletteInput.addEventListener("input", (e) => {
-            filterCommandsList(e.target.value);
-        });
-        commandPaletteInput.addEventListener("keydown", (e) => {
-            if (e.key === "ArrowDown") {
-                e.preventDefault();
-                highlightedCommandIndex = (highlightedCommandIndex + 1) % filteredCommands.length;
-                renderCommandResults();
-            } else if (e.key === "ArrowUp") {
-                e.preventDefault();
-                highlightedCommandIndex = (highlightedCommandIndex - 1 + filteredCommands.length) % filteredCommands.length;
-                renderCommandResults();
-            } else if (e.key === "Enter") {
-                e.preventDefault();
-                if (filteredCommands[highlightedCommandIndex]) {
-                    executeCommand(filteredCommands[highlightedCommandIndex]);
-                }
-            } else if (e.key === "Escape") {
-                e.preventDefault();
-                toggleCommandPalette(false);
-            }
-        });
-        // Click outside closes command palette
-        commandPalette.addEventListener("click", (e) => {
-            if (e.target === commandPalette) {
-                toggleCommandPalette(false);
-            }
-        });
-        document.getElementById("btnCommandPalette").addEventListener("click", () => {
-            toggleCommandPalette(true);
-        });
-        // Global hotkey capture
-        document.addEventListener("keydown", (e) => {
-            // Ctrl + Shift + P
-            if (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === 'P') {
-                e.preventDefault();
-                toggleCommandPalette(true);
-            }
-            // Ctrl + Enter
-            if (e.ctrlKey && e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                triggerLivePreviewBuild();
-            }
-            // Ctrl + S
-            if (e.ctrlKey && e.key === "s") {
-                e.preventDefault();
-                createSnapshotFromState();
-            }
-            // Ctrl + 1, 2, 3 switching tabs
-            if (e.ctrlKey && e.key === "1") {
-                e.preventDefault();
-                switchEditorTab("html");
-            }
-            if (e.ctrlKey && e.key === "2") {
-                e.preventDefault();
-                switchEditorTab("css");
-            }
-            if (e.ctrlKey && e.key === "3") {
-                e.preventDefault();
-                switchEditorTab("js");
-            }
-            // Escape key closes modals
-            if (e.key === "Escape") {
-                document.querySelectorAll(".modal-overlay").forEach(el => el.classList.remove("active"));
-                toggleCommandPalette(false);
-            }
-        });
-        /* ==========================================
-           15. PROJECT IMPORT / EXPORT ENGINES
-           ========================================== */
-        const fileInputProject = document.getElementById("importFileProject");
-        document.getElementById("btnImportProject").addEventListener("click", () => {
-                            html: parsed.html,
-                            css: parsed.css,
-                            js: parsed.js || "",
-                            cdns: parsed.cdns || [],
-                            snapshots: [],
-                            updated: Date.now()
-                        };
-        // Export as self-contained HTML file
-        document.getElementById("btnExportHTML").addEventListener("click", () => {
-            const activeProj = state.projects[state.activeId];
-            
-            // Build CDN Head inclusions
-            let cdnHeads = "";
-            (activeProj.cdns || []).forEach(url => {
-                const isCss = url.endsWith('.css') || url.includes('/css') || url.includes('font-awesome') || url.includes('animate.css');
-                if (isCss) {
-                    cdnHeads += `<link rel="stylesheet" href="${url}">\n`;
-                } else {
-                    cdnHeads += `<script src="${url}"><\/script>\n`;
-                }
-            });
-            const doc = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${activeProj.name}</title>
-    ${cdnHeads}
-    <style>
-        ${activeProj.css}
-    </style>
-            const activeProj = state.projects[state.activeId];
-            const zip = new JSZip();
-            // Link stylesheet and script source inside packaged html
-            // Link CDNs and local stylesheet / script source inside packaged html
-            let cdnHeads = "";
-            (activeProj.cdns || []).forEach(url => {
-                const isCss = url.endsWith('.css') || url.includes('/css') || url.includes('font-awesome') || url.includes('animate.css');
-                if (isCss) {
-                    cdnHeads += `<link rel="stylesheet" href="${url}">\n`;
-                } else {
-                    cdnHeads += `<script src="${url}"><\/script>\n`;
-                }
-            });
-            const doc = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${activeProj.name}</title>
-    ${cdnHeads}
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    ${activeProj.html}
-    <script src="script.js"></script>
-</body>
-</html>`;
-            zip.file("index.html", doc);
-            zip.file("style.css", activeProj.css);
-            zip.file("script.js", activeProj.js);
-            // Package project config JSON for custom imports
-            const configJson = {
-                name: activeProj.name,
-                html: activeProj.html,
-                css: activeProj.css,
-                js: activeProj.js,
-                cdns: activeProj.cdns || []
-            };
-            zip.file("codeforge_config.json", JSON.stringify(configJson, null, 2));
-            zip.generateAsync({ type: "blob" }).then((content) => {
-                const url = URL.createObjectURL(content);
-                const a = document.createElement("a");
-        });
-        /* ==========================================
-           10. LAYOUT & VIEWPORT DEVICES MODE SELECTORS
-           16. LAYOUT & VIEWPORT DEVICES MODE SELECTORS
-           ========================================== */
-        const selectDeviceMode = document.getElementById("selectDeviceMode");
-        const previewViewportFrame = document.getElementById("previewViewportFrame");
-        selectDeviceMode.addEventListener("change", () => {
-            const mode = selectDeviceMode.value;
-            
-            // Remove previous device viewport styles
-            changeViewportLayout(selectDeviceMode.value);
-        });
-        function changeViewportLayout(mode) {
-            selectDeviceMode.value = mode;
-            previewViewportFrame.className = "preview-viewport-frame";
-            previewViewportFrame.classList.add(`device-${mode}`);
-        });
-        }
-        document.getElementById("btnOrientationToggle").addEventListener("click", () => {
-            previewViewportFrame.classList.toggle("orientation-landscape");
-            togglePreviewOrientation();
-        });
-        function togglePreviewOrientation() {
-            previewViewportFrame.classList.toggle("orientation-landscape");
-        }
-        // Presentation Mode (Hides editor completely)
-        document.getElementById("btnPresentationToggle").addEventListener("click", () => {
-            togglePresentationLayout();
-        });
-        function togglePresentationLayout() {
-            document.body.classList.toggle("presentation-mode");
-            if (window.editor) window.editor.layout();
-        });
-        }
-        // Fullscreen preview toggling
-        document.getElementById("btnFullscreenPreview").addEventListener("click", () => {
-            toggleFullscreenPreview();
-        });
-        function toggleFullscreenPreview() {
-            const iframeWrap = document.getElementById("pane-preview");
-            if (!document.fullscreenElement) {
-                iframeWrap.requestFullscreen().catch(err => {
-                    alert(`Error enabling fullscreen mode: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        });
-        }
-        /* ==========================================
-           11. COMPRESSION / FORMAT AND UTILITIES
-           17. COMPRESSION / FORMAT AND UTILITIES
-           ========================================== */
-        // Format Document using Monaco's native formatter
-        document.getElementById("btnFormatCode").addEventListener("click", () => {
-            if (window.editor) {
-                window.editor.getAction('editor.action.formatDocument').run();
-                logMessageToDrawer("log", "Document Formatted.");
-            }
-        });
-        // Compress Document logic
-        document.getElementById("btnMinifyCode").addEventListener("click", () => {
-            triggerCodeCompression();
-        });
-        function triggerCodeCompression() {
-            if (!window.editor) return;
-            const code = window.editor.getValue();
-            
-            // Simple compression (Removes comments and consolidates spaces)
-            let minified = code
-                .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '$1') // remove comments
-                .replace(/\s+/g, ' ') // collapse spacing
-                .trim();
-            window.editor.setValue(minified);
-            logMessageToDrawer("log", "Document Minified. Spaces collapsed.");
-        });
-        }
-        // Theme controllers
-        const btnThemeToggle = document.getElementById("btnThemeToggle");
-        btnThemeToggle.addEventListener("click", () => {
-            toggleThemeColors();
-        });
-        function toggleThemeColors() {
-            const isDark = document.body.getAttribute("data-theme") !== "light";
-            const newTheme = isDark ? "light" : "dark";
-            
-            document.body.setAttribute("data-theme", newTheme);
-            if (window.editor) {
-                monaco.editor.setTheme(newTheme === "dark" ? 'vs-dark' : 'vs');
-            }
-        });
-            logMessageToDrawer("log", `Theme changed to: ${newTheme}`);
-        }
-        // Keyboard Shortcuts Modal Toggle
-        const modalShortcuts = document.getElementById("modalShortcuts");
-        document.getElementById("btnShortcutModalTrigger").addEventListener("click", () => {
-            modalShortcuts.classList.add("active");
-        });
-        document.getElementById("btnCloseShortcutsModal").addEventListener("click", () => {
-            modalShortcuts.classList.remove("active");
-        });
-        /* ==========================================
-           12. INITIALIZATION LOOPS
-           18. INITIALIZATION LOOPS
-           ========================================== */
-        window.addEventListener("DOMContentLoaded", () => {
-            loadStateFromStorage();
-            renderProjectsList();
-            renderTemplatesGrid();
-            renderCdnsList();
-            renderSnapshotsList();
-            startMonacoEditor();
-        });
-    </script>
+      }, '*');
+    }, true);
+  <\/script>` : '';
+
+  const srcdoc = `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+${cdnTags()}
+<style>${css}</style>
+${designScript}
+</head><body>
+${html}
+<script>
+(function(){
+  var _l=console.log,_w=console.warn,_e=console.error;
+  function _s(t,a){window.parent.postMessage({type:'log',lt:t,msg:a.map(x=>x===null?'null':x===undefined?'undefined':typeof x==='object'?JSON.stringify(x):String(x)).join(' ')},'*');}
+  console.log=(...a)=>{_l(...a);_s('log',a);};
+  console.warn=(...a)=>{_w(...a);_s('warn',a);};
+  console.error=(...a)=>{_e(...a);_s('error',a);};
+  window.onerror=(m,u,l)=>{_s('error',[m+' (line '+l+')']);};
+})();
+<\/script>
+<script>try{${js}}catch(err){console.error(err.message);}<\/script>
+</body></html>`;
+
+  document.getElementById('sandbox').srcdoc = srcdoc;
+}
+
+/* ═══════════════════════════════════════
+   MESSAGE BUS (from iframe)
+═══════════════════════════════════════ */
+window.addEventListener('message', e => {
+  if (!e.data) return;
+  if (e.data.type === 'log') {
+    addLog(e.data.lt, e.data.msg);
+  }
+  if (e.data.type === 'select') {
+    handleElementSelect(e.data);
+  }
+  // Live HTML sync from contenteditable design mode
+  if (e.data.type === 'html-sync') {
+    syncHtmlFromPreview(e.data.html);
+  }
+});
+
+/* ═══════════════════════════════════════
+   ELEMENT SELECTION + PROPERTIES PANEL
+═══════════════════════════════════════ */
+function handleElementSelect(data) {
+  selectedPath = data.path;
+  renderPropsPanel(data);
+}
+
+function rgbToHex(rgb) {
+  if (!rgb || rgb === 'transparent' || !rgb.startsWith('rgb')) return '#000000';
+  const parts = rgb.match(/\d+/g);
+  if (!parts || parts.length < 3) return '#000000';
+  return '#' + parts.slice(0,3).map(n => parseInt(n).toString(16).padStart(2,'0')).join('');
+}
+
+function renderPropsPanel(data) {
+  const body = document.getElementById('propsBody');
+  const s = data.styles;
+  const a = data.attrs;
+
+  body.innerHTML = `
+    <div class="tag-chip">&lt;${data.tag}&gt;</div>
+    ${data.path !== 'body' ? `<div style="font-size:0.65rem;color:var(--txt3);margin-bottom:12px;word-break:break-all;">${data.path}</div>` : ''}
+
+    ${data.text !== null ? `
+    <div class="prop-group">
+      <div class="prop-label">Content</div>
+      <textarea id="pp-text" style="width:100%;padding:6px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--txt);font-size:0.75rem;resize:vertical;min-height:52px;font-family:inherit;">${escHtml(data.text)}</textarea>
+      <button class="small-btn" style="margin-top:5px;width:100%;" id="pp-text-apply">Apply Text</button>
+    </div>` : ''}
+
+    ${data.innerHTML !== null ? `
+    <div class="prop-group">
+      <div class="prop-label">Inner HTML</div>
+      <textarea id="pp-html" style="width:100%;padding:6px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--txt);font-size:0.72rem;resize:vertical;min-height:60px;font-family:'JetBrains Mono',monospace;">${escHtml(data.innerHTML)}</textarea>
+      <button class="small-btn" style="margin-top:5px;width:100%;" id="pp-html-apply">Apply HTML</button>
+    </div>` : ''}
+
+    <div class="prop-group">
+      <div class="prop-label">Colors</div>
+      <div class="prop-row"><span class="prop-name">Text Color</span><input type="color" class="prop-color" id="pp-color" value="${rgbToHex(s.color)}"></div>
+      <div class="prop-row"><span class="prop-name">Background</span><input type="color" class="prop-color" id="pp-bg" value="${rgbToHex(s.backgroundColor)}"></div>
+    </div>
+
+    <div class="prop-group">
+      <div class="prop-label">Typography</div>
+      <div class="prop-row"><span class="prop-name">Font Size</span><input class="prop-input" id="pp-fs" value="${s.fontSize}"></div>
+      <div class="prop-row"><span class="prop-name">Font Weight</span><input class="prop-input" id="pp-fw" value="${s.fontWeight}"></div>
+      <div class="prop-row"><span class="prop-name">Text Align</span>
+        <select class="prop-input" id="pp-ta" style="padding:3px 4px;">
+          ${['left','center','right','justify'].map(v=>`<option${s.textAlign===v?' selected':''}>${v}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+
+    <div class="prop-group">
+      <div class="prop-label">Spacing</div>
+      <div class="prop-row"><span class="prop-name">Padding</span><input class="prop-input" id="pp-pad" value="${s.padding}"></div>
+      <div class="prop-row"><span class="prop-name">Margin</span><input class="prop-input" id="pp-mar" value="${s.margin}"></div>
+      <div class="prop-row"><span class="prop-name">Border Radius</span><input class="prop-input" id="pp-br" value="${s.borderRadius}"></div>
+    </div>
+
+    <div class="prop-group">
+      <div class="prop-label">Size</div>
+      <div class="prop-row"><span class="prop-name">Width</span><input class="prop-input" id="pp-w" value="${s.width}"></div>
+      <div class="prop-row"><span class="prop-name">Height</span><input class="prop-input" id="pp-h" value="${s.height}"></div>
+      <div class="prop-row"><span class="prop-name">Opacity</span><input class="prop-input" id="pp-op" value="${s.opacity}"></div>
+    </div>
+
+    ${a.id || a.className ? `
+    <div class="prop-group">
+      <div class="prop-label">Attributes</div>
+      ${a.id ? `<div class="prop-row"><span class="prop-name">id</span><input class="prop-input" id="pp-id" value="${escHtml(a.id)}"></div>` : ''}
+      ${a.className ? `<div class="prop-row"><span class="prop-name">class</span><input class="prop-input" id="pp-cls" value="${escHtml(a.className)}"></div>` : ''}
+    </div>` : ''}
+
+    <button class="add-child-btn" id="pp-wrap-apply">Apply Style Changes</button>
+  `;
+
+  // Wire up handlers
+  function applyStyle(prop, val) {
+    injectStyleToCss(data.path, data.tag, prop, val);
+  }
+
+  // Text content
+  const ppText = document.getElementById('pp-text-apply');
+  if (ppText) ppText.onclick = () => {
+    applyTextContent(data.path, document.getElementById('pp-text').value);
+  };
+
+  // Inner HTML
+  const ppHtml = document.getElementById('pp-html-apply');
+  if (ppHtml) ppHtml.onclick = () => {
+    applyInnerHTML(data.path, document.getElementById('pp-html').value);
+  };
+
+  // Colors live
+  document.getElementById('pp-color').oninput = e => applyStyle('color', e.target.value);
+  document.getElementById('pp-bg').oninput = e => applyStyle('background-color', e.target.value);
+
+  // Apply all style changes
+  document.getElementById('pp-wrap-apply').onclick = () => {
+    const map = {
+      'font-size': 'pp-fs', 'font-weight': 'pp-fw', 'text-align': 'pp-ta',
+      'padding': 'pp-pad', 'margin': 'pp-mar', 'border-radius': 'pp-br',
+      'width': 'pp-w', 'height': 'pp-h', 'opacity': 'pp-op'
+    };
+    Object.entries(map).forEach(([prop, id]) => {
+      const el = document.getElementById(id);
+      if (el) applyStyle(prop, el.value);
+    });
+  };
+}
+
+function escHtml(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ─── inject or update CSS rule for a selector ─── */
+function injectStyleToCss(path, tag, prop, val) {
+  // Build a sensible selector from the path
+  const sel = buildCssSelector(path);
+  let css = mCss.getValue();
+
+  // Try to find existing rule block for this selector
+  const escapedSel = sel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const ruleRe = new RegExp('(' + escapedSel + '\\s*\\{[^}]*)(' + prop.replace(/-/g,'\\-') + '\\s*:[^;]*;)?', '');
+  
+  if (ruleRe.test(css)) {
+    // Update or insert property inside existing block
+    const propRe = new RegExp('(' + escapedSel + '\\s*\\{[^}]*)(' + prop.replace(/-/g,'\\-') + '\\s*:[^;]*;)', 'g');
+    if (propRe.test(css)) {
+      css = css.replace(propRe, (m, pre, oldProp) => pre + prop + ': ' + val + ';');
+    } else {
+      // Insert before closing brace of the block
+      css = css.replace(new RegExp('(' + escapedSel + '\\s*\\{[^}]*)\\}'), (m, pre) => pre + '\n  ' + prop + ': ' + val + ';\n}');
+    }
+  } else {
+    // Append a new rule
+    css += '\n\n' + sel + ' {\n  ' + prop + ': ' + val + ';\n}';
+  }
+
+  syncLock = true;
+  mCss.setValue(css);
+  activeProj().css = css;
+  syncLock = false;
+
+  // Switch to CSS tab to show the change
+  switchTab('css');
+  buildPreview();
+  setTimeout(() => switchTab('css'), 100);
+}
+
+function buildCssSelector(path) {
+  // Convert the path from the iframe into a reasonable selector
+  // Keep it simple: use the last 1-2 segments
+  const parts = path.split(' > ').filter(Boolean);
+  if (parts.length <= 2) return parts.join(' > ');
+  return parts.slice(-2).join(' > ');
+}
+
+/* ─── apply text content change to HTML ─── */
+function applyTextContent(path, newText) {
+  applyInnerHTML(path, newText);
+}
+
+function applyInnerHTML(path, newHtml) {
+  // We'll inject a tiny script to the iframe that updates the element
+  // and then syncs back the full body HTML
+  const iframe = document.getElementById('sandbox');
+  const msg = { type: 'apply-html', path, html: newHtml };
+  iframe.contentWindow.postMessage(msg, '*');
+}
+
+/* ─── Update HTML model from iframe sync ─── */
+function syncHtmlFromPreview(bodyHtml) {
+  if (!mHtml) return;
+  const current = mHtml.getValue();
+  // Extract body content only
+  const bodyMatch = current.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  if (bodyMatch) {
+    const newFull = current.replace(/<body[^>]*>[\s\S]*<\/body>/i, '<body>\n' + bodyHtml + '\n</body>');
+    syncLock = true;
+    mHtml.setValue(newFull);
+    activeProj().html = newFull;
+    syncLock = false;
+    switchTab('html');
+  } else {
+    syncLock = true;
+    mHtml.setValue(bodyHtml);
+    activeProj().html = bodyHtml;
+    syncLock = false;
+  }
+  setTimeout(() => {
+    window.editor && window.editor.getAction('editor.action.formatDocument') && window.editor.getAction('editor.action.formatDocument').run();
+  }, 100);
+}
+
+/* ═══════════════════════════════════════
+   DESIGN MODE TOGGLE
+═══════════════════════════════════════ */
+document.getElementById('btnDesignMode').addEventListener('click', function() {
+  designMode = !designMode;
+  this.textContent = '🎨 Design Mode: ' + (designMode ? 'ON' : 'OFF');
+  this.classList.toggle('active-state', designMode);
+  document.getElementById('previewFrame').classList.toggle('design-on', designMode);
+
+  // Open/close props panel
+  const pp = document.getElementById('propsPanel');
+  if (designMode) {
+    pp.classList.remove('closed');
+    document.getElementById('propsBody').innerHTML = '<div class="no-selection">Click any element in the preview to inspect &amp; edit it.</div>';
+  } else {
+    pp.classList.add('closed');
+    selectedPath = null;
+  }
+  buildPreview();
+  setTimeout(() => window.editor && window.editor.layout(), 310);
+});
+
+document.getElementById('btnPropsToggle').addEventListener('click', () => {
+  document.getElementById('propsPanel').classList.toggle('closed');
+  setTimeout(() => window.editor && window.editor.layout(), 310);
+});
+
+/* ═══════════════════════════════════════
+   CONSOLE
+═══════════════════════════════════════ */
+const consolePanel = document.getElementById('consolePanel');
+const consoleBody  = document.getElementById('consoleBody');
+
+document.getElementById('consoleHdr').addEventListener('click', e => {
+  if (e.target.closest('#btnClearLog')) return;
+  consolePanel.classList.toggle('closed');
+  document.getElementById('consoleChev').textContent = consolePanel.classList.contains('closed') ? '▲' : '▼';
+  setTimeout(() => window.editor && window.editor.layout(), 310);
+});
+document.getElementById('btnClearLog').addEventListener('click', () => { consoleBody.innerHTML = ''; });
+
+function addLog(type, msg) {
+  const el = document.createElement('div');
+  el.className = 'log-line ' + type;
+  const t = new Date().toLocaleTimeString().split(' ')[0];
+  el.innerHTML = `<span style="color:var(--txt3);margin-right:6px;">[${t}]</span>${escHtml(msg)}`;
+  consoleBody.appendChild(el);
+  consoleBody.scrollTop = consoleBody.scrollHeight;
+  if (type === 'error' && consolePanel.classList.contains('closed')) {
+    consolePanel.classList.remove('closed');
+    document.getElementById('consoleChev').textContent = '▼';
+    setTimeout(() => window.editor && window.editor.layout(), 310);
+  }
+}
+
+/* ═══════════════════════════════════════
+   RUN / FORMAT / MINIFY
+═══════════════════════════════════════ */
+document.getElementById('btnRun').addEventListener('click', () => { buildPreview(); addLog('log','Ran manually.'); });
+document.getElementById('btnFmt').addEventListener('click', () => {
+  window.editor && window.editor.getAction('editor.action.formatDocument').run();
+  addLog('log', 'Formatted.');
+});
+document.getElementById('btnMin').addEventListener('click', () => {
+  if (!window.editor) return;
+  const min = window.editor.getValue().replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm,'$1').replace(/\s+/g,' ').trim();
+  window.editor.setValue(min);
+  addLog('log','Minified.');
+});
+
+/* ═══════════════════════════════════════
+   PROJECTS
+═══════════════════════════════════════ */
+function renderProjects() {
+  const list = document.getElementById('projList');
+  list.innerHTML = '';
+  Object.entries(S.projects).forEach(([id, p]) => {
+    const el = document.createElement('div');
+    el.className = 'proj-item' + (id === S.activeId ? ' on' : '');
+    el.innerHTML = `
+      <div class="proj-name">${escHtml(p.name)}</div>
+      <div class="proj-date">${new Date(p.updated).toLocaleDateString()}</div>
+      <div class="proj-actions">
+        <button class="proj-btn" onclick="dupProj('${id}')">Dup</button>
+        <button class="proj-btn del" onclick="delProj('${id}')">Del</button>
+      </div>
+    `;
+    el.addEventListener('click', e => { if (e.target.closest('.proj-btn')) return; loadProj(id); });
+    list.appendChild(el);
+  });
+}
+
+function loadProj(id) {
+  S.activeId = id;
+  saveState();
+  const p = S.projects[id];
+  if (mHtml) { mHtml.setValue(p.html); mCss.setValue(p.css); mJs.setValue(p.js); }
+  renderProjects(); renderSnaps();
+  buildPreview();
+  addLog('log', 'Loaded: ' + p.name);
+}
+
+// Modal helpers
+let modalCb = null;
+function showModal(title, desc, defaultVal, label, cb) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalDesc').textContent = desc;
+  document.getElementById('modalInput').value = defaultVal;
+  document.getElementById('modalOk').textContent = label || 'OK';
+  document.getElementById('modalBd').classList.add('open');
+  modalCb = cb;
+  setTimeout(() => document.getElementById('modalInput').focus(), 50);
+}
+document.getElementById('modalCancel').onclick = () => document.getElementById('modalBd').classList.remove('open');
+document.getElementById('modalOk').onclick = () => {
+  const val = document.getElementById('modalInput').value.trim();
+  document.getElementById('modalBd').classList.remove('open');
+  if (modalCb) modalCb(val);
+};
+document.getElementById('modalInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('modalOk').click(); });
+
+document.getElementById('btnNewProj').addEventListener('click', () => {
+  showModal('New Project','Name your project.','Untitled Project','Create', name => {
+    const id = 'p_' + Date.now();
+    S.projects[id] = { name: name||'New Project', html:'<h1>Hello</h1>', css:'body{background:#000;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;}h1{font-size:2rem;}', js:'console.log("Ready");', snaps:[], updated:Date.now() };
+    loadProj(id);
+    renderProjects();
+  });
+});
+
+window.dupProj = function(id) {
+  const src = S.projects[id];
+  const nid = 'p_' + Date.now();
+  S.projects[nid] = { name: src.name + ' (copy)', html:src.html, css:src.css, js:src.js, snaps:[], updated:Date.now() };
+  saveState(); renderProjects();
+};
+window.delProj = function(id) {
+  if (Object.keys(S.projects).length <= 1) { alert('Cannot delete the last project!'); return; }
+  if (!confirm('Delete this project?')) return;
+  delete S.projects[id];
+  if (S.activeId === id) S.activeId = Object.keys(S.projects)[0];
+  loadProj(S.activeId);
+};
+
+/* ═══════════════════════════════════════
+   TEMPLATES
+═══════════════════════════════════════ */
+function renderTemplates() {
+  const grid = document.getElementById('tplGrid');
+  grid.innerHTML = '';
+  TEMPLATES.forEach(t => {
+    const el = document.createElement('div');
+    el.className = 'tpl-card';
+    el.innerHTML = `<div class="tpl-name">${t.name}</div><div class="tpl-desc">${t.desc}</div><div class="tpl-tags">${t.tags.map(x=>`<span class="tpl-tag">${x}</span>`).join('')}</div>`;
+    el.addEventListener('click', () => applyTemplate(t));
+    grid.appendChild(el);
+  });
+}
+function applyTemplate(t) {
+  const id = 'p_' + Date.now();
+  S.projects[id] = { name:t.name+' – '+new Date().toLocaleDateString(), html:t.html, css:t.css, js:t.js, snaps:[], updated:Date.now() };
+  loadProj(id);
+  document.querySelector('.sb-btn[data-drawer="projects"]').click();
+  addLog('log', 'Template applied: ' + t.name);
+}
+
+/* ═══════════════════════════════════════
+   CDN
+═══════════════════════════════════════ */
+function renderCdnList() {
+  const list = document.getElementById('cdnList');
+  if (!S.cdns.length) { list.innerHTML = '<div class="empty-state">No CDNs added yet.</div>'; return; }
+  list.innerHTML = S.cdns.map((c, i) => `
+    <div class="cdn-item-row">
+      <span class="cdn-badge ${c.type === 'stylesheet' ? 'css' : 'js'}">${c.type === 'stylesheet' ? 'CSS' : 'JS'}</span>
+      <span class="cdn-url" title="${c.url}">${c.url}</span>
+      <button class="cdn-rm" onclick="removeCdn(${i})">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  `).join('');
+}
+function renderPresets() {
+  const wrap = document.getElementById('presetWrap');
+  wrap.innerHTML = CDN_PRESETS.map(p => {
+    const added = S.cdns.some(c => c.url === p.url);
+    return `<button class="preset-chip ${added?'added':''}" onclick="addPreset('${p.url}','${p.type}','${p.name}')">${p.name}</button>`;
+  }).join('');
+}
+window.addPreset = function(url, type, name) {
+  if (S.cdns.some(c => c.url === url)) return;
+  S.cdns.push({url, type}); saveState(); renderCdnList(); renderPresets();
+  addLog('log', 'CDN added: ' + name);
+};
+window.removeCdn = function(i) {
+  S.cdns.splice(i, 1); saveState(); renderCdnList(); renderPresets();
+};
+document.getElementById('btnAddCdn').addEventListener('click', () => {
+  const input = document.getElementById('cdnInput');
+  const url = input.value.trim();
+  if (!url || !url.startsWith('http')) { alert('Enter a valid CDN URL.'); return; }
+  if (S.cdns.some(c => c.url === url)) { alert('Already added.'); return; }
+  const type = url.endsWith('.css') ? 'stylesheet' : 'script';
+  S.cdns.push({url, type}); saveState(); renderCdnList(); renderPresets();
+  input.value = ''; addLog('log', 'CDN added: ' + url);
+});
+document.getElementById('cdnInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('btnAddCdn').click(); });
+
+/* ═══════════════════════════════════════
+   SNAPSHOTS
+═══════════════════════════════════════ */
+function renderSnaps() {
+  const list = document.getElementById('snapList');
+  const p = activeProj();
+  if (!p.snaps || !p.snaps.length) { list.innerHTML = '<div class="empty-state">No snapshots yet. Press Ctrl+S to save one.</div>'; return; }
+  list.innerHTML = p.snaps.slice().reverse().map((sn, ri) => {
+    const i = p.snaps.length - 1 - ri;
+    return `<div class="snap-item">
+      <div><div class="snap-meta">Version ${p.snaps.length - ri}</div><div class="snap-time">${new Date(sn.ts).toLocaleTimeString()}</div></div>
+      <button class="snap-restore" onclick="restoreSnap(${i})">Restore</button>
+    </div>`;
+  }).join('');
+}
+
+function saveSnap() {
+  const p = activeProj();
+  if (!p.snaps) p.snaps = [];
+  p.snaps.push({ ts:Date.now(), html:mHtml.getValue(), css:mCss.getValue(), js:mJs.getValue() });
+  saveState(); renderSnaps();
+  addLog('log', 'Snapshot saved.');
+}
+document.getElementById('btnNewSnap').addEventListener('click', saveSnap);
+
+window.restoreSnap = function(i) {
+  const sn = activeProj().snaps[i];
+  if (!sn || !confirm('Restore to this snapshot?')) return;
+  mHtml.setValue(sn.html); mCss.setValue(sn.css); mJs.setValue(sn.js);
+  buildPreview(); addLog('log', 'Restored to snapshot.');
+};
+
+/* ═══════════════════════════════════════
+   EXPORT / IMPORT
+═══════════════════════════════════════ */
+document.getElementById('btnImport').addEventListener('click', () => document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    try {
+      const d = JSON.parse(ev.target.result);
+      if (d.html !== undefined) {
+        const id = 'p_' + Date.now();
+        S.projects[id] = { name:d.name||'Imported', html:d.html, css:d.css||'', js:d.js||'', snaps:[], updated:Date.now() };
+        loadProj(id); alert('Imported!');
+      } else alert('Invalid format.');
+    } catch(err) { alert('Parse error.'); }
+  };
+  r.readAsText(f);
+});
+
+document.getElementById('btnExportHTML').addEventListener('click', () => {
+  const p = activeProj();
+  const doc = `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<title>${p.name}</title>\n${cdnTags()}\n<style>\n${p.css}\n</style>\n</head>\n<body>\n${p.html}\n<script>\n${p.js}\n<\/script>\n</body>\n</html>`;
+  dl(doc, p.name.replace(/\s+/g,'_') + '.html', 'text/html');
+});
+
+document.getElementById('btnExportZip').addEventListener('click', () => {
+  const p = activeProj();
+  const zip = new JSZip();
+  const doc = `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<title>${p.name}</title>\n${cdnTags()}\n<link rel="stylesheet" href="style.css">\n</head>\n<body>\n${p.html}\n<script src="script.js"><\/script>\n</body>\n</html>`;
+  zip.file('index.html', doc);
+  zip.file('style.css', p.css);
+  zip.file('script.js', p.js);
+  zip.generateAsync({type:'blob'}).then(blob => dl(blob, p.name.replace(/\s+/g,'_') + '.zip', 'application/zip'));
+});
+
+function dl(content, name, type) {
+  const blob = content instanceof Blob ? content : new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+/* ═══════════════════════════════════════
+   DEVICE / VIEWPORT
+═══════════════════════════════════════ */
+document.getElementById('selDevice').addEventListener('change', e => {
+  const f = document.getElementById('previewFrame');
+  f.className = 'preview-frame' + (e.target.value !== 'full' ? ' ' + e.target.value : '') + (designMode ? ' design-on' : '');
+});
+document.getElementById('btnOrientation').addEventListener('click', () => {
+  document.getElementById('previewFrame').classList.toggle('rotated');
+});
+document.getElementById('btnFullscreen').addEventListener('click', () => {
+  const el = document.getElementById('prevPane');
+  if (!document.fullscreenElement) el.requestFullscreen().catch(console.error);
+  else document.exitFullscreen();
+});
+
+/* ═══════════════════════════════════════
+   THEME TOGGLE
+═══════════════════════════════════════ */
+document.getElementById('btnTheme').addEventListener('click', () => {
+  const isLight = document.body.getAttribute('data-theme') === 'light';
+  document.body.setAttribute('data-theme', isLight ? '' : 'light');
+  if (window.editor) monaco.editor.setTheme(isLight ? 'vs-dark' : 'vs');
+  if (!isLight) {
+    document.body.style.setProperty('--bg','#ffffff');
+    document.body.style.setProperty('--bg2','#f8fafc');
+    document.body.style.setProperty('--bg3','#f1f5f9');
+    document.body.style.setProperty('--bg4','#e2e8f0');
+    document.body.style.setProperty('--border','rgba(0,0,0,0.08)');
+    document.body.style.setProperty('--border2','rgba(0,0,0,0.12)');
+    document.body.style.setProperty('--txt','#0f172a');
+    document.body.style.setProperty('--txt2','#475569');
+    document.body.style.setProperty('--txt3','#94a3b8');
+  } else {
+    ['--bg','--bg2','--bg3','--bg4','--border','--border2','--txt','--txt2','--txt3'].forEach(v => document.body.style.removeProperty(v));
+  }
+});
+
+/* ═══════════════════════════════════════
+   COMMAND PALETTE
+═══════════════════════════════════════ */
+const COMMANDS = [
+  {label:'Run Code',desc:'Build & refresh preview',kbd:'Ctrl+Enter',icon:'<polygon points="5 3 19 12 5 21 5 3"/>',action:()=>buildPreview()},
+  {label:'Format Document',desc:'Auto-format current file',kbd:'Shift+Alt+F',icon:'<line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/>',action:()=>window.editor&&window.editor.getAction('editor.action.formatDocument').run()},
+  {label:'Save Snapshot',desc:'Create a restore point',kbd:'Ctrl+S',icon:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',action:saveSnap},
+  {label:'Switch to HTML',desc:'Focus the HTML editor',kbd:'Ctrl+1',icon:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',action:()=>switchTab('html')},
+  {label:'Switch to CSS',desc:'Focus the CSS editor',kbd:'Ctrl+2',icon:'<circle cx="12" cy="12" r="10"/>',action:()=>switchTab('css')},
+  {label:'Switch to JS',desc:'Focus the JS editor',kbd:'Ctrl+3',icon:'<polyline points="4 17 10 11 4 5"/>',action:()=>switchTab('js')},
+  {label:'New Project',desc:'Create a blank project',kbd:'',icon:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',action:()=>document.getElementById('btnNewProj').click()},
+  {label:'Toggle Design Mode',desc:'Enable visual element editing',kbd:'',icon:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>',action:()=>document.getElementById('btnDesignMode').click()},
+  {label:'Export HTML',desc:'Download as single HTML file',kbd:'',icon:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/>',action:()=>document.getElementById('btnExportHTML').click()},
+  {label:'Export ZIP',desc:'Download project as ZIP',kbd:'',icon:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/>',action:()=>document.getElementById('btnExportZip').click()},
+  {label:'Toggle Theme',desc:'Switch dark/light mode',kbd:'',icon:'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>',action:()=>document.getElementById('btnTheme').click()},
+  ...TEMPLATES.map(t=>({label:'Template: '+t.name,desc:t.desc,kbd:'',icon:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>',action:()=>applyTemplate(t)}))
+];
+
+const cpOverlay = document.getElementById('cpOverlay');
+const cpInput = document.getElementById('cpInput');
+const cpResults = document.getElementById('cpResults');
+let cpIdx = 0, cpFiltered = [];
+
+function openCP() {
+  cpOverlay.classList.add('open');
+  cpInput.value = '';
+  filterCP('');
+  setTimeout(() => cpInput.focus(), 30);
+}
+function closeCP() { cpOverlay.classList.remove('open'); }
+function filterCP(q) {
+  const lq = q.toLowerCase();
+  cpFiltered = q ? COMMANDS.filter(c => c.label.toLowerCase().includes(lq) || c.desc.toLowerCase().includes(lq)) : COMMANDS.slice(0,12);
+  cpIdx = 0; renderCP();
+}
+function renderCP() {
+  if (!cpFiltered.length) { cpResults.innerHTML = '<div style="text-align:center;padding:20px;color:var(--txt3);font-size:0.8rem;">No commands found.</div>'; return; }
+  cpResults.innerHTML = cpFiltered.map((c, i) => `
+    <div class="cp-item${i===cpIdx?' sel':''}" data-i="${i}">
+      <div class="cp-icon"><svg viewBox="0 0 24 24">${c.icon}</svg></div>
+      <div class="cp-text"><div class="cp-label">${c.label}</div><div class="cp-desc">${c.desc}</div></div>
+      ${c.kbd ? `<span class="cp-kbd">${c.kbd}</span>` : ''}
+    </div>
+  `).join('');
+  cpResults.querySelectorAll('.cp-item').forEach((el, i) => {
+    el.addEventListener('click', () => runCp(cpFiltered[i]));
+    el.addEventListener('mouseenter', () => { cpIdx = i; renderCP(); });
+  });
+  const sel = cpResults.querySelector('.sel');
+  sel && sel.scrollIntoView({block:'nearest'});
+}
+function runCp(cmd) { closeCP(); setTimeout(() => cmd.action(), 80); }
+
+cpInput.addEventListener('input', e => filterCP(e.target.value));
+cpInput.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown') { e.preventDefault(); cpIdx = Math.min(cpIdx+1, cpFiltered.length-1); renderCP(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); cpIdx = Math.max(cpIdx-1, 0); renderCP(); }
+  else if (e.key === 'Enter') { cpFiltered[cpIdx] && runCp(cpFiltered[cpIdx]); }
+  else if (e.key === 'Escape') closeCP();
+});
+cpOverlay.addEventListener('click', e => { if (e.target === cpOverlay) closeCP(); });
+document.getElementById('btnCP').addEventListener('click', openCP);
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey||e.metaKey) && e.shiftKey && e.key.toLowerCase()==='p') { e.preventDefault(); cpOverlay.classList.contains('open') ? closeCP() : openCP(); }
+  if (e.key === 'Escape') { closeCP(); document.getElementById('modalBd').classList.remove('open'); }
+});
+
+/* ═══════════════════════════════════════
+   ADDITIONAL IFRAME MESSAGE HANDLING
+   (Apply HTML changes from props panel)
+═══════════════════════════════════════ */
+// Inject a listener into the iframe for apply-html messages
+// We do this by rebuilding the preview with an extra listener
+window.addEventListener('message', e => {
+  if (!e.data) return;
+  if (e.data.type === 'apply-html') {
+    // This won't arrive here directly since we send to iframe
+    // The iframe sends back the updated body
+  }
+  if (e.data.type === 'body-updated') {
+    syncHtmlFromPreview(e.data.html);
+    buildPreview();
+  }
+});
+
+// Override buildPreview to include the apply-html handler in the iframe
+const _origBuildPreview = buildPreview;
+function buildPreviewFull() {
+  if (!mHtml) return;
+  const html = mHtml.getValue();
+  const css  = mCss.getValue();
+  const js   = mJs.getValue();
+
+  const designHooks = designMode ? `
+  <style>
+    [data-cfs-hover]{outline:2px dashed rgba(91,106,240,0.5)!important;cursor:pointer!important;}
+    [data-cfs-selected]{outline:2px solid #5b6af0!important;}
+  </style>
+  <script>
+    let _sel=null;
+    function _path(el){if(!el||el===document.body)return 'body';const tag=el.tagName.toLowerCase();const par=el.parentElement;const sibs=par?Array.from(par.children).filter(c=>c.tagName===el.tagName):[];const idx=sibs.indexOf(el);const nth=sibs.length>1?':nth-of-type('+(idx+1)+')':'';return _path(par)+' > '+tag+nth;}
+    document.addEventListener('mouseover',e=>{const el=e.target;if(el===document.body||el===document.documentElement)return;el.setAttribute('data-cfs-hover','1');e.stopPropagation();},true);
+    document.addEventListener('mouseout',e=>{e.target.removeAttribute('data-cfs-hover');},true);
+    document.addEventListener('click',e=>{
+      e.preventDefault();e.stopPropagation();
+      if(_sel)_sel.removeAttribute('data-cfs-selected');
+      _sel=e.target;
+      if(_sel===document.body||_sel===document.documentElement){_sel=null;return;}
+      _sel.setAttribute('data-cfs-selected','1');
+      const cs=window.getComputedStyle(_sel);
+      const isTextOnly=_sel.childNodes.length===1&&_sel.childNodes[0].nodeType===3;
+      window.parent.postMessage({type:'select',path:_path(_sel),tag:_sel.tagName.toLowerCase(),text:isTextOnly?_sel.textContent:null,innerHTML:_sel.innerHTML,styles:{color:cs.color,backgroundColor:cs.backgroundColor,fontSize:cs.fontSize,fontWeight:cs.fontWeight,padding:cs.padding,margin:cs.margin,borderRadius:cs.borderRadius,textAlign:cs.textAlign,display:cs.display,width:cs.width,height:cs.height,opacity:cs.opacity},attrs:{id:_sel.id||'',className:_sel.className||'',href:_sel.href||'',src:_sel.src||''}},'*');
+    },true);
+    // Listen for apply-html from parent
+    window.addEventListener('message',e=>{
+      if(!e.data)return;
+      if(e.data.type==='apply-html'){
+        try{
+          const path=e.data.path;
+          const parts=path.split(' > ').filter(Boolean);
+          let el=document.body;
+          for(let i=1;i<parts.length;i++){
+            const seg=parts[i];
+            const nthM=seg.match(/([a-z]+):nth-of-type\\((\\d+)\\)/);
+            if(nthM){const tag=nthM[1];const n=parseInt(nthM[2]);const children=Array.from(el.children).filter(c=>c.tagName.toLowerCase()===tag);el=children[n-1]||el;}
+            else{const found=el.querySelector(seg);if(found)el=found;}
+          }
+          el.innerHTML=e.data.html;
+          window.parent.postMessage({type:'body-updated',html:document.body.innerHTML},'*');
+        }catch(err){console.error('apply-html error:',err);}
+      }
+    });
+  <\/script>` : '';
+
+  const srcdoc = `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+${cdnTags()}
+<style>${css}</style>
+${designHooks}
+</head><body>
+${html}
+<script>
+(function(){
+  var _l=console.log,_w=console.warn,_e=console.error;
+  function _s(t,a){window.parent.postMessage({type:'log',lt:t,msg:a.map(x=>x===null?'null':x===undefined?'undefined':typeof x==='object'?JSON.stringify(x):String(x)).join(' ')},'*');}
+  console.log=function(){_l.apply(this,arguments);_s('log',[].slice.call(arguments));};
+  console.warn=function(){_w.apply(this,arguments);_s('warn',[].slice.call(arguments));};
+  console.error=function(){_e.apply(this,arguments);_s('error',[].slice.call(arguments));};
+  window.onerror=function(m,u,l){_s('error',[m+' (line '+l+')']);};
+})();
+<\/script>
+<script>try{${js}}catch(err){console.error(err.message);}<\/script>
+</body></html>`;
+
+  document.getElementById('sandbox').srcdoc = srcdoc;
+}
+
+// Replace buildPreview with the full version
+window.buildPreview = buildPreviewFull;
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', () => {
+  loadState();
+  renderProjects();
+  renderSnaps();
+  renderTemplates();
+  renderCdnList();
+  renderPresets();
+  initMonaco();
+});
+</script>
 </body>
 </html>
