@@ -447,7 +447,6 @@
 </head>
 <body>
 <div class="ide-container">
-    <!-- SIDEBAR -->
     <aside class="action-sidebar">
         <div class="sidebar-logo">
             <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
@@ -481,9 +480,7 @@
         <div style="font-size:0.65rem;color:var(--text-muted);font-weight:700;transform:rotate(-90deg);margin-top:24px;">V2.0</div>
     </aside>
 
-    <!-- DRAWER PANEL -->
     <section class="drawer-panel" id="drawerPanel">
-        <!-- Projects -->
         <div class="drawer-section" id="drawer-projects" style="display:flex;flex-direction:column;height:100%;">
             <div class="drawer-header">
                 <span class="drawer-title">Projects</span>
@@ -496,7 +493,6 @@
             </div>
         </div>
 
-        <!-- Templates -->
         <div class="drawer-section" id="drawer-templates" style="display:none;flex-direction:column;height:100%;">
             <div class="drawer-header">
                 <span class="drawer-title">Templates</span>
@@ -506,7 +502,6 @@
             </div>
         </div>
 
-        <!-- CDN Manager -->
         <div class="drawer-section" id="drawer-cdn" style="display:none;flex-direction:column;height:100%;">
             <div class="drawer-header">
                 <span class="drawer-title">CDN Libraries</span>
@@ -527,7 +522,6 @@
             </div>
         </div>
 
-        <!-- History Snapshots -->
         <div class="drawer-section" id="drawer-history" style="display:none;flex-direction:column;height:100%;">
             <div class="drawer-header">
                 <span class="drawer-title">History Snapshots</span>
@@ -540,7 +534,6 @@
             </div>
         </div>
 
-        <!-- Export -->
         <div class="drawer-section" id="drawer-export" style="display:none;flex-direction:column;height:100%;">
             <div class="drawer-header">
                 <span class="drawer-title">Export Pack</span>
@@ -563,7 +556,6 @@
         </div>
     </section>
 
-    <!-- MAIN WORKSPACE -->
     <main class="workspace-split" id="workspaceSplit">
         <section class="split-pane" id="pane-editor">
             <div class="panel-header">
@@ -619,6 +611,10 @@
                     <button class="btn-action secondary" id="btnOrientationToggle" title="Toggle Orientation">Orientation</button>
                 </div>
                 <div class="header-btn-row">
+                    <button class="btn-action secondary" id="btnVisualEditToggle" title="Enable Visual Editing (Two-way sync)">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        Design Mode: OFF
+                    </button>
                     <button class="btn-action secondary" id="btnPresentationToggle">Presentation</button>
                     <button class="btn-action secondary" id="btnFullscreenPreview">Fullscreen</button>
                 </div>
@@ -632,7 +628,6 @@
     </main>
 </div>
 
-<!-- COMMAND PALETTE -->
 <div class="command-palette-overlay" id="commandPalette">
     <div class="command-palette-box">
         <div class="command-palette-search-row">
@@ -648,7 +643,6 @@
     </div>
 </div>
 
-<!-- PROJECT NAME MODAL -->
 <div class="modal-overlay" id="modalProjectName">
     <div class="modal-card">
         <h3 class="modal-title" id="projectNameModalTitle">New Project</h3>
@@ -661,7 +655,6 @@
     </div>
 </div>
 
-<!-- SHORTCUTS MODAL -->
 <div class="modal-overlay" id="modalShortcuts">
     <div class="modal-card" style="max-width:580px;">
         <h3 class="modal-title">Keyboard Shortcuts</h3>
@@ -960,8 +953,11 @@ function startMonacoEditor() {
             else if (activeFileTab === "css") activeP.css = codeVal;
             else if (activeFileTab === "js") activeP.js = codeVal;
             activeP.updated = Date.now();
+            
             if (document.getElementById("checkAutoSave").checked) saveStateToStorage();
-            if (document.getElementById("checkAutoRun").checked) {
+            
+            // Rebuild if Auto Run is on AND it's not currently syncing from a visual edit
+            if (document.getElementById("checkAutoRun").checked && !isVisualSyncing) {
                 clearTimeout(runDebounce);
                 runDebounce = setTimeout(triggerLivePreviewBuild, 800);
             }
@@ -993,12 +989,35 @@ editorTabs.forEach(tab => {
 });
 
 /* ==========================================
-   7. SANDBOX PREVIEW & CONSOLE
+   7. SANDBOX PREVIEW & CONSOLE & TWO-WAY SYNC
    ========================================== */
 const consoleLogList = document.getElementById("consoleLogList");
 
+// Global flags for visual editing
+let isVisualSyncing = false; 
+let visualEditMode = false;
+
 window.addEventListener("message", (e) => {
-    if (e.data && e.data.type === 'console') logMessageToDrawer(e.data.logType, e.data.message);
+    // Handle Console Logs
+    if (e.data && e.data.type === 'console') {
+        logMessageToDrawer(e.data.logType, e.data.message);
+    }
+    
+    // Handle Visual HTML Syncing
+    if (e.data && e.data.type === 'sync-html') {
+        if (htmlModel && htmlModel.getValue() !== e.data.html) {
+            isVisualSyncing = true; // Prevent infinite reload loop
+            htmlModel.setValue(e.data.html);
+            
+            // Auto-format the code so the editor doesn't look messy
+            if (window.editor && activeFileTab === "html") {
+                setTimeout(() => window.editor.getAction('editor.action.formatDocument').run(), 50);
+            }
+            
+            // Reset the lock after changes settle
+            setTimeout(() => { isVisualSyncing = false; }, 200);
+        }
+    }
 });
 
 function logMessageToDrawer(type, message) {
@@ -1022,12 +1041,58 @@ function buildCdnTags() {
     }).join('\n    ');
 }
 
+// Logic for the Design Mode Toggle Button
+document.getElementById("btnVisualEditToggle").addEventListener("click", (e) => {
+    visualEditMode = !visualEditMode;
+    const btn = e.currentTarget;
+    
+    if (visualEditMode) {
+        btn.classList.replace("secondary", "primary");
+        btn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Design Mode: ON`;
+    } else {
+        btn.classList.replace("primary", "secondary");
+        btn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Design Mode: OFF`;
+    }
+    triggerLivePreviewBuild();
+});
+
 function triggerLivePreviewBuild() {
     if (!htmlModel) return;
     const html = htmlModel.getValue();
     const css  = cssModel.getValue();
     const js   = jsModel.getValue();
     const cdnTags = buildCdnTags();
+
+    // Inject tracking script if Design Mode is enabled
+    const visualSyncScript = visualEditMode ? `
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.contentEditable = "true";
+            document.body.style.boxShadow = "inset 0 0 0 4px rgba(99, 102, 241, 0.4)";
+            
+            // Prevent accidental link navigation while designing
+            document.addEventListener("click", e => {
+                if(e.target.closest("a")) e.preventDefault();
+            });
+
+            let syncTimeout;
+            const observer = new MutationObserver(() => {
+                clearTimeout(syncTimeout);
+                syncTimeout = setTimeout(() => {
+                    window.parent.postMessage({
+                        type: 'sync-html',
+                        html: document.body.innerHTML
+                    }, '*');
+                }, 300); // 300ms debounce on visual typing
+            });
+
+            observer.observe(document.body, { 
+                childList: true, characterData: true, subtree: true, attributes: true 
+            });
+            console.log("🎨 Design Mode enabled. You can now edit text directly in the preview.");
+        });
+    <\/script>` : '';
+
     const srcDoc = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1035,6 +1100,7 @@ function triggerLivePreviewBuild() {
     <title>Preview</title>
     ${cdnTags}
     <style>${css}</style>
+    ${visualSyncScript}
 </head>
 <body>
     ${html}
