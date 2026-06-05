@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CodeForge Studio v3 - Unified</title>
+<title>CodeForge Studio v3 - Ultimate Unified</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
 <style>
-/* ── BASE STYLES REMAIN UNCHANGED ── */
 :root {
   --bg: #0a0b0f;
   --bg2: #0f1117;
@@ -29,7 +28,6 @@
   --sidebar-w: 52px;
   --drawer-w: 240px;
   --header-h: 44px;
-  --tab-h: 34px;
   --radius: 8px;
   --trans: 0.18s ease;
 }
@@ -41,7 +39,7 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--txt);}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 
-/* ── UI COMPONENTS (SIDEBAR, DRAWER, PANELS) ── */
+/* ── SIDEBAR ── */
 .sidebar{width:var(--sidebar-w);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:4px;z-index:20;flex-shrink:0;}
 .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;margin-bottom:8px;box-shadow:0 0 20px var(--accent-glow);flex-shrink:0;}
 .logo svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;}
@@ -52,6 +50,8 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--txt);}
 .sb-btn[data-tip]::after{content:attr(data-tip);position:absolute;left:calc(var(--sidebar-w) + 4px);background:#1e2130;color:var(--txt);padding:4px 8px;border-radius:5px;font-size:0.72rem;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:100;border:1px solid var(--border2);}
 .sb-btn:hover[data-tip]::after{opacity:1;}
 .sb-sep{width:30px;height:1px;background:var(--border);margin:4px 0;}
+
+/* ── DRAWER ── */
 .drawer{width:var(--drawer-w);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:width var(--trans);flex-shrink:0;}
 .drawer.closed{width:0;border:none;}
 .dh{height:var(--header-h);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 14px;flex-shrink:0;}
@@ -59,6 +59,8 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--txt);}
 .dc{flex:1;padding:12px;overflow-y:auto;}
 .d-section{display:none;flex-direction:column;height:100%;}
 .d-section.active{display:flex;}
+
+/* Project list & Templates & CDN & Snapshots */
 .proj-list{display:flex;flex-direction:column;gap:6px;}
 .proj-item{padding:8px 10px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:all var(--trans);}
 .proj-item:hover,.proj-item.on{border-color:var(--accent);}
@@ -96,10 +98,8 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--txt);}
 .snap-time{font-size:0.65rem;color:var(--txt3);margin-top:1px;}
 .snap-restore{font-size:0.7rem;color:var(--accent);font-weight:600;}
 
-/* ── WORKSPACE ── */
+/* ── WORKSPACE & EDITOR PANE ── */
 .workspace{display:flex;flex:1;overflow:hidden;position:relative;}
-
-/* ── EDITOR PANE (Removed Tab Bar CSS, Simplified) ── */
 .editor-pane{display:flex;flex-direction:column;background:var(--bg2);overflow:hidden;width:50%;min-width:200px;}
 .pane-header{height:var(--header-h);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 12px;flex-shrink:0;gap:8px;}
 .editor-wrap{flex:1;overflow:hidden;position:relative;}
@@ -128,8 +128,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--txt);}
 .preview-frame.tab{width:768px;height:1024px;}
 .preview-frame.lap{width:1024px;height:768px;}
 .sandbox{width:100%;height:100%;border:none;}
-
-/* Design mode overlay border */
 .preview-frame.design-on{outline:3px solid var(--accent);}
 
 /* ── BUTTONS ── */
@@ -202,6 +200,7 @@ select.styled:focus{border-color:var(--accent);}
   </div>
   <button class="sb-btn on" data-drawer="projects" data-tip="Projects"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></button>
   <button class="sb-btn" data-drawer="templates" data-tip="Templates"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></button>
+  <button class="sb-btn" data-drawer="cdn" data-tip="CDN Manager"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
   <button class="sb-btn" data-drawer="history" data-tip="Snapshots"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button>
   <button class="sb-btn" data-drawer="export" data-tip="Export"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
   <div class="sb-sep"></div>
@@ -221,6 +220,20 @@ select.styled:focus{border-color:var(--accent);}
     <div class="dh"><span class="dh-title">Templates</span></div>
     <div class="dc" id="tplGrid"></div>
   </div>
+  <div class="d-section" id="dsec-cdn">
+    <div class="dh"><span class="dh-title">CDN Libraries</span></div>
+    <div class="dc">
+      <div id="cdnList"></div>
+      <div class="cdn-add-row">
+        <input class="cdn-input" id="cdnInput" placeholder="https://cdn.example.com/lib.js">
+        <button class="small-btn" id="btnAddCdn">Add</button>
+      </div>
+      <div style="margin-top:10px;">
+        <div class="label-txt" style="margin-bottom:6px;">Quick Presets</div>
+        <div class="preset-wrap" id="presetWrap"></div>
+      </div>
+    </div>
+  </div>
   <div class="d-section" id="dsec-history">
     <div class="dh">
       <span class="dh-title">Snapshots</span>
@@ -232,10 +245,11 @@ select.styled:focus{border-color:var(--accent);}
     <div class="dh"><span class="dh-title">Export</span></div>
     <div class="dc" style="display:flex;flex-direction:column;gap:8px;">
       <button class="btn" id="btnExportHTML" style="width:100%;justify-content:center;">Export Single HTML</button>
+      <button class="btn" id="btnExportZip" style="width:100%;justify-content:center;">Download ZIP</button>
       <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px;">
         <div class="label-txt" style="margin-bottom:6px;">Import Document</div>
-        <input type="file" id="importFile" accept=".html" style="display:none;">
-        <button class="btn" id="btnImport" style="width:100%;justify-content:center;">Import HTML</button>
+        <input type="file" id="importFile" accept=".html,.txt" style="display:none;">
+        <button class="btn" id="btnImport" style="width:100%;justify-content:center;">Import File</button>
       </div>
     </div>
   </div>
@@ -295,7 +309,7 @@ select.styled:focus{border-color:var(--accent);}
   <div class="props-panel closed" id="propsPanel">
     <div class="props-hdr"><span class="props-title">Properties</span></div>
     <div class="props-body" id="propsBody">
-      <div class="no-selection">Click any element in the preview with Design Mode ON to inspect &amp; edit its properties.</div>
+      <div class="no-selection">Click any element in the preview with Design Mode ON to inspect &amp; edit its properties. Drag and drop elements inside the preview window to reposition them.</div>
     </div>
   </div>
 </div>
@@ -336,64 +350,49 @@ window.MonacoEnvironment = {
 const TEMPLATES = [
   {
     id:'blank', name:'Blank Canvas', desc:'Clean start.', tags:['minimal'],
-    code:`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <style>
-    body { font-family: system-ui, sans-serif; background: #0f1015; color: #f1f5f9; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-    .box { text-align: center; padding: 40px; }
-    button { padding: 10px 24px; background: #6366f1; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
-  </style>
-</head>
-<body>
-  <div class="box">
-    <h1>Hello World</h1>
-    <p>Start building!</p>
-    <button onclick="alert('hi')">Click me</button>
-  </div>
-</body>
-</html>`
+    code:`<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <style>\n    * { box-sizing: border-box; margin: 0; padding: 0; }\n    body { font-family: system-ui, sans-serif; background: #0f1015; color: #f1f5f9; display: flex; align-items: center; justify-content: center; min-height: 100vh; }\n    .box { text-align: center; padding: 40px; }\n    h1 { font-size: 2.5rem; margin-bottom: 12px; }\n    p { color: #94a3b8; margin-bottom: 20px; }\n    button { padding: 10px 24px; background: #6366f1; color: #fff; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; }\n  </style>\n</head>\n<body>\n  <div class="box">\n    <h1>Hello World</h1>\n    <p>Start building!</p>\n    <button onclick="alert('hi')">Click me</button>\n  </div>\n  <script>\n    console.log("Ready!");\n  <\/script>\n</body>\n</html>`
   },
   {
     id:'particle', name:'Particle System', desc:'Animated canvas particle demo.', tags:['canvas','animation'],
-    code:`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #020409; overflow: hidden; font-family: system-ui, sans-serif; color: #fff; }
-    canvas { position: fixed; top: 0; left: 0; }
-    .ui { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-    h1 { font-size: 3rem; font-weight: 800; background: linear-gradient(135deg, #6366f1, #d946ef); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    button { padding: 12px 28px; background: #6366f1; color: #fff; border: none; border-radius: 10px; cursor: pointer; margin-top:20px; }
-  </style>
-</head>
-<body>
-  <canvas id="c"></canvas>
-  <div class="ui">
-    <h1>CodeForge</h1>
-    <p>Unified Visual Builder</p>
-    <button id="btn">Launch</button>
-  </div>
-  <script>
-    const c=document.getElementById("c"),ctx=c.getContext("2d");let w=c.width=innerWidth,h=c.height=innerHeight;window.addEventListener("resize",()=>{w=c.width=innerWidth;h=c.height=innerHeight;});const pts=Array.from({length:100},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-0.5)*0.8,vy:(Math.random()-0.5)*0.8,r:Math.random()*2+1}));function loop(){ctx.clearRect(0,0,w,h);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle="rgba(99,102,241,0.6)";ctx.fill();});requestAnimationFrame(loop);}loop();document.getElementById("btn").onclick=()=>console.log("Launched!");
-  <\/script>
-</body>
-</html>`
+    code:`<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <style>\n    *{margin:0;padding:0;box-sizing:border-box;}\n    body{background:#020409;overflow:hidden;font-family:system-ui,sans-serif;color:#fff;}\n    canvas{position:fixed;top:0;left:0;}\n    .ui{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}\n    h1{font-size:3rem;font-weight:800;background:linear-gradient(135deg,#6366f1,#d946ef);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}\n    p{color:#94a3b8;margin:10px 0 24px;}\n    button{padding:12px 28px;background:#6366f1;color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;}\n  </style>\n</head>\n<body>\n  <canvas id="c"></canvas>\n  <div class="ui">\n    <h1>CodeForge</h1>\n    <p>High-performance unified playground</p>\n    <button id="btn">Launch</button>\n  </div>\n  <script>\n    const c=document.getElementById("c"),ctx=c.getContext("2d");let w=c.width=innerWidth,h=c.height=innerHeight;window.addEventListener("resize",()=>{w=c.width=innerWidth;h=c.height=innerHeight;});const pts=Array.from({length:100},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-0.5)*0.8,vy:(Math.random()-0.5)*0.8,r:Math.random()*2+1}));function loop(){ctx.clearRect(0,0,w,h);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle="rgba(99,102,241,0.6)";ctx.fill();});requestAnimationFrame(loop);}loop();document.getElementById("btn").onclick=()=>console.log("Launched!");\n  <\/script>\n</body>\n</html>`
+  },
+  {
+    id:'dashboard', name:'Dashboard Layout', desc:'Sidebar + stats + cards.', tags:['layout','app'],
+    code:`<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <style>\n    *{box-sizing:border-box;margin:0;padding:0;}\n    body,html{height:100%;font-family:system-ui,sans-serif;}\n    .shell{display:flex;flex-direction:column;height:100vh;background:#0b0e18;color:#f1f5f9;}\n    .nav{height:52px;background:#0d1017;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:24px;padding:0 20px;}\n    .brand{font-weight:800;font-size:1.05rem;}\n    .nav-links{display:flex;gap:4px;}\n    .nl{padding:5px 12px;border-radius:6px;color:#94a3b8;text-decoration:none;font-size:0.85rem;}\n    .nl.active{background:rgba(99,102,241,0.15);color:#f1f5f9;}\n    .body{display:flex;flex:1;overflow:hidden;}\n    .side{width:180px;background:#0a0d14;padding:12px 8px;border-right:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;gap:2px;}\n    .si{display:block;padding:8px 10px;border-radius:7px;color:#64748b;text-decoration:none;font-size:0.82rem;}\n    .si.active{background:rgba(99,102,241,0.12);color:#f1f5f9;}\n    .main{flex:1;overflow-y:auto;padding:24px;}\n    h1{font-size:1.5rem;font-weight:800;margin-bottom:20px;}\n    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}\n    .sc{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:16px;}\n    .sv{font-size:1.5rem;font-weight:800;}\n    .sk{font-size:0.75rem;color:#64748b;margin-top:4px;}\n    .sg{font-size:0.75rem;color:#34d399;margin-top:6px;}\n    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}\n    .card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px;border-top:3px solid var(--c);}\n    .ct{font-size:0.92rem;font-weight:700;margin-bottom:6px;}\n    .cd{font-size:0.78rem;color:#64748b;line-height:1.5;}\n  </style>\n</head>\n<body>\n  <div class="shell">\n    <nav class="nav"><div class="brand">AppShell</div><div class="nav-links"><a class="nl active" href="#">Dashboard</a><a class="nl" href="#">Analytics</a><a class="nl" href="#">Settings</a></div></nav>\n    <div class="body">\n      <aside class="side"><a class="si active" href="#">🏠 Home</a><a class="si" href="#">📊 Stats</a><a class="si" href="#">👤 Profile</a><a class="si" href="#">⚙️ Config</a></aside>\n      <main class="main">\n        <h1>Dashboard</h1>\n        <div class="stats"><div class="sc"><div class="sv">2,847</div><div class="sk">Views</div><div class="sg">+12%</div></div><div class="sc"><div class="sv">384</div><div class="sk">Users</div><div class="sg">+8%</div></div><div class="sc"><div class="sv">$5,210</div><div class="sk">Revenue</div><div class="sg up">↑</div></div><div class="sc"><div class="sv">97%</div><div class="sk">Uptime</div></div></div>\n        <div class="cards"><div class="card" style="--c:#6366f1"><div class="ct">Design Systems</div><div class="cd">Modular patterns for scalable UIs</div></div><div class="card" style="--c:#06b6d4"><div class="ct">Performance</div><div class="cd">Sub-50ms interaction budgets</div></div><div class="card" style="--c:#f59e0b"><div class="ct">User Research</div><div class="cd">Data-driven product validation</div></div></div>\n      </main>\n    </div>\n  </div>\n  <script>\n    console.log("Dashboard ready");document.querySelectorAll(".si").forEach(el=>el.addEventListener("click",e=>{e.preventDefault();document.querySelectorAll(".si").forEach(s=>s.classList.remove("active"));el.classList.add("active");}));\n  <\/script>\n</body>\n</html>`
+  },
+  {
+    id:'ecommerce', name:'E-Commerce Store', desc:'Product grid with cart sidebar.', tags:['shop','cart'],
+    code:`<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <style>\n    *{box-sizing:border-box;margin:0;padding:0;}body{font-family:system-ui,sans-serif;background:#f8fafc;color:#0f172a;height:100vh;overflow:hidden;}\n    .store{display:flex;flex-direction:column;height:100vh;}\n    .sh{height:56px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:12px;padding:0 20px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}\n    .sb{font-weight:800;font-size:1.05rem;white-space:nowrap;}\n    .ss{flex:1;padding:7px 12px;border:1px solid #e2e8f0;border-radius:7px;font-size:0.85rem;outline:none;}\n    .cart-btn{padding:7px 16px;background:#6366f1;color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;}\n    .sbody{display:flex;flex:1;overflow:hidden;position:relative;}\n    .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;padding:20px;overflow-y:auto;flex:1;align-content:start;}\n    .pc{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;cursor:pointer;transition:box-shadow 0.2s,transform 0.2s;}\n    .pc:hover{box-shadow:0 8px 24px rgba(0,0,0,0.1);transform:translateY(-2px);}\n    .pi{height:120px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:#f1f5f9;}\n    .pinfo{padding:12px;}\n    .pn{font-size:0.85rem;font-weight:700;margin-bottom:4px;}\n    .pp{font-size:1rem;font-weight:800;color:#6366f1;margin-bottom:8px;}\n    .padd{width:100%;padding:7px;background:#6366f1;color:#fff;border:none;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;}\n    .cart-side{width:280px;background:#fff;border-left:1px solid #e2e8f0;display:flex;flex-direction:column;position:absolute;right:0;top:0;bottom:0;transform:translateX(100%);transition:transform 0.3s;z-index:10;}\n    .cart-side.open{transform:none;}\n    .csh{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid #e2e8f0;}\n    .citems{flex:1;overflow-y:auto;padding:12px 18px;}\n    .ci{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:0.82rem;}\n    .cfoot{padding:14px 18px;border-top:1px solid #e2e8f0;}\n    .ctrow{display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:10px;}\n    .cbtn{width:100%;padding:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;}\n  </style>\n</head>\n<body>\n  <div class="store">\n    <header class="sh"><span class="sb">🛒 ShopForge</span><input class="ss" placeholder="Search products..."><button class="cart-btn" id="cartBtn">Cart (<span id="cartCount">0</span>)</button></header>\n    <div class="sbody">\n      <main class="pgrid" id="pgrid"></main>\n      <aside class="cart-side" id="cartSide"><div class="csh"><h3>Your Cart</h3><button onclick="document.getElementById('cartSide').style.transform='translateX(100%)'">✕</button></div><div class="citems" id="citems"><p style="color:#94a3b8;text-align:center;padding:20px;">Cart is empty</p></div><div class="cfoot"><div class="ctrow"><span>Total</span><strong id="ctotal">$0.00</strong></div><button class="cbtn">Checkout →</button></div></aside>\n    </div>\n  </div>\n  <script>\n    const prods=[{id:1,n:"Headphones",p:129,e:"🎧"},{id:2,n:"Keyboard",p:219,e:"⌨️"},{id:3,n:"Monitor",p:449,e:"🖥️"},{id:4,n:"Sneakers",p:89,e:"👟"},{id:5,n:"Watch",p:299,e:"⌚"},{id:6,n:"Jacket",p:179,e:"🧥"}];\n    let cart=[];\n    const grid=document.getElementById("pgrid");\n    grid.innerHTML=prods.map(p=>\`<div class="pc"><div class="pi">\${p.e}</div><div class="pinfo"><div class="pn">\${p.n}</div><div class="pp">$\${p.p}</div><button class="padd" onclick="addCart(\${p.id})">Add to Cart</button></div></div>\`).join("");\n    window.addCart=function(id){const p=prods.find(x=>x.id===id);const ex=cart.find(x=>x.id===id);ex?ex.q++:cart.push({...p,q:1});renderCart();document.getElementById("cartSide").classList.add("open");};\n    function renderCart(){document.getElementById("cartCount").textContent=cart.reduce((s,x)=>s+x.q,0);const ci=document.getElementById("citems");if(!cart.length){ci.innerHTML='<p style="color:#94a3b8;text-align:center;padding:20px;">Cart is empty</p>';document.getElementById("ctotal").textContent="$0.00";return;}ci.innerHTML=cart.map(i=>\`<div class="ci"><span>\${i.e} \${i.n} ×\${i.q}</span><span style="font-weight:700;color:#6366f1;">$\${i.p*i.q}</span></div>\`).join("");document.getElementById("ctotal").textContent="$"+cart.reduce((s,x)=>s+x.p*x.q,0).toFixed(2);}\n    document.getElementById("cartBtn").onclick=()=>document.getElementById("cartSide").classList.toggle("open");\n  <\/script>\n</body>\n</html>`
+  },
+  {
+    id:'cssart', name:'CSS Art', desc:'Pure CSS planetary animation.', tags:['css','animation'],
+    code:`<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <style>\n    *{margin:0;padding:0;box-sizing:border-box;}\n    body{background:#020409;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden;font-family:system-ui,sans-serif;}\n    .scene{position:relative;width:300px;height:300px;display:flex;align-items:center;justify-content:center;}\n    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}\n    @keyframes orbit{from{transform:rotate(0deg) translateX(110px)}to{transform:rotate(360deg) translateX(110px)}}\n    .planet{width:130px;height:130px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#818cf8,#6366f1 55%,#312e81);box-shadow:0 0 40px rgba(99,102,241,0.6);animation:float 4s ease-in-out infinite;position:relative;}\n    .ring{position:absolute;width:190px;height:36px;border-radius:50%;border:8px solid rgba(167,139,250,0.4);top:50%;left:50%;transform:translate(-50%,-50%) rotateX(75deg);}\n    .orbit{position:absolute;width:220px;height:220px;animation:orbit 6s linear infinite;}\n    .moon{position:absolute;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#e2e8f0,#94a3b8);box-shadow:0 0 10px rgba(255,255,255,0.4);top:-11px;left:50%;transform:translateX(-50%);}\n    .label{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:0.7rem;font-weight:700;letter-spacing:3px;color:rgba(167,139,250,0.7);}\n  </style>\n</head>\n<body>\n  <div class="scene"><div class="planet"><div class="ring"></div></div><div class="orbit"><div class="moon"></div></div><p class="label">EXPLORE THE COSMOS</p></div>\n  <script>\n    console.log("CSS Art loaded");\n  <\/script>\n</body>\n</html>`
   }
+];
+
+const CDN_PRESETS = [
+  {name:'Tailwind',url:'https://cdn.tailwindcss.com',type:'script'},
+  {name:'Bootstrap CSS',url:'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css',type:'stylesheet'},
+  {name:'Bootstrap JS',url:'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js',type:'script'},
+  {name:'Alpine.js',url:'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js',type:'script'},
+  {name:'GSAP',url:'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js',type:'script'},
+  {name:'Three.js',url:'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',type:'script'},
+  {name:'D3.js',url:'https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js',type:'script'},
+  {name:'Chart.js',url:'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js',type:'script'},
+  {name:'Font Awesome',url:'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',type:'stylesheet'},
+  {name:'Anime.js',url:'https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js',type:'script'},
 ];
 
 /* ═══════════════════════════════════════
    STATE
 ═══════════════════════════════════════ */
-let S = { projects:{}, activeId:null };
+let S = { projects:{}, activeId:null, cdns:[] };
 const STARTER = TEMPLATES[1];
 
 function loadState() {
-  const raw = localStorage.getItem('codeforge_v3_unified');
+  const raw = localStorage.getItem('codeforge_v3_combined');
   if (raw) { try { S = JSON.parse(raw); } catch(e){} }
+  if (!S.cdns) S.cdns = [];
   if (!S.projects || !Object.keys(S.projects).length) {
     const id = 'p_' + Date.now();
     S.projects = { [id]: { name:'Demo – Particles', code:STARTER.code, snaps:[], updated:Date.now() } };
@@ -402,11 +401,11 @@ function loadState() {
   }
   if (!S.activeId || !S.projects[S.activeId]) S.activeId = Object.keys(S.projects)[0];
 }
-function saveState() { localStorage.setItem('codeforge_v3_unified', JSON.stringify(S)); }
+function saveState() { localStorage.setItem('codeforge_v3_combined', JSON.stringify(S)); }
 function activeProj() { return S.projects[S.activeId]; }
 
 /* ═══════════════════════════════════════
-   UI INTERACTIONS (Sidebar, Resizer)
+   DRAWER / SIDEBAR NAV
 ═══════════════════════════════════════ */
 const drawer = document.getElementById('drawer');
 let activeDrawer = 'projects';
@@ -415,7 +414,9 @@ document.querySelectorAll('.sb-btn[data-drawer]').forEach(btn => {
   btn.addEventListener('click', () => {
     const key = btn.dataset.drawer;
     if (activeDrawer === key && !drawer.classList.contains('closed')) {
-      drawer.classList.add('closed'); btn.classList.remove('on'); activeDrawer = null;
+      drawer.classList.add('closed');
+      btn.classList.remove('on');
+      activeDrawer = null;
     } else {
       drawer.classList.remove('closed');
       document.querySelectorAll('.sb-btn[data-drawer]').forEach(b => b.classList.remove('on'));
@@ -428,6 +429,9 @@ document.querySelectorAll('.sb-btn[data-drawer]').forEach(btn => {
   });
 });
 
+/* ═══════════════════════════════════════
+   SPLIT RESIZER
+═══════════════════════════════════════ */
 const resizer = document.getElementById('resizer'), edPane = document.getElementById('edPane'), ws = document.getElementById('ws');
 let dragging = false;
 resizer.addEventListener('mousedown', e => { dragging = true; resizer.classList.add('drag'); document.getElementById('sandbox').style.pointerEvents = 'none'; e.preventDefault(); });
@@ -451,7 +455,7 @@ function initMonaco() {
   require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
   require(['vs/editor/editor.main'], () => {
     const p = activeProj();
-    // Use HTML mode, which perfectly highlights mixed HTML, CSS, and JS
+    // Use HTML mode, which inherently perfectly highlights mixed HTML, CSS, and JS
     mCode = monaco.editor.createModel(p.code, 'html');
 
     window.editor = monaco.editor.create(document.getElementById('monacoMount'), {
@@ -472,19 +476,38 @@ function initMonaco() {
 
     window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, buildPreviewFull);
     window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, saveSnap);
+    window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyP, openCP);
+
     buildPreviewFull();
   });
 }
 
 /* ═══════════════════════════════════════
-   PREVIEW BUILDER & INJECTOR
+   PREVIEW BUILDER & INJECTOR (Single File + CDNs)
 ═══════════════════════════════════════ */
 let designMode = false;
 let selectedPath = null;
 
+function cdnTags() {
+  return S.cdns.map(l => l.type === 'stylesheet'
+    ? `<link rel="stylesheet" href="${l.url}">`
+    : `<script src="${l.url}"><\/script>`
+  ).join('\n');
+}
+
 function buildPreviewFull() {
   if (!mCode) return;
   let rawCode = mCode.getValue();
+
+  // Inject CDN tags into the user's raw code virtually for the preview
+  const cdns = cdnTags();
+  if (cdns) {
+      if (rawCode.includes('</head>')) {
+          rawCode = rawCode.replace('</head>', cdns + '\n</head>');
+      } else {
+          rawCode = cdns + '\n' + rawCode;
+      }
+  }
 
   // Design mode injections (Styles for selection/resize, scripts for drag/drop/sync)
   const designStyle = `
@@ -505,6 +528,13 @@ function buildPreviewFull() {
       let clone = document.documentElement.cloneNode(true);
       let s1 = clone.querySelector('#__cfs_design_style'); if(s1) s1.remove();
       let s2 = clone.querySelector('#__cfs_design_script'); if(s2) s2.remove();
+      
+      // We must also remove injected CDN tags before syncing back to the editor
+      // so we don't accidentally hardcode the CDNs into the user's raw code.
+      clone.querySelectorAll('link, script').forEach(tag => {
+          if (tag.src && tag.src.includes('http') && tag.hasAttribute('data-cdn')) tag.remove();
+      });
+
       clone.querySelectorAll('[data-cfs-hover], [data-cfs-selected]').forEach(el => { el.removeAttribute('data-cfs-hover'); el.removeAttribute('data-cfs-selected'); });
       window.parent.postMessage({ type: 'sync-full-code', code: '<!DOCTYPE html>\\n<html lang="en">\\n' + clone.innerHTML + '\\n</html>' }, '*');
     }
@@ -566,7 +596,6 @@ function buildPreviewFull() {
 
   let srcdoc = rawCode;
   if (designMode) {
-    // Inject styles before closing head, scripts before closing body
     if (srcdoc.includes('</head>')) srcdoc = srcdoc.replace('</head>', designStyle + '\n</head>');
     else srcdoc = designStyle + srcdoc;
     
@@ -592,14 +621,14 @@ function buildPreviewFull() {
 }
 
 /* ═══════════════════════════════════════
-   MESSAGE BUS (Two-Way Sync & Props)
+   MESSAGE BUS (from iframe)
 ═══════════════════════════════════════ */
 window.addEventListener('message', e => {
   if (!e.data) return;
   if (e.data.type === 'log') addLog(e.data.lt, e.data.msg);
   if (e.data.type === 'select') handleElementSelect(e.data);
   if (e.data.type === 'sync-full-code') {
-    // Receive clean code from iframe and update editor without triggering re-render
+    // Receive visually updated code from iframe and update editor
     syncLock = true;
     mCode.setValue(e.data.code);
     activeProj().code = e.data.code;
@@ -607,32 +636,52 @@ window.addEventListener('message', e => {
   }
 });
 
+/* ═══════════════════════════════════════
+   ELEMENT SELECTION + PROPERTIES PANEL
+═══════════════════════════════════════ */
 function handleElementSelect(data) {
   selectedPath = data.path;
   const body = document.getElementById('propsBody');
-  const s = data.styles, a = data.attrs;
+  const s = data.styles;
+  const a = data.attrs;
 
   body.innerHTML = `
     <div class="tag-chip">&lt;${data.tag}&gt;</div>
-    <div style="font-size:0.65rem;color:var(--txt3);margin-bottom:12px;word-break:break-all;">${data.path}</div>
+    ${data.path !== 'body' ? `<div style="font-size:0.65rem;color:var(--txt3);margin-bottom:12px;word-break:break-all;">${data.path}</div>` : ''}
+
     ${data.innerHTML !== null ? `
     <div class="prop-group">
       <div class="prop-label">Inner HTML</div>
-      <textarea id="pp-html" style="width:100%;padding:6px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--txt);font-size:0.72rem;resize:vertical;min-height:60px;font-family:'JetBrains Mono',monospace;">${String(data.innerHTML).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
+      <textarea id="pp-html" style="width:100%;padding:6px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--txt);font-size:0.72rem;resize:vertical;min-height:60px;font-family:'JetBrains Mono',monospace;">${escHtml(data.innerHTML)}</textarea>
       <button class="small-btn" style="margin-top:5px;width:100%;" id="pp-html-apply">Apply HTML</button>
     </div>` : ''}
+
     <div class="prop-group">
       <div class="prop-label">Colors</div>
       <div class="prop-row"><span class="prop-name">Text Color</span><input type="color" class="prop-color" id="pp-color" value="${rgbToHex(s.color)}"></div>
       <div class="prop-row"><span class="prop-name">Background</span><input type="color" class="prop-color" id="pp-bg" value="${rgbToHex(s.backgroundColor)}"></div>
     </div>
+
     <div class="prop-group">
-      <div class="prop-label">Typography & Size</div>
+      <div class="prop-label">Typography</div>
       <div class="prop-row"><span class="prop-name">Font Size</span><input class="prop-input" id="pp-fs" value="${s.fontSize}"></div>
       <div class="prop-row"><span class="prop-name">Font Weight</span><input class="prop-input" id="pp-fw" value="${s.fontWeight}"></div>
+      <div class="prop-row"><span class="prop-name">Text Align</span>
+        <select class="prop-input" id="pp-ta" style="padding:3px 4px;">
+          ${['left','center','right','justify'].map(v=>`<option${s.textAlign===v?' selected':''}>${v}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+
+    <div class="prop-group">
+      <div class="prop-label">Spacing & Size</div>
+      <div class="prop-row"><span class="prop-name">Padding</span><input class="prop-input" id="pp-pad" value="${s.padding}"></div>
+      <div class="prop-row"><span class="prop-name">Margin</span><input class="prop-input" id="pp-mar" value="${s.margin}"></div>
+      <div class="prop-row"><span class="prop-name">Border Radius</span><input class="prop-input" id="pp-br" value="${s.borderRadius}"></div>
       <div class="prop-row"><span class="prop-name">Width</span><input class="prop-input" id="pp-w" value="${s.width}"></div>
       <div class="prop-row"><span class="prop-name">Height</span><input class="prop-input" id="pp-h" value="${s.height}"></div>
     </div>
+
     <button class="add-child-btn" id="pp-wrap-apply">Apply Style Changes</button>
   `;
 
@@ -645,18 +694,27 @@ function handleElementSelect(data) {
 
   document.getElementById('pp-color').oninput = e => applyInline('color', e.target.value);
   document.getElementById('pp-bg').oninput = e => applyInline('backgroundColor', e.target.value);
+
   document.getElementById('pp-wrap-apply').onclick = () => {
     applyInline('fontSize', document.getElementById('pp-fs').value);
     applyInline('fontWeight', document.getElementById('pp-fw').value);
+    applyInline('textAlign', document.getElementById('pp-ta').value);
+    applyInline('padding', document.getElementById('pp-pad').value);
+    applyInline('margin', document.getElementById('pp-mar').value);
+    applyInline('borderRadius', document.getElementById('pp-br').value);
     applyInline('width', document.getElementById('pp-w').value);
     applyInline('height', document.getElementById('pp-h').value);
   };
 }
+
 function rgbToHex(rgb) {
   if (!rgb || rgb === 'transparent' || !rgb.startsWith('rgb')) return '#000000';
   const parts = rgb.match(/\d+/g);
   if (!parts || parts.length < 3) return '#000000';
   return '#' + parts.slice(0,3).map(n => parseInt(n).toString(16).padStart(2,'0')).join('');
+}
+function escHtml(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 /* ═══════════════════════════════════════
@@ -671,7 +729,7 @@ document.getElementById('btnDesignMode').addEventListener('click', function() {
   const pp = document.getElementById('propsPanel');
   if (designMode) {
     pp.classList.remove('closed');
-    document.getElementById('propsBody').innerHTML = '<div class="no-selection">Click any element in the preview to inspect &amp; edit it. Drag to move it. Resizing handles available on selection corners.</div>';
+    document.getElementById('propsBody').innerHTML = '<div class="no-selection">Click any element in the preview with Design Mode ON to inspect &amp; edit its properties. Drag and drop elements inside the preview window to reposition them.</div>';
   } else {
     pp.classList.add('closed');
     selectedPath = null;
@@ -686,101 +744,375 @@ document.getElementById('btnPropsToggle').addEventListener('click', () => {
 });
 
 /* ═══════════════════════════════════════
-   PROJECTS & SNAPSHOTS
+   CONSOLE
+═══════════════════════════════════════ */
+const consolePanel = document.getElementById('consolePanel');
+const consoleBody  = document.getElementById('consoleBody');
+
+document.getElementById('consoleHdr').addEventListener('click', e => {
+  if (e.target.closest('#btnClearLog')) return;
+  consolePanel.classList.toggle('closed');
+  document.getElementById('consoleChev').textContent = consolePanel.classList.contains('closed') ? '▲' : '▼';
+  setTimeout(() => window.editor && window.editor.layout(), 310);
+});
+document.getElementById('btnClearLog').addEventListener('click', () => { consoleBody.innerHTML = ''; });
+
+function addLog(type, msg) {
+  const el = document.createElement('div');
+  el.className = 'log-line ' + type;
+  const t = new Date().toLocaleTimeString().split(' ')[0];
+  el.innerHTML = `<span style="color:var(--txt3);margin-right:6px;">[${t}]</span>${escHtml(msg)}`;
+  consoleBody.appendChild(el);
+  consoleBody.scrollTop = consoleBody.scrollHeight;
+  if (type === 'error' && consolePanel.classList.contains('closed')) {
+    consolePanel.classList.remove('closed');
+    document.getElementById('consoleChev').textContent = '▼';
+    setTimeout(() => window.editor && window.editor.layout(), 310);
+  }
+}
+
+/* ═══════════════════════════════════════
+   RUN / FORMAT / MINIFY
+═══════════════════════════════════════ */
+document.getElementById('btnRun').addEventListener('click', () => { buildPreviewFull(); addLog('log','Ran manually.'); });
+document.getElementById('btnFmt').addEventListener('click', () => {
+  window.editor && window.editor.getAction('editor.action.formatDocument').run();
+  addLog('log', 'Formatted.');
+});
+
+/* ═══════════════════════════════════════
+   PROJECTS
 ═══════════════════════════════════════ */
 function renderProjects() {
   const list = document.getElementById('projList');
   list.innerHTML = '';
   Object.entries(S.projects).forEach(([id, p]) => {
-    const el = document.createElement('div'); el.className = 'proj-item' + (id === S.activeId ? ' on' : '');
-    el.innerHTML = `<div class="proj-name">${p.name}</div><div class="proj-date">${new Date(p.updated).toLocaleDateString()}</div><div class="proj-actions"><button class="proj-btn del" onclick="delProj('${id}')">Del</button></div>`;
-    el.addEventListener('click', e => { if (e.target.closest('.proj-btn')) return; S.activeId = id; saveState(); if(mCode) mCode.setValue(p.code); renderProjects(); renderSnaps(); buildPreviewFull(); });
+    const el = document.createElement('div');
+    el.className = 'proj-item' + (id === S.activeId ? ' on' : '');
+    el.innerHTML = `
+      <div class="proj-name">${escHtml(p.name)}</div>
+      <div class="proj-date">${new Date(p.updated).toLocaleDateString()}</div>
+      <div class="proj-actions">
+        <button class="proj-btn" onclick="dupProj('${id}')">Dup</button>
+        <button class="proj-btn del" onclick="delProj('${id}')">Del</button>
+      </div>
+    `;
+    el.addEventListener('click', e => { if (e.target.closest('.proj-btn')) return; loadProj(id); });
     list.appendChild(el);
   });
 }
 
-document.getElementById('btnNewProj').addEventListener('click', () => {
-  document.getElementById('modalBd').classList.add('open');
-  document.getElementById('modalOk').onclick = () => {
-    const name = document.getElementById('modalInput').value.trim() || 'New Project';
-    const id = 'p_' + Date.now();
-    S.projects[id] = { name, code: TEMPLATES[0].code, snaps: [], updated: Date.now() };
-    S.activeId = id; saveState(); if(mCode) mCode.setValue(S.projects[id].code);
-    renderProjects(); document.getElementById('modalBd').classList.remove('open'); buildPreviewFull();
-  };
-});
-document.getElementById('modalCancel').onclick = () => document.getElementById('modalBd').classList.remove('open');
-window.delProj = function(id) { if(Object.keys(S.projects).length<=1){alert('Cannot delete last project!');return;} if(!confirm('Delete?'))return; delete S.projects[id]; if(S.activeId===id)S.activeId=Object.keys(S.projects)[0]; saveState(); if(mCode)mCode.setValue(activeProj().code); renderProjects(); }
-
-function renderTemplates() {
-  const grid = document.getElementById('tplGrid');
-  grid.innerHTML = TEMPLATES.map(t => `<div class="tpl-card" onclick="applyTemplate('${t.id}')"><div class="tpl-name">${t.name}</div><div class="tpl-desc">${t.desc}</div></div>`).join('');
+function loadProj(id) {
+  S.activeId = id;
+  saveState();
+  const p = S.projects[id];
+  if (mCode) mCode.setValue(p.code);
+  renderProjects(); renderSnaps();
+  buildPreviewFull();
+  addLog('log', 'Loaded: ' + p.name);
 }
-window.applyTemplate = function(tid) {
-  const t = TEMPLATES.find(x => x.id === tid);
-  const id = 'p_' + Date.now();
-  S.projects[id] = { name: t.name, code: t.code, snaps: [], updated: Date.now() };
-  S.activeId = id; saveState(); if(mCode) mCode.setValue(t.code); renderProjects();
-  document.querySelector('.sb-btn[data-drawer="projects"]').click(); buildPreviewFull();
+
+// Modal helpers
+let modalCb = null;
+function showModal(title, desc, defaultVal, label, cb) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalDesc').textContent = desc;
+  document.getElementById('modalInput').value = defaultVal;
+  document.getElementById('modalOk').textContent = label || 'OK';
+  document.getElementById('modalBd').classList.add('open');
+  modalCb = cb;
+  setTimeout(() => document.getElementById('modalInput').focus(), 50);
+}
+document.getElementById('modalCancel').onclick = () => document.getElementById('modalBd').classList.remove('open');
+document.getElementById('modalOk').onclick = () => {
+  const val = document.getElementById('modalInput').value.trim();
+  document.getElementById('modalBd').classList.remove('open');
+  if (modalCb) modalCb(val);
+};
+document.getElementById('modalInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('modalOk').click(); });
+
+document.getElementById('btnNewProj').addEventListener('click', () => {
+  showModal('New Project','Name your project.','Untitled Project','Create', name => {
+    const id = 'p_' + Date.now();
+    S.projects[id] = { name: name||'New Project', code:TEMPLATES[0].code, snaps:[], updated:Date.now() };
+    loadProj(id);
+    renderProjects();
+  });
+});
+
+window.dupProj = function(id) {
+  const src = S.projects[id];
+  const nid = 'p_' + Date.now();
+  S.projects[nid] = { name: src.name + ' (copy)', code:src.code, snaps:[], updated:Date.now() };
+  saveState(); renderProjects();
+};
+window.delProj = function(id) {
+  if (Object.keys(S.projects).length <= 1) { alert('Cannot delete the last project!'); return; }
+  if (!confirm('Delete this project?')) return;
+  delete S.projects[id];
+  if (S.activeId === id) S.activeId = Object.keys(S.projects)[0];
+  loadProj(S.activeId);
 };
 
-function renderSnaps() {
-  const list = document.getElementById('snapList'), p = activeProj();
-  if (!p.snaps || !p.snaps.length) { list.innerHTML = '<div class="empty-state">No snapshots yet. Press Ctrl+S.</div>'; return; }
-  list.innerHTML = p.snaps.slice().reverse().map((sn, ri) => `<div class="snap-item"><div><div class="snap-meta">Version ${p.snaps.length - ri}</div><div class="snap-time">${new Date(sn.ts).toLocaleTimeString()}</div></div><button class="snap-restore" onclick="restoreSnap(${p.snaps.length - 1 - ri})">Restore</button></div>`).join('');
+/* ═══════════════════════════════════════
+   TEMPLATES
+═══════════════════════════════════════ */
+function renderTemplates() {
+  const grid = document.getElementById('tplGrid');
+  grid.innerHTML = '';
+  TEMPLATES.forEach(t => {
+    const el = document.createElement('div');
+    el.className = 'tpl-card';
+    el.innerHTML = `<div class="tpl-name">${t.name}</div><div class="tpl-desc">${t.desc}</div><div class="tpl-tags">${t.tags.map(x=>`<span class="tpl-tag">${x}</span>`).join('')}</div>`;
+    el.addEventListener('click', () => applyTemplate(t));
+    grid.appendChild(el);
+  });
 }
-function saveSnap() {
-  const p = activeProj(); if(!p.snaps) p.snaps=[];
-  p.snaps.push({ ts:Date.now(), code:mCode.getValue() }); saveState(); renderSnaps(); addLog('log', 'Snapshot saved.');
+function applyTemplate(t) {
+  const id = 'p_' + Date.now();
+  S.projects[id] = { name:t.name+' – '+new Date().toLocaleDateString(), code:t.code, snaps:[], updated:Date.now() };
+  loadProj(id);
+  document.querySelector('.sb-btn[data-drawer="projects"]').click();
+  addLog('log', 'Template applied: ' + t.name);
 }
-document.getElementById('btnNewSnap').addEventListener('click', saveSnap);
-window.restoreSnap = function(i) { const sn = activeProj().snaps[i]; if(sn && confirm('Restore snapshot?')){ mCode.setValue(sn.code); buildPreviewFull(); }};
 
 /* ═══════════════════════════════════════
-   CONSOLE & UTILS
+   CDN
 ═══════════════════════════════════════ */
-const consolePanel=document.getElementById('consolePanel'), consoleBody=document.getElementById('consoleBody');
-document.getElementById('consoleHdr').addEventListener('click', e => { if(e.target.closest('#btnClearLog'))return; consolePanel.classList.toggle('closed'); document.getElementById('consoleChev').textContent = consolePanel.classList.contains('closed') ? '▲' : '▼'; setTimeout(() => window.editor && window.editor.layout(), 310); });
-document.getElementById('btnClearLog').addEventListener('click', () => { consoleBody.innerHTML = ''; });
-function addLog(type, msg) {
-  const el = document.createElement('div'); el.className = 'log-line ' + type;
-  el.innerHTML = `<span style="color:var(--txt3);margin-right:6px;">[${new Date().toLocaleTimeString().split(' ')[0]}]</span>${String(msg).replace(/&/g,'&amp;').replace(/</g,'&lt;')}`;
-  consoleBody.appendChild(el); consoleBody.scrollTop = consoleBody.scrollHeight;
-  if (type === 'error' && consolePanel.classList.contains('closed')) document.getElementById('consoleHdr').click();
+function renderCdnList() {
+  const list = document.getElementById('cdnList');
+  if (!S.cdns.length) { list.innerHTML = '<div class="empty-state">No CDNs added yet.</div>'; return; }
+  list.innerHTML = S.cdns.map((c, i) => `
+    <div class="cdn-item-row">
+      <span class="cdn-badge ${c.type === 'stylesheet' ? 'css' : 'js'}">${c.type === 'stylesheet' ? 'CSS' : 'JS'}</span>
+      <span class="cdn-url" title="${c.url}">${c.url}</span>
+      <button class="cdn-rm" onclick="removeCdn(${i})">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  `).join('');
+}
+function renderPresets() {
+  const wrap = document.getElementById('presetWrap');
+  wrap.innerHTML = CDN_PRESETS.map(p => {
+    const added = S.cdns.some(c => c.url === p.url);
+    return `<button class="preset-chip ${added?'added':''}" onclick="addPreset('${p.url}','${p.type}','${p.name}')">${p.name}</button>`;
+  }).join('');
+}
+window.addPreset = function(url, type, name) {
+  if (S.cdns.some(c => c.url === url)) return;
+  S.cdns.push({url, type}); saveState(); renderCdnList(); renderPresets();
+  buildPreviewFull();
+  addLog('log', 'CDN added: ' + name);
+};
+window.removeCdn = function(i) {
+  S.cdns.splice(i, 1); saveState(); renderCdnList(); renderPresets();
+  buildPreviewFull();
+};
+document.getElementById('btnAddCdn').addEventListener('click', () => {
+  const input = document.getElementById('cdnInput');
+  const url = input.value.trim();
+  if (!url || !url.startsWith('http')) { alert('Enter a valid CDN URL.'); return; }
+  if (S.cdns.some(c => c.url === url)) { alert('Already added.'); return; }
+  const type = url.endsWith('.css') ? 'stylesheet' : 'script';
+  S.cdns.push({url, type}); saveState(); renderCdnList(); renderPresets();
+  buildPreviewFull();
+  input.value = ''; addLog('log', 'CDN added: ' + url);
+});
+document.getElementById('cdnInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('btnAddCdn').click(); });
+
+/* ═══════════════════════════════════════
+   SNAPSHOTS
+═══════════════════════════════════════ */
+function renderSnaps() {
+  const list = document.getElementById('snapList');
+  const p = activeProj();
+  if (!p.snaps || !p.snaps.length) { list.innerHTML = '<div class="empty-state">No snapshots yet. Press Ctrl+S to save one.</div>'; return; }
+  list.innerHTML = p.snaps.slice().reverse().map((sn, ri) => {
+    const i = p.snaps.length - 1 - ri;
+    return `<div class="snap-item">
+      <div><div class="snap-meta">Version ${p.snaps.length - ri}</div><div class="snap-time">${new Date(sn.ts).toLocaleTimeString()}</div></div>
+      <button class="snap-restore" onclick="restoreSnap(${i})">Restore</button>
+    </div>`;
+  }).join('');
 }
 
-document.getElementById('btnRun').addEventListener('click', () => { buildPreviewFull(); addLog('log','Ran manually.'); });
-document.getElementById('btnFmt').addEventListener('click', () => { window.editor && window.editor.getAction('editor.action.formatDocument').run(); });
+function saveSnap() {
+  const p = activeProj();
+  if (!p.snaps) p.snaps = [];
+  p.snaps.push({ ts:Date.now(), code:mCode.getValue() });
+  saveState(); renderSnaps();
+  addLog('log', 'Snapshot saved.');
+}
+document.getElementById('btnNewSnap').addEventListener('click', saveSnap);
 
-/* Export & Import */
-document.getElementById('btnExportHTML').addEventListener('click', () => {
-  const p = activeProj(); const blob = new Blob([p.code], {type:'text/html'});
-  const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = p.name.replace(/\s+/g,'_') + '.html'; a.click(); URL.revokeObjectURL(url);
-});
+window.restoreSnap = function(i) {
+  const sn = activeProj().snaps[i];
+  if (!sn || !confirm('Restore to this snapshot?')) return;
+  mCode.setValue(sn.code);
+  buildPreviewFull(); addLog('log', 'Restored to snapshot.');
+};
+
+/* ═══════════════════════════════════════
+   EXPORT / IMPORT
+═══════════════════════════════════════ */
 document.getElementById('btnImport').addEventListener('click', () => document.getElementById('importFile').click());
 document.getElementById('importFile').addEventListener('change', e => {
-  const f = e.target.files[0]; if(!f) return;
-  const r = new FileReader(); r.onload = ev => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
     const id = 'p_' + Date.now();
-    S.projects[id] = { name: f.name.replace('.html',''), code: ev.target.result, snaps: [], updated: Date.now() };
-    S.activeId = id; saveState(); if(mCode) mCode.setValue(ev.target.result); renderProjects(); buildPreviewFull();
-  }; r.readAsText(f);
+    S.projects[id] = { name:f.name.replace('.html', ''), code:ev.target.result, snaps:[], updated:Date.now() };
+    loadProj(id); alert('Imported!');
+  };
+  r.readAsText(f);
 });
 
-/* Devices & Theme */
-document.getElementById('selDevice').addEventListener('change', e => document.getElementById('previewFrame').className = 'preview-frame' + (e.target.value!=='full'?' '+e.target.value:'') + (designMode?' design-on':''));
-document.getElementById('btnOrientation').addEventListener('click', () => document.getElementById('previewFrame').classList.toggle('rotated'));
+document.getElementById('btnExportHTML').addEventListener('click', () => {
+  const p = activeProj();
+  let exportCode = p.code;
+  const cdns = cdnTags();
+  if (cdns) {
+      if (exportCode.includes('</head>')) exportCode = exportCode.replace('</head>', cdns + '\n</head>');
+      else exportCode = cdns + '\n' + exportCode;
+  }
+  dl(exportCode, p.name.replace(/\s+/g,'_') + '.html', 'text/html');
+});
+
+document.getElementById('btnExportZip').addEventListener('click', () => {
+  const p = activeProj();
+  const zip = new JSZip();
+  let exportCode = p.code;
+  const cdns = cdnTags();
+  if (cdns) {
+      if (exportCode.includes('</head>')) exportCode = exportCode.replace('</head>', cdns + '\n</head>');
+      else exportCode = cdns + '\n' + exportCode;
+  }
+  zip.file('index.html', exportCode);
+  zip.generateAsync({type:'blob'}).then(blob => dl(blob, p.name.replace(/\s+/g,'_') + '.zip', 'application/zip'));
+});
+
+function dl(content, name, type) {
+  const blob = content instanceof Blob ? content : new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+/* ═══════════════════════════════════════
+   DEVICE / VIEWPORT
+═══════════════════════════════════════ */
+document.getElementById('selDevice').addEventListener('change', e => {
+  const f = document.getElementById('previewFrame');
+  f.className = 'preview-frame' + (e.target.value !== 'full' ? ' ' + e.target.value : '') + (designMode ? ' design-on' : '');
+});
+document.getElementById('btnOrientation').addEventListener('click', () => {
+  document.getElementById('previewFrame').classList.toggle('rotated');
+});
+document.getElementById('btnFullscreen').addEventListener('click', () => {
+  const el = document.getElementById('prevPane');
+  if (!document.fullscreenElement) el.requestFullscreen().catch(console.error);
+  else document.exitFullscreen();
+});
+
+/* ═══════════════════════════════════════
+   THEME TOGGLE
+═══════════════════════════════════════ */
 document.getElementById('btnTheme').addEventListener('click', () => {
   const isLight = document.body.getAttribute('data-theme') === 'light';
   document.body.setAttribute('data-theme', isLight ? '' : 'light');
   if (window.editor) monaco.editor.setTheme(isLight ? 'vs-dark' : 'vs');
-  if (!isLight) { document.body.style.setProperty('--bg','#ffffff'); document.body.style.setProperty('--bg2','#f8fafc'); document.body.style.setProperty('--bg3','#f1f5f9'); document.body.style.setProperty('--bg4','#e2e8f0'); document.body.style.setProperty('--border','rgba(0,0,0,0.08)'); document.body.style.setProperty('--txt','#0f172a'); }
-  else { ['--bg','--bg2','--bg3','--bg4','--border','--txt'].forEach(v => document.body.style.removeProperty(v)); }
+  if (!isLight) {
+    document.body.style.setProperty('--bg','#ffffff');
+    document.body.style.setProperty('--bg2','#f8fafc');
+    document.body.style.setProperty('--bg3','#f1f5f9');
+    document.body.style.setProperty('--bg4','#e2e8f0');
+    document.body.style.setProperty('--border','rgba(0,0,0,0.08)');
+    document.body.style.setProperty('--border2','rgba(0,0,0,0.12)');
+    document.body.style.setProperty('--txt','#0f172a');
+    document.body.style.setProperty('--txt2','#475569');
+    document.body.style.setProperty('--txt3','#94a3b8');
+  } else {
+    ['--bg','--bg2','--bg3','--bg4','--border','--border2','--txt','--txt2','--txt3'].forEach(v => document.body.style.removeProperty(v));
+  }
 });
 
-/* Init */
+/* ═══════════════════════════════════════
+   COMMAND PALETTE
+═══════════════════════════════════════ */
+const COMMANDS = [
+  {label:'Run Code',desc:'Build & refresh preview',kbd:'Ctrl+Enter',icon:'<polygon points="5 3 19 12 5 21 5 3"/>',action:()=>buildPreviewFull()},
+  {label:'Format Document',desc:'Auto-format current file',kbd:'Shift+Alt+F',icon:'<line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/>',action:()=>window.editor&&window.editor.getAction('editor.action.formatDocument').run()},
+  {label:'Save Snapshot',desc:'Create a restore point',kbd:'Ctrl+S',icon:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',action:saveSnap},
+  {label:'New Project',desc:'Create a blank project',kbd:'',icon:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',action:()=>document.getElementById('btnNewProj').click()},
+  {label:'Toggle Design Mode',desc:'Enable visual element editing',kbd:'',icon:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>',action:()=>document.getElementById('btnDesignMode').click()},
+  {label:'Export HTML',desc:'Download as single HTML file',kbd:'',icon:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/>',action:()=>document.getElementById('btnExportHTML').click()},
+  {label:'Export ZIP',desc:'Download project as ZIP',kbd:'',icon:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/>',action:()=>document.getElementById('btnExportZip').click()},
+  {label:'Toggle Theme',desc:'Switch dark/light mode',kbd:'',icon:'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>',action:()=>document.getElementById('btnTheme').click()},
+  ...TEMPLATES.map(t=>({label:'Template: '+t.name,desc:t.desc,kbd:'',icon:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>',action:()=>applyTemplate(t.id)}))
+];
+
+const cpOverlay = document.getElementById('cpOverlay');
+const cpInput = document.getElementById('cpInput');
+const cpResults = document.getElementById('cpResults');
+let cpIdx = 0, cpFiltered = [];
+
+function openCP() {
+  cpOverlay.classList.add('open');
+  cpInput.value = '';
+  filterCP('');
+  setTimeout(() => cpInput.focus(), 30);
+}
+function closeCP() { cpOverlay.classList.remove('open'); }
+function filterCP(q) {
+  const lq = q.toLowerCase();
+  cpFiltered = q ? COMMANDS.filter(c => c.label.toLowerCase().includes(lq) || c.desc.toLowerCase().includes(lq)) : COMMANDS.slice(0,12);
+  cpIdx = 0; renderCP();
+}
+function renderCP() {
+  if (!cpFiltered.length) { cpResults.innerHTML = '<div style="text-align:center;padding:20px;color:var(--txt3);font-size:0.8rem;">No commands found.</div>'; return; }
+  cpResults.innerHTML = cpFiltered.map((c, i) => `
+    <div class="cp-item${i===cpIdx?' sel':''}" data-i="${i}">
+      <div class="cp-icon"><svg viewBox="0 0 24 24">${c.icon}</svg></div>
+      <div class="cp-text"><div class="cp-label">${c.label}</div><div class="cp-desc">${c.desc}</div></div>
+      ${c.kbd ? `<span class="cp-kbd">${c.kbd}</span>` : ''}
+    </div>
+  `).join('');
+  cpResults.querySelectorAll('.cp-item').forEach((el, i) => {
+    el.addEventListener('click', () => runCp(cpFiltered[i]));
+    el.addEventListener('mouseenter', () => { cpIdx = i; renderCP(); });
+  });
+  const sel = cpResults.querySelector('.sel');
+  sel && sel.scrollIntoView({block:'nearest'});
+}
+function runCp(cmd) { closeCP(); setTimeout(() => cmd.action(), 80); }
+
+cpInput.addEventListener('input', e => filterCP(e.target.value));
+cpInput.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown') { e.preventDefault(); cpIdx = Math.min(cpIdx+1, cpFiltered.length-1); renderCP(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); cpIdx = Math.max(cpIdx-1, 0); renderCP(); }
+  else if (e.key === 'Enter') { cpFiltered[cpIdx] && runCp(cpFiltered[cpIdx]); }
+  else if (e.key === 'Escape') closeCP();
+});
+cpOverlay.addEventListener('click', e => { if (e.target === cpOverlay) closeCP(); });
+document.getElementById('btnCP').addEventListener('click', openCP);
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey||e.metaKey) && e.shiftKey && e.key.toLowerCase()==='p') { e.preventDefault(); cpOverlay.classList.contains('open') ? closeCP() : openCP(); }
+  if (e.key === 'Escape') { closeCP(); document.getElementById('modalBd').classList.remove('open'); }
+});
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', () => {
-  loadState(); renderProjects(); renderSnaps(); renderTemplates(); initMonaco();
+  loadState();
+  renderProjects();
+  renderSnaps();
+  renderTemplates();
+  renderCdnList();
+  renderPresets();
+  initMonaco();
 });
 </script>
 </body>
